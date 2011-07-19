@@ -10,11 +10,9 @@
 
 #import <CoreData/CoreData.h>
 
-@interface RootViewController : UITableViewController <NSFetchedResultsControllerDelegate> {
-
+@interface RootViewController : UITableViewController {
+    NSMutableArray *menuList;
 }
 
-@property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
-@property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
-
+@property (nonatomic, retain) NSMutableArray *menuList;
 @end

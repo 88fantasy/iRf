@@ -7,6 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Reachability.h"
+#import "Const.h"
 
 @interface iRfAppDelegate : NSObject <UIApplicationDelegate> {
 

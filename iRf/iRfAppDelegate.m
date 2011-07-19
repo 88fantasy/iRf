@@ -23,9 +23,32 @@
 
 @synthesize navigationController=_navigationController;
 
+
++ (BOOL)checkHostReachability {
+	Reachability* hostReach = [Reachability reachabilityWithHostName: host] ;
+	NetworkStatus netStatus = [hostReach currentReachabilityStatus];
+	if (netStatus == NotReachable ) {
+		// open an alert with just an OK button
+		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"连接服务器出现错误" message:@"请检查是否已连上互联网"
+													   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+		[alert show];	
+		[alert release];
+		return NO;
+	}
+	else {
+		return YES;
+	}
+    
+}
+
+
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
+    
+    [iRfAppDelegate checkHostReachability];
+    
     // Add the navigation controller's view to the window and display.
     self.window.rootViewController = self.navigationController;
     [self.window makeKeyAndVisible];
@@ -78,11 +101,6 @@
     [super dealloc];
 }
 
-- (void)awakeFromNib
-{
-    RootViewController *rootViewController = (RootViewController *)[self.navigationController topViewController];
-    rootViewController.managedObjectContext = self.managedObjectContext;
-}
 
 - (void)saveContext
 {
