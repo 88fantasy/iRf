@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "SBJson.h"
+
 
 @interface ScanView : UIViewController     
 // ADD: delegate protocol

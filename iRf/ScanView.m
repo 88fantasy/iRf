@@ -8,7 +8,8 @@
 
 #import "ScanView.h"
 #import "iRfRgService.h"
-
+#import "SBJson.h"
+#import "RgView.h"
 
 static NSString *retFlagKey = @"ret";
 static NSString *msgKey = @"msg";
@@ -30,7 +31,7 @@ static NSString *msgKey = @"msg";
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
-        //        resultText.delegate = self;
+//        resultText.delegate = self;
     }
     return self;
 }
@@ -110,7 +111,8 @@ static NSString *msgKey = @"msg";
 
 - (IBAction) searchButtonTapped {
     iRfRgService* service = [iRfRgService service];
-    NSLog(@"开始");
+//    service.logging = YES;
+    NSLog(@"getrg开始");
     [service getRg:self action:@selector(getRgHandler:) 
           username: @"16369" 
           password: @"88fantasy"
@@ -151,24 +153,24 @@ static NSString *msgKey = @"msg";
 	// Handle errors
 	if([value isKindOfClass:[NSError class]]) {
 		NSLog(@"%@", value);
-        //        NSError* result = (NSError*)value;
-        //        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"连接失败" 
-        //                                                        message: [result localizedFailureReason]
-        //													   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
-        //		[alert show];	
-        //		[alert release];
+        NSError* result = (NSError*)value;
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"连接失败" 
+                                                        message: [result localizedFailureReason]
+													   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+		[alert show];	
+		[alert release];
 		return;
 	}
     
 	// Handle faults
 	if([value isKindOfClass:[SoapFault class]]) {
 		NSLog(@"%@", value);
-        //        SoapFault * result = (SoapFault*)value;
-        //        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"soap连接失败" 
-        //                                                        message: [result faultString]
-        //													   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
-        //		[alert show];	
-        //		[alert release];
+        SoapFault * result = (SoapFault*)value;
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"soap连接失败" 
+                                                        message: [result faultString]
+													   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+		[alert show];	
+		[alert release];
 		return;
 	}				
     
@@ -191,18 +193,20 @@ static NSString *msgKey = @"msg";
         
         if ([retflag boolValue]) {
             NSArray *rows = (NSArray*) [ret objectForKey:msgKey];
-            NSInteger *count = [rows count];
-            if (count<1) {
+            NSUInteger *count = [rows count];
+            if (count <1) {
                 [self alert:@"提示" msg:@"找不到此收货号"];
             }
             else{
                 NSDictionary *obj = (NSDictionary*)[rows objectAtIndex:0];
+                RgView *rgView = [[RgView alloc] initWithNibName:@"RgView" bundle:nil values:obj readOnlyFlag:YES];
+                [self.navigationController pushViewController:rgView animated:YES];
+                [rgView release];
+//                for (int i=1; i<count; i++) {
+//                    obj = (NSDictionary*)[rows objectAtIndex:i];
+//                    
+//                }
                 
-                for (int i=1; i<count; i++) {
-                    obj = (NSDictionary*)[rows objectAtIndex:i];
-                    
-                }
-                ;
             }
         }
         else{
