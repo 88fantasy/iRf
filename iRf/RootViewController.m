@@ -8,7 +8,7 @@
 
 #import "RootViewController.h"
 #import "ScanView.h"
-
+#import "RgView.h"
 
 static NSString *kCellIdentifier = @"MyIdentifier";
 static NSString *kTitleKey = @"title";
@@ -17,7 +17,7 @@ static NSString *kViewControllerKey = @"viewController";
 
 
 @interface RootViewController ()
-- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
+//- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
 @end
 
 @implementation RootViewController
@@ -38,11 +38,19 @@ static NSString *kViewControllerKey = @"viewController";
     
     ScanView* scanview = [[ScanView alloc] initWithNibName:@"ScanView" bundle:nil];
     
+//    RgView *rgView = [[RgView alloc] initWithNibName:@"RgView" bundle:nil];
+    
     [self.menuList addObject:[NSDictionary dictionaryWithObjectsAndKeys:
                               @"收货管理", kTitleKey,
                               @"扫描或手输条码进行收货", kExplainKey,
                               scanview, kViewControllerKey,
 							  nil]];
+//    [self.menuList addObject:[NSDictionary dictionaryWithObjectsAndKeys:
+//                              @"UIScrollView", kTitleKey,
+//                              @"", kExplainKey,
+//                              rgView, kViewControllerKey,
+//							  nil]];
+    
 	[scanview release];
 
 }

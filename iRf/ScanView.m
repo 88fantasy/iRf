@@ -10,9 +10,13 @@
 #import "iRfRgService.h"
 #import "SBJson.h"
 #import "RgView.h"
+#import "RgListView.h"
+
 
 static NSString *retFlagKey = @"ret";
 static NSString *msgKey = @"msg";
+
+
 
 @implementation ScanView
 
@@ -84,6 +88,8 @@ static NSString *msgKey = @"msg";
 - (IBAction) cancelKeyboard:(id)sender{
     [sender resignFirstResponder];
 }
+
+
 - (IBAction) scanButtonTapped
 {
     // ADD: present a barcode reader that scans from the camera feed
@@ -106,17 +112,6 @@ static NSString *msgKey = @"msg";
     [self presentModalViewController: reader
 							animated: YES];
     [reader release];
-}
-
-
-- (IBAction) searchButtonTapped {
-    iRfRgService* service = [iRfRgService service];
-//    service.logging = YES;
-    NSLog(@"getrg开始");
-    [service getRg:self action:@selector(getRgHandler:) 
-          username: @"16369" 
-          password: @"88fantasy"
-           labelno: @"1200010586734"];//resultText.text];
 }
 
 - (void) imagePickerController: (UIImagePickerController*) reader
@@ -144,6 +139,25 @@ static NSString *msgKey = @"msg";
     
     
     
+}
+
+- (IBAction) searchButtonTapped {
+    iRfRgService* service = [iRfRgService service];
+    //    service.logging = YES;
+    NSLog(@"getrg开始");
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *username = [defaults stringForKey:@"username_preference"];
+    NSString *password = [defaults stringForKey:@"password_preference"];
+    
+    [service getRg:self action:@selector(getRgHandler:) 
+          username: username 
+          password: password
+           labelno: @"1200010586734"];//resultText.text];1200010586734,1100009542948
+    
+    //    [defaults release];
+    //    [username release];
+    //    [password release];
 }
 
 // Handle the response from getRg.
@@ -193,19 +207,26 @@ static NSString *msgKey = @"msg";
         
         if ([retflag boolValue]) {
             NSArray *rows = (NSArray*) [ret objectForKey:msgKey];
-            NSUInteger *count = [rows count];
+            NSUInteger count = [rows count];
             if (count <1) {
                 [self alert:@"提示" msg:@"找不到此收货号"];
             }
             else{
-                NSDictionary *obj = (NSDictionary*)[rows objectAtIndex:0];
-                RgView *rgView = [[RgView alloc] initWithNibName:@"RgView" bundle:nil values:obj readOnlyFlag:YES];
-                [self.navigationController pushViewController:rgView animated:YES];
-                [rgView release];
-//                for (int i=1; i<count; i++) {
-//                    obj = (NSDictionary*)[rows objectAtIndex:i];
-//                    
-//                }
+                if (count == 1) {
+                    NSDictionary *obj = (NSDictionary*)[rows objectAtIndex:0];
+                    RgView *rgView = [[RgView alloc] initWithNibName:@"RgView" bundle:nil values:obj ];
+                    [self.navigationController pushViewController:rgView animated:YES];
+                    [rgView release];
+                }
+                else{
+                    
+                    RgListView *rgListView =[[RgListView alloc] initWithStyle:UITableViewStylePlain
+                                                                         objs:rows ];
+                    [self.navigationController pushViewController:rgListView animated:YES];
+                    
+                    [rgListView release];
+                    
+                }
                 
             }
         }
