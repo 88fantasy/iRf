@@ -20,21 +20,31 @@ static NSString *msgKey = @"msg";
 
 @synthesize spdid,values;
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil values:(NSDictionary*)obj readOnlyFlag:(BOOL) _readOnlyFlag
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil values:(NSDictionary*)obj 
+//         readOnlyFlag:(BOOL) _readOnlyFlag
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
-        self.title = @"收货明细";
         
-        UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(confirmRg:)];
-        addButton.title = @"确认收货";
-        self.navigationItem.rightBarButtonItem = addButton;
-        [addButton release];
+        NSString *rfflag = (NSString*) [obj objectForKey:@"rgflag"];
+        if ([rfflag intValue]==1) {
+            self.title = @"收货明细(已收货)";
+            readOnlyFlag = YES;
+        }
+        else{
+            self.title = @"收货明细";
+            readOnlyFlag = NO;
+        }
         
         self.values = obj;
-        readOnlyFlag = _readOnlyFlag;
+//        readOnlyFlag = _readOnlyFlag;
         
+        if (readOnlyFlag != YES) {
+            UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithTitle:@"确认收货" style:UIBarButtonItemStyleBordered target:self action:@selector(confirmRg:)];
+            self.navigationItem.rightBarButtonItem = addButton;
+            [addButton release];
+        }
     }
     return self;
 }
@@ -79,7 +89,7 @@ static NSString *msgKey = @"msg";
     self.invno.text = (NSString*) [values objectForKey:@"invno"];
     self.goodsname.text = (NSString*) [values objectForKey:@"goodsname"];
     self.goodstype.text = (NSString*) [values objectForKey:@"goodstype"];
-    self.factoryname.text = (NSString*) [values objectForKey:@"factoryno"];
+    self.factoryname.text = (NSString*) [values objectForKey:@"factno"];
     self.goodsprice.text = (NSString*) [values objectForKey:@"invprice"];
     self.goodsunit.text = (NSString*) [values objectForKey:@"goodsunit"];
     self.lotno.text = (NSString*) [values objectForKey:@"lotno"];
@@ -92,10 +102,14 @@ static NSString *msgKey = @"msg";
     self.rgqty.text = (NSString*) [values objectForKey:@"goodsqty"];
     self.locno.text = (NSString*) [values objectForKey:@"locno"];
     
+    self.spdid = (NSString*) [values objectForKey:@"spdid"];
+    
     if (readOnlyFlag) {
         [self.rgqty setEnabled:YES];
         [self.locno setEnabled:YES];
     }
+    
+    
 }
 
 - (void)viewDidUnload
@@ -129,15 +143,22 @@ static NSString *msgKey = @"msg";
 
 - (void)confirmRg:(id)sender {
     iRfRgService* service = [iRfRgService service];
-    service.logging = YES;
+//    service.logging = YES;
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *username = [defaults stringForKey:@"username_preference"];
+    NSString *password = [defaults stringForKey:@"password_preference"];
+    
     NSLog(@"dorg开始");
     [service doRg:self 
            action:@selector(doRgHandler:) 
-         username: @"" 
-         password: @"" 
-            splid: @"" 
-            rgqty: @"" 
-            locno: @""];
+         username: username 
+         password: password 
+            splid: self.spdid 
+            rgqty: self.rgqty.text 
+            locno: self.locno.text];
+    
+    
 }
 
 - (void)doRgHandler:(id)value {
@@ -171,15 +192,16 @@ static NSString *msgKey = @"msg";
 	NSLog(@"doRg returned the value: %@", result);
     
     SBJsonParser *parser = [[SBJsonParser alloc] init];
-    id json = [parser objectWithString:result];
-    
+    id retObj = [parser objectWithString:result];
+    NSLog(@"%@",retObj);
     [parser release];
     
-    if (json != nil) {
-        NSDictionary *ret = (NSDictionary*)json;
+    if (retObj != nil) {
+        NSDictionary *ret = (NSDictionary*)retObj;
         NSString *retflag = (NSString*) [ret objectForKey:retFlagKey];
         
-        if ([retflag boolValue]) {
+        if ([retflag boolValue]==YES) {
+            [values setValue:@"1" forKey:@"rgflag"];
             [self.navigationController popViewControllerAnimated:YES];
         }
         else{
@@ -204,5 +226,58 @@ static NSString *msgKey = @"msg";
 	return YES;
 }
 
+- (IBAction) scrollToBottom:(id)sender{
+    [self.scrollView setContentOffset:CGPointMake(0, 250) animated:YES];
+}
 
+- (IBAction) scanButtonTapped
+{
+    // ADD: present a barcode reader that scans from the camera feed
+    ZBarReaderViewController *reader = [ZBarReaderViewController new];
+    reader.readerDelegate = self;
+	
+	//reader.showsZBarControls = NO;
+	
+	
+	
+    //    ZBarImageScanner *scanner = reader.scanner;
+    // TODO: (optional) additional reader configuration here
+	
+    // EXAMPLE: disable rarely used I2/5 to improve performance
+    //    [scanner setSymbology: ZBAR_I25
+    //				   config: ZBAR_CFG_ENABLE
+    //					   to: 0];
+	
+    // present and release the controller
+    [self presentModalViewController: reader
+							animated: YES];
+    [reader release];
+}
+
+- (void) imagePickerController: (UIImagePickerController*) reader
+ didFinishPickingMediaWithInfo: (NSDictionary*) info
+{
+    // ADD: get the decode results
+    id<NSFastEnumeration> results =
+	[info objectForKey: ZBarReaderControllerResults];
+    ZBarSymbol *symbol = nil;
+    for(symbol in results)
+        // EXAMPLE: just grab the first barcode
+        break;
+	
+    // EXAMPLE: do something useful with the barcode data
+    resultText.text = symbol.data;
+    
+	
+    // EXAMPLE: do something useful with the barcode image
+    resultImage.image =
+	[info objectForKey: UIImagePickerControllerOriginalImage];
+	
+    // ADD: dismiss the controller (NB dismiss from the *reader*!)
+    [reader dismissModalViewControllerAnimated: YES];
+    
+    
+    
+    
+}
 @end

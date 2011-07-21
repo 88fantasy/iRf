@@ -10,7 +10,7 @@
 
 
 @interface RgView : UIViewController
-<UITextFieldDelegate>
+<ZBarReaderDelegate,UITextFieldDelegate>
 {
     UIScrollView *scrollView;
     UITextField *invno;
@@ -49,5 +49,9 @@
 @property (nonatomic, retain) IBOutlet NSDictionary *values;
 
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil values:(NSDictionary*)obj readOnlyFlag:(BOOL) readOnlyFlag;
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil values:(NSDictionary*)obj ;//readOnlyFlag:(BOOL) readOnlyFlag;
+
+- (IBAction) scrollToBottom:(id)sender;
+
+- (IBAction) scanButtonTapped;
 @end
