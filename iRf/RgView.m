@@ -45,6 +45,8 @@ static NSString *msgKey = @"msg";
             self.navigationItem.rightBarButtonItem = addButton;
             [addButton release];
         }
+        
+        
     }
     return self;
 }
@@ -109,7 +111,7 @@ static NSString *msgKey = @"msg";
         [self.locno setEnabled:YES];
     }
     
-    
+//    [self.scrollView setContentSize:CGSizeMake(self.view.frame.size.width,self.view.frame.size.height+200 )];
 }
 
 - (void)viewDidUnload
@@ -266,12 +268,12 @@ static NSString *msgKey = @"msg";
         break;
 	
     // EXAMPLE: do something useful with the barcode data
-    resultText.text = symbol.data;
+    locno.text = symbol.data;
     
 	
     // EXAMPLE: do something useful with the barcode image
-    resultImage.image =
-	[info objectForKey: UIImagePickerControllerOriginalImage];
+//    resultImage.image =
+//	[info objectForKey: UIImagePickerControllerOriginalImage];
 	
     // ADD: dismiss the controller (NB dismiss from the *reader*!)
     [reader dismissModalViewControllerAnimated: YES];
