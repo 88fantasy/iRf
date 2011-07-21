@@ -32,8 +32,8 @@
 	- (SoapRequest*) getRg: (id) target action: (SEL) action username: (NSString*) username password: (NSString*) password labelno: (NSString*) labelno;
 
 	/* Returns NSString*.  */
-	- (SoapRequest*) doRg: (id <SoapDelegate>) handler splid: (NSString*) splid in1: (NSString*) in1 in2: (NSString*) in2 in3: (NSString*) in3 in4: (NSString*) in4;
-	- (SoapRequest*) doRg: (id) target action: (SEL) action splid: (NSString*) splid in1: (NSString*) in1 in2: (NSString*) in2 in3: (NSString*) in3 in4: (NSString*) in4;
+	- (SoapRequest*) doRg: (id <SoapDelegate>) handler username: (NSString*) username password: (NSString*) password splid: (NSString*) splid rgqty: (NSString*) rgqty locno: (NSString*) locno;
+	- (SoapRequest*) doRg: (id) target action: (SEL) action username: (NSString*) username password: (NSString*) password splid: (NSString*) splid rgqty: (NSString*) rgqty locno: (NSString*) locno;
 
 	/* Returns NSString*.  */
 	- (SoapRequest*) queryJSON: (id <SoapDelegate>) handler sql: (NSString*) sql dbname: (NSString*) dbname;

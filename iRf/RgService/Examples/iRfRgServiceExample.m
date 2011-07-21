@@ -17,7 +17,7 @@
 	
 
 	// Returns NSString*. 
-	[service doRg:self action:@selector(doRgHandler:) splid: @"" in1: @"" in2: @"" in3: @"" in4: @""];
+	[service doRg:self action:@selector(doRgHandler:) username: @"" password: @"" splid: @"" rgqty: @"" locno: @""];
 
 	// Returns NSString*. 
 	[service getRg:self action:@selector(getRgHandler:) username: @"" password: @"" labelno: @""];
