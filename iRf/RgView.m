@@ -204,6 +204,10 @@ static NSString *msgKey = @"msg";
         
         if ([retflag boolValue]==YES) {
             [values setValue:@"1" forKey:@"rgflag"];
+//            if (self.scanViewDelegate!=nil) { 
+//                //调用回调函数 
+//                [self.scanViewDelegate confirmCallBack:YES values:values]; 
+//            } 
             [self.navigationController popViewControllerAnimated:YES];
         }
         else{

@@ -153,7 +153,7 @@ static NSString *msgKey = @"msg";
     [service getRg:self action:@selector(getRgHandler:) 
           username: username 
           password: password
-           labelno: @"1200010586734"];//resultText.text];1200010586734,1100009542948
+           labelno: resultText.text];//resultText.text];1200010586734,1100009542948,0200009541779
     
     //    [defaults release];
     //    [username release];
@@ -215,6 +215,7 @@ static NSString *msgKey = @"msg";
                 if (count == 1) {
                     NSDictionary *obj = (NSDictionary*)[rows objectAtIndex:0];
                     RgView *rgView = [[RgView alloc] initWithNibName:@"RgView" bundle:nil values:obj ];
+//                    rgView.scanViewDelegate = self;
                     [self.navigationController pushViewController:rgView animated:YES];
                     [rgView release];
                 }
@@ -241,6 +242,8 @@ static NSString *msgKey = @"msg";
     }
 }
 
-
+-(void)confirmCallBack:(BOOL )_confirm values:(NSDictionary *)_obj{
+    
+}
 
 @end

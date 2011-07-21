@@ -182,6 +182,15 @@ static NSString *kObjKey = @"obj";
 }
 */
 
+#pragma mark -
+#pragma mark ScanView delegate
+//-(void)confirmCallBack:(BOOL )_confirm  values:(NSDictionary *)_obj{
+//    NSUInteger index = [self.objs indexOfObject:_obj];
+//    NSDictionary *obj = [self.objs objectAtIndex:index];
+//    [obj setValue:@"1" forKey:@"rgflag"];
+//    [obj release];
+//}
+
 #pragma mark - Table view delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -191,6 +200,7 @@ static NSString *kObjKey = @"obj";
 //    UIViewController *targetViewController = [[self.menuList objectAtIndex: indexPath.row] objectForKey:kViewControllerKey];
     NSDictionary *obj = [[self.menuList objectAtIndex: indexPath.row] objectForKey:kObjKey];
     RgView* targetViewController = [[RgView alloc] initWithNibName:@"RgView" bundle:nil values:obj];
+//    targetViewController.scanViewDelegate = self;
 	[[self navigationController] pushViewController:targetViewController animated:YES];
      
 }
@@ -198,11 +208,16 @@ static NSString *kObjKey = @"obj";
 #pragma mark -
 #pragma mark UIViewController delegate
 
-//- (void)viewWillAppear:(BOOL)animated
-//{
-//	// this UIViewController is about to re-appear, make sure we remove the current selection in our table view
-//	NSIndexPath *tableSelection = [self.tableView indexPathForSelectedRow];
-//	[self.tableView deselectRowAtIndexPath:tableSelection animated:NO];
-//}
+- (void)viewWillAppear:(BOOL)animated
+{
+	// this UIViewController is about to re-appear, make sure we remove the current selection in our table view
+	NSIndexPath *tableSelection = [self.tableView indexPathForSelectedRow];
+	[self.tableView deselectRowAtIndexPath:tableSelection animated:YES];
+    
+    [self.tableView reloadData];
+    
+}
+
+
 
 @end

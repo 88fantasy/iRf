@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "RgView.h"
 
 @interface ScanView : UIViewController     
 // ADD: delegate protocol
@@ -25,3 +25,5 @@
 - (IBAction) searchButtonTapped;
 - (IBAction) cancelKeyboard:(id)sender;
 @end
+
+

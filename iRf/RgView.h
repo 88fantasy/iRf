@@ -8,6 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
+//@protocol ScanViewDelegate 
+////回调函数 
+//-(void)confirmCallBack:(BOOL )_confirm values:(NSDictionary *)_obj; 
+//@end
 
 @interface RgView : UIViewController
 <ZBarReaderDelegate,UITextFieldDelegate>
@@ -29,6 +33,7 @@
     NSString *spdid;
     NSDictionary *values;
     BOOL readOnlyFlag;
+//    id<ScanViewDelegate> scanViewDelegate; 
 }
 
 @property (nonatomic, retain) IBOutlet UIScrollView *scrollView;
@@ -47,9 +52,9 @@
 @property (nonatomic, retain) IBOutlet UITextField *locno;
 @property (nonatomic, retain) IBOutlet NSString *spdid;
 @property (nonatomic, retain) IBOutlet NSDictionary *values;
+//@property (nonatomic,retain) id<ScanViewDelegate>  scanViewDelegate; 
 
-
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil values:(NSDictionary*)obj ;//readOnlyFlag:(BOOL) readOnlyFlag;
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil values:(NSDictionary*)obj ;
 
 - (IBAction) scrollToBottom:(id)sender;
 
