@@ -15,8 +15,8 @@
 		8F8E862513D7B1D2000AC9C8 /* zbar-help.html in Resources */ = {isa = PBXBuildFile; fileRef = 8F8E85F313D7B1D2000AC9C8 /* zbar-help.html */; };
 		8F8E862613D7B1D2000AC9C8 /* zbar-helpicons.png in Resources */ = {isa = PBXBuildFile; fileRef = 8F8E85F413D7B1D2000AC9C8 /* zbar-helpicons.png */; };
 		8F8E862713D7B1D2000AC9C8 /* zbar-samples.png in Resources */ = {isa = PBXBuildFile; fileRef = 8F8E85F513D7B1D2000AC9C8 /* zbar-samples.png */; };
-		8F8FB52B13D5196F00CBBD83 /* RgView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F8FB52913D5196F00CBBD83 /* RgView.m */; };
-		8F8FB52C13D5196F00CBBD83 /* RgView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8F8FB52A13D5196F00CBBD83 /* RgView.xib */; };
+		8F8E863E13D7BD57000AC9C8 /* RgView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F8E863C13D7BD57000AC9C8 /* RgView.m */; };
+		8F8E863F13D7BD57000AC9C8 /* RgView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8F8E863D13D7BD57000AC9C8 /* RgView.xib */; };
 		8F93E2DA13D41B6E006BF26D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8F93E2D913D41B6E006BF26D /* UIKit.framework */; };
 		8F93E2DC13D41B6E006BF26D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8F93E2DB13D41B6E006BF26D /* Foundation.framework */; };
 		8F93E2DE13D41B6F006BF26D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8F93E2DD13D41B6E006BF26D /* CoreGraphics.framework */; };
@@ -128,9 +128,9 @@
 		8F8E85F313D7B1D2000AC9C8 /* zbar-help.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "zbar-help.html"; sourceTree = "<group>"; };
 		8F8E85F413D7B1D2000AC9C8 /* zbar-helpicons.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "zbar-helpicons.png"; sourceTree = "<group>"; };
 		8F8E85F513D7B1D2000AC9C8 /* zbar-samples.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "zbar-samples.png"; sourceTree = "<group>"; };
-		8F8FB52813D5196F00CBBD83 /* RgView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RgView.h; sourceTree = "<group>"; };
-		8F8FB52913D5196F00CBBD83 /* RgView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RgView.m; sourceTree = "<group>"; };
-		8F8FB52A13D5196F00CBBD83 /* RgView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RgView.xib; sourceTree = "<group>"; };
+		8F8E863B13D7BD57000AC9C8 /* RgView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RgView.h; sourceTree = "<group>"; };
+		8F8E863C13D7BD57000AC9C8 /* RgView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RgView.m; sourceTree = "<group>"; };
+		8F8E863D13D7BD57000AC9C8 /* RgView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RgView.xib; sourceTree = "<group>"; };
 		8F93E2D513D41B6E006BF26D /* iRf.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iRf.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8F93E2D913D41B6E006BF26D /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		8F93E2DB13D41B6E006BF26D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -406,8 +406,8 @@
 		8F93E2E113D41B6F006BF26D /* iRf */ = {
 			isa = PBXGroup;
 			children = (
-				8F8E857913D7B1D2000AC9C8 /* RgListView.m */,
 				8F8E857A13D7B1D2000AC9C8 /* Settings.bundle */,
+				8F8E857913D7B1D2000AC9C8 /* RgListView.m */,
 				8F8E857B13D7B1D2000AC9C8 /* RgListView.h */,
 				8F8E857C13D7B1D2000AC9C8 /* RgListView.xib */,
 				8F8E85D913D7B1D2000AC9C8 /* ZBarSDK */,
@@ -426,9 +426,9 @@
 				8F93E3F513D420F3006BF26D /* ScanView.m */,
 				8F93E3F613D420F3006BF26D /* ScanView.xib */,
 				8F93E2E213D41B6F006BF26D /* Supporting Files */,
-				8F8FB52813D5196F00CBBD83 /* RgView.h */,
-				8F8FB52913D5196F00CBBD83 /* RgView.m */,
-				8F8FB52A13D5196F00CBBD83 /* RgView.xib */,
+				8F8E863B13D7BD57000AC9C8 /* RgView.h */,
+				8F8E863C13D7BD57000AC9C8 /* RgView.m */,
+				8F8E863D13D7BD57000AC9C8 /* RgView.xib */,
 			);
 			path = iRf;
 			sourceTree = "<group>";
@@ -737,13 +737,13 @@
 				8F93E33D13D41C3F006BF26D /* zbar-helpicons.png in Resources */,
 				8F93E33E13D41C3F006BF26D /* zbar-samples.png in Resources */,
 				8F93E3F813D420F3006BF26D /* ScanView.xib in Resources */,
-				8F8FB52C13D5196F00CBBD83 /* RgView.xib in Resources */,
 				8F8E85F813D7B1D2000AC9C8 /* Settings.bundle in Resources */,
 				8F8E85F913D7B1D2000AC9C8 /* RgListView.xib in Resources */,
 				8F8E862413D7B1D2000AC9C8 /* zbar-back.png in Resources */,
 				8F8E862513D7B1D2000AC9C8 /* zbar-help.html in Resources */,
 				8F8E862613D7B1D2000AC9C8 /* zbar-helpicons.png in Resources */,
 				8F8E862713D7B1D2000AC9C8 /* zbar-samples.png in Resources */,
+				8F8E863F13D7BD57000AC9C8 /* RgView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -823,8 +823,8 @@
 				8F93E44213D42C42006BF26D /* SBJsonTokeniser.m in Sources */,
 				8F93E44313D42C42006BF26D /* SBJsonUTF8Stream.m in Sources */,
 				8F93E44413D42C42006BF26D /* SBJsonWriter.m in Sources */,
-				8F8FB52B13D5196F00CBBD83 /* RgView.m in Sources */,
 				8F8E85F713D7B1D2000AC9C8 /* RgListView.m in Sources */,
+				8F8E863E13D7BD57000AC9C8 /* RgView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
