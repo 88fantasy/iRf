@@ -15,10 +15,12 @@
 {
     UIImageView *resultImage;
     UITextField *resultText;
+	UISwitch *vswitch;
     UIView *loadingView;
 }
 @property (nonatomic, retain) IBOutlet UIImageView *resultImage;
 @property (nonatomic, retain) IBOutlet UITextField *resultText;
+@property (nonatomic, retain) IBOutlet UISwitch *vswitch;
 @property (nonatomic, retain) IBOutlet UIView *loadingView;
 
 - (IBAction) scanButtonTapped;

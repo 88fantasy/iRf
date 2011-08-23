@@ -20,7 +20,7 @@ static NSString *msgKey = @"msg";
 
 @implementation ScanView
 
-@synthesize resultImage, resultText,loadingView;
+@synthesize resultImage, resultText,vswitch,loadingView;
 
 - (void) alert:(NSString*)title msg:(NSString*)msg {
     // open an alert with just an OK button
@@ -43,6 +43,7 @@ static NSString *msgKey = @"msg";
 - (void) dealloc {
     [resultImage release];
     [resultText release];
+	[vswitch release];
     [super dealloc];
 }
 
@@ -70,6 +71,7 @@ static NSString *msgKey = @"msg";
     // e.g. self.myOutlet = nil;
     self.resultImage = nil;
     self.resultText = nil;
+	self.vswitch = nil;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -126,8 +128,15 @@ static NSString *msgKey = @"msg";
         break;
 	
     // EXAMPLE: do something useful with the barcode data
+	
     resultText.text = symbol.data;
     
+	if([vswitch isOn]){
+		if ([resultText.text length]>0) {
+			NSUInteger index = [resultText.text length] - 1;
+			resultText.text = [resultText.text substringToIndex:index ];
+		}
+	}
 	
     // EXAMPLE: do something useful with the barcode image
     resultImage.image =
@@ -137,11 +146,12 @@ static NSString *msgKey = @"msg";
     [reader dismissModalViewControllerAnimated: YES];
     
     
-    
+    [self searchButtonTapped];
     
 }
 
 - (IBAction) searchButtonTapped {
+	
     iRfRgService* service = [iRfRgService service];
     //    service.logging = YES;
     NSLog(@"getrg开始");

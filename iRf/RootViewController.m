@@ -22,7 +22,47 @@ static NSString *kViewControllerKey = @"viewController";
 
 @implementation RootViewController
 
-@synthesize menuList;
+@synthesize menuList,userfield,pwdfield;
+
+
+- (void)confirmUser{
+	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *username = [defaults stringForKey:@"username_preference"];
+    NSString *password = [defaults stringForKey:@"password_preference"];
+	NSLog(@"%@",username);
+	NSLog(@"%@",password);
+	if (username == nil || [@"" isEqualToString:username] || password == nil || [@"" isEqualToString:password]) {
+		
+		
+		UIAlertView *prompt = [[UIAlertView alloc] initWithTitle:@"尚未设置用户名密码" 
+														 message:@"\n\n\n" // IMPORTANT
+														delegate:self 
+											   cancelButtonTitle:@"取消" 
+											   otherButtonTitles:@"确定", nil];
+		
+		if (username == nil || [@"" isEqualToString:username]) {
+			userfield = [[UITextField alloc] initWithFrame:CGRectMake(12.0, 55.0, 260.0, 25.0)]; 
+			[userfield setBackgroundColor:[UIColor whiteColor]];
+			[userfield setPlaceholder:@"用户名"];
+			[prompt addSubview:userfield];
+			
+		}
+		
+		if(password == nil|| [@"" isEqualToString:password]){
+			pwdfield = [[UITextField alloc] initWithFrame:CGRectMake(12.0, 90.0, 260.0, 25.0)]; 
+			[pwdfield setBackgroundColor:[UIColor whiteColor]];
+			[pwdfield setPlaceholder:@"密码"];
+			[pwdfield setSecureTextEntry:YES];
+			[prompt addSubview:pwdfield];
+			
+		}
+		// set place
+		[prompt setCenter:self.view.center];		
+		[prompt show];
+		[prompt release];
+		
+	}
+}
 
 - (void)viewDidLoad
 {
@@ -53,6 +93,7 @@ static NSString *kViewControllerKey = @"viewController";
     
 	[scanview release];
 
+	[self confirmUser];
 }
 
 #pragma mark -
@@ -117,15 +158,42 @@ static NSString *kViewControllerKey = @"viewController";
     [super viewDidUnload];
 	
 	self.menuList = nil;
+	self.userfield = nil;
+	self.pwdfield = nil;
 }
 
 
 
 
 - (void) dealloc {
-    [menuList release];	
+    [menuList release];
+	[userfield release];
+	[pwdfield release];
 	[super dealloc];
 }
+
+#pragma mark -
+#pragma mark UIAlertViewDelegate
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+	if (buttonIndex == 1) {
+		NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+		if (userfield.text !=nil && ![@"" isEqualToString:userfield.text]) {
+			[defaults setValue: userfield.text forKey:@"username_preference"];
+		}
+		if (pwdfield.text !=nil && ![@"" isEqualToString:pwdfield.text]) {
+			[defaults setValue: pwdfield.text forKey:@"password_preference"];
+		}
+	}
+	else {
+		[self confirmUser];
+	}
+
+}
+
+- (void)alertViewCancel:(UIAlertView *)alertView {
+	NSLog(@"cancel");
+}
+
 
 @end
 

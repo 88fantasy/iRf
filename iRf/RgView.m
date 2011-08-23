@@ -106,7 +106,7 @@ static NSString *msgKey = @"msg";
     
     self.spdid = (NSString*) [values objectForKey:@"spdid"];
     
-    if (readOnlyFlag) {
+    if (!readOnlyFlag) {
         [self.rgqty setEnabled:YES];
         [self.locno setEnabled:YES];
     }
