@@ -20,10 +20,22 @@
 	[service doRg:self action:@selector(doRgHandler:) username: @"" password: @"" splid: @"" rgqty: @"" locno: @""];
 
 	// Returns NSString*. 
+	[service doTr:self action:@selector(doTrHandler:) username: @"" password: @"" splid: @"" cusgdsid: @"" multi: @"" ugoodsid: @"" companyid: @""];
+
+	// Returns NSString*. 
+	[service getAllRg:self action:@selector(getAllRgHandler:) username: @"" password: @""];
+
+	// Returns NSString*. 
+	[service getNtrGds:self action:@selector(getNtrGdsHandler:) username: @"" password: @""];
+
+	// Returns NSString*. 
 	[service getRg:self action:@selector(getRgHandler:) username: @"" password: @"" labelno: @""];
 
 	// Returns iRfRet*. 
 	[service getRgs:self action:@selector(getRgsHandler:) queryxml: @"" code: @""];
+
+	// Returns NSString*. 
+	[service getTr:self action:@selector(getTrHandler:) username: @"" password: @"" labelno: @""];
 
 	// Returns NSString*. 
 	[service queryJSON:self action:@selector(queryJSONHandler:) sql: @"" dbname: @""];
@@ -57,6 +69,78 @@
 	// Do something with the NSString* result
 		NSString* result = (NSString*)value;
 	NSLog(@"doRg returned the value: %@", result);
+			
+}
+	
+
+// Handle the response from doTr.
+		
+- (void) doTrHandler: (id) value {
+
+	// Handle errors
+	if([value isKindOfClass:[NSError class]]) {
+		NSLog(@"%@", value);
+		return;
+	}
+
+	// Handle faults
+	if([value isKindOfClass:[SoapFault class]]) {
+		NSLog(@"%@", value);
+		return;
+	}				
+			
+
+	// Do something with the NSString* result
+		NSString* result = (NSString*)value;
+	NSLog(@"doTr returned the value: %@", result);
+			
+}
+	
+
+// Handle the response from getAllRg.
+		
+- (void) getAllRgHandler: (id) value {
+
+	// Handle errors
+	if([value isKindOfClass:[NSError class]]) {
+		NSLog(@"%@", value);
+		return;
+	}
+
+	// Handle faults
+	if([value isKindOfClass:[SoapFault class]]) {
+		NSLog(@"%@", value);
+		return;
+	}				
+			
+
+	// Do something with the NSString* result
+		NSString* result = (NSString*)value;
+	NSLog(@"getAllRg returned the value: %@", result);
+			
+}
+	
+
+// Handle the response from getNtrGds.
+		
+- (void) getNtrGdsHandler: (id) value {
+
+	// Handle errors
+	if([value isKindOfClass:[NSError class]]) {
+		NSLog(@"%@", value);
+		return;
+	}
+
+	// Handle faults
+	if([value isKindOfClass:[SoapFault class]]) {
+		NSLog(@"%@", value);
+		return;
+	}				
+			
+
+	// Do something with the NSString* result
+		NSString* result = (NSString*)value;
+	NSLog(@"getNtrGds returned the value: %@", result);
 			
 }
 	
@@ -105,6 +189,30 @@
 	// Do something with the iRfRet* result
 		iRfRet* result = (iRfRet*)value;
 	NSLog(@"getRgs returned the value: %@", result);
+			
+}
+	
+
+// Handle the response from getTr.
+		
+- (void) getTrHandler: (id) value {
+
+	// Handle errors
+	if([value isKindOfClass:[NSError class]]) {
+		NSLog(@"%@", value);
+		return;
+	}
+
+	// Handle faults
+	if([value isKindOfClass:[SoapFault class]]) {
+		NSLog(@"%@", value);
+		return;
+	}				
+			
+
+	// Do something with the NSString* result
+		NSString* result = (NSString*)value;
+	NSLog(@"getTr returned the value: %@", result);
 			
 }
 	
