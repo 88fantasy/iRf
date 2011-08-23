@@ -54,7 +54,7 @@
 	}
 	
 	// Make sure we can reach the host
-	else if([SoapReachability hostAvailable:url.host] == NO) {
+	if([SoapReachability hostAvailable:url.host] == NO) {
 		NSError* error = [NSError errorWithDomain:@"SudzC" code:410 userInfo:[NSDictionary dictionaryWithObject:@"The host is not available" forKey:NSLocalizedDescriptionKey]];
 		[self handleError: error];
 	}
@@ -65,13 +65,13 @@
 	}
 	
 	// Create the request
-	NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:url];
+	NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL: url];
 	if(soapAction != nil) {
 		[request addValue: soapAction forHTTPHeaderField: @"SOAPAction"];
 	}
 	if(postData != nil) {
 		[request setHTTPMethod: @"POST"];
-		[request addValue: @"text/xml" forHTTPHeaderField: @"Content-Type"];
+		[request addValue: @"text/xml; charset=utf-8" forHTTPHeaderField: @"Content-Type"];
 		[request setHTTPBody: [postData dataUsingEncoding: NSUTF8StringEncoding]];
 		if(self.logging) {
 			NSLog(@"%@", postData);
@@ -158,7 +158,7 @@
 			[self handleFault: fault];
 		} else {
 			if(self.handler != nil && [self.handler respondsToSelector: self.action]) {
-				[self.handler performSelector: self.action withObject: output];
+				[self.handler performSelector: self.action withObject: fault];
 			} else {
 				NSLog(@"SOAP Fault: %@", fault);
 			}
