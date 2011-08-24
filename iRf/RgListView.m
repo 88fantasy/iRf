@@ -6,32 +6,65 @@
 //  Copyright 2011年 __MyCompanyName__. All rights reserved.
 //
 
+#import "iRfRgService.h"
+#import "SBJson.h"
 #import "RgListView.h"
 #import "RgView.h"
 
 static NSString *kCellIdentifier = @"MyIdentifier";
 static NSString *kTitleKey = @"title";
 static NSString *kExplainKey = @"explanation";
-static NSString *kViewControllerKey = @"viewController";
+//static NSString *kViewControllerKey = @"viewController";
 static NSString *kObjKey = @"obj";
+static NSString *retFlagKey = @"ret";
+static NSString *msgKey = @"msg";
 
 @implementation RgListView
 
-@synthesize menuList,objs;
+@synthesize menuList,objs,refreshButtonItem,activityView,activityIndicator;
+
+
+- (id)initWithStyle:(UITableViewStyle)style
+{
+    self = [super initWithStyle:style];
+    if (self) {
+        // Custom initialization
+        canReload = YES;
+        if (_refreshHeaderView == nil) {
+            
+            EGORefreshTableHeaderView *view = [[EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0.0f, 0.0f - self.tableView.bounds.size.height, self.view.frame.size.width, self.tableView.bounds.size.height)];
+            view.delegate = self;
+            [self.tableView addSubview:view];
+            _refreshHeaderView = view;
+            [view release];
+            
+        }
+        
+        //  update the last update date
+        [_refreshHeaderView refreshLastUpdatedDate];
+        
+    }
+    return self;
+}
 
 - (id)initWithStyle:(UITableViewStyle)style objs:(NSArray*)_arrays
 {
     self = [super initWithStyle:style];
     if (self) {
         // Custom initialization
+        canReload = NO;
         self.objs = _arrays;
+        
     }
     return self;
 }
 
 - (void)dealloc
 {
-    
+     _refreshHeaderView=nil; 
+    [refreshButtonItem release];
+    [activityView release];
+    [activityIndicator release];
     [menuList release];
     [super dealloc];
 }
@@ -50,23 +83,45 @@ static NSString *kObjKey = @"obj";
 {
     [super viewDidLoad];
 
+         
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
  
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    if (canReload) {
+        if (self.refreshButtonItem == nil) {
+            self.refreshButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh                                                                          target:self action:@selector(scrollToRefresh:)];
+            
+//            self.activityIndicator = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0, 0, 20,20)];
+//            self.activityButtonItem = [[UIBarButtonItem alloc]initWithCustomView:activityIndicator] ;
+//            self.activityButtonItem.style = UIBarButtonItemStyleBordered;
+        }
+       
+        self.navigationItem.rightBarButtonItem = self.refreshButtonItem;
+    }
     
     self.menuList = [NSMutableArray array];
     
     for (int i=0; i<[objs count]; i++) {
         NSDictionary *obj = [objs objectAtIndex:i];
         NSString *text = [obj objectForKey:@"goodsname"];
-        NSString *detailText = [obj objectForKey:@"goodstype"];
+        NSString *labeltype = [obj objectForKey:@"labeltype"];
+        
+        
+        NSString *detailText = @"";
+        if ([labeltype isEqualToString:@"1"]) {
+            detailText = [detailText stringByAppendingString:@"原件"];
+        }
+        else{
+            detailText = [detailText stringByAppendingString:@"散件"];
+        }
         
         detailText = [detailText stringByAppendingString:@"     "];
-        detailText = [detailText stringByAppendingString:[obj objectForKey:@"prodarea"]];
+        detailText = [detailText stringByAppendingString:[obj objectForKey:@"goodstype"]];
         detailText = [detailText stringByAppendingString:@"     "];
         detailText = [detailText stringByAppendingString:[obj objectForKey:@"goodsqty"]];
+        detailText = [detailText stringByAppendingString:@"     "];
+        detailText = [detailText stringByAppendingString:[obj objectForKey:@"prodarea"]];
         
 //        NSLog(@"%@",text);
 //        NSLog(@"%@",detailText);
@@ -93,6 +148,10 @@ static NSString *kObjKey = @"obj";
     // e.g. self.myOutlet = nil;
     self.menuList = nil;
     self.objs = nil;
+    _refreshHeaderView = nil;
+    self.activityView = nil;
+    self.refreshButtonItem = nil;
+    self.activityIndicator = nil;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -218,6 +277,206 @@ static NSString *kObjKey = @"obj";
     
 }
 
+- (void) alert:(NSString*)title msg:(NSString*)msg {
+    // open an alert with just an OK button
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:msg
+                                                   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+    [alert show];	
+    [alert release];
+}
+
+//显示等待进度条
+- (void) displayActiveIndicatorView
+{
+//    self.navigationItem.rightBarButtonItem = nil;
+    if (activityView==nil){        
+        activityView = [[UIAlertView alloc] initWithTitle:nil 
+                                             message: @"读 取 中 ..."
+                                            delegate: self
+                                   cancelButtonTitle: nil
+                                   otherButtonTitles: nil];
+        
+        activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+        activityIndicator.frame = CGRectMake(120.f, 48.0f, 38.0f, 38.0f);
+        [activityView addSubview:activityIndicator];
+    }
+    [activityIndicator startAnimating];
+    [activityView show];
+    
+}
+
+//取消等待进度条
+- (void) dismissActiveIndicatorView
+{
+    if (activityView)
+    {
+        [activityIndicator stopAnimating];
+        [activityView dismissWithClickedButtonIndex:0 animated:YES];
+    }
+}
+
+- (void) getAllRg{
+    
+    
+    
+//    self.navigationItem.rightBarButtonItem.style = UIBarButtonItemStyleBordered;
+//    
+//    [self.activityIndicator startAnimating];
+    
+    iRfRgService* service = [iRfRgService service];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *username = [defaults stringForKey:@"username_preference"];
+    NSString *password = [defaults stringForKey:@"password_preference"];
+    
+    [service getAllRg:self action:@selector(getAllRgHandler:) 
+             username: username 
+             password: password];
+    [self displayActiveIndicatorView];
+}
+// Handle the response from getRg.
+
+- (void) getAllRgHandler: (id) value {
+    
+	// Handle errors
+	if([value isKindOfClass:[NSError class]]) {
+		NSLog(@"%@", value);
+        NSError* result = (NSError*)value;
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"连接失败" 
+                                                        message: [result localizedFailureReason]
+													   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+		[alert show];	
+		[alert release];
+		return;
+	}
+    
+	// Handle faults
+	if([value isKindOfClass:[SoapFault class]]) {
+		NSLog(@"%@", value);
+        SoapFault * result = (SoapFault*)value;
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"soap连接失败" 
+                                                        message: [result faultString]
+													   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+		[alert show];	
+		[alert release];
+		return;
+	}				
+    
+    
+	// Do something with the NSString* result
+    NSString* result = (NSString*)value;
+    //	resultText.text = [@"getRg returned the value: " stringByAppendingString:result] ;
+    NSLog(@"%@", result);
+    
+    
+    
+	SBJsonParser *parser = [[SBJsonParser alloc] init];
+    id json = [parser objectWithString:result];
+    
+    [parser release];
+    
+    if (json != nil) {
+        NSDictionary *ret = (NSDictionary*)json;
+        NSString *retflag = (NSString*) [ret objectForKey:retFlagKey];
+        
+        if ([retflag boolValue]) {
+            NSArray *rows = (NSArray*) [ret objectForKey:msgKey];
+            NSUInteger count = [rows count];
+            if (count <1) {
+                [self alert:@"提示" msg:@"已完成所有收货"];
+            }
+            else if (count == 1) {
+                NSDictionary *obj = (NSDictionary*)[rows objectAtIndex:0];
+                RgView *rgView = [[RgView alloc] initWithNibName:@"RgView" bundle:nil values:obj ];
+                //                    rgView.scanViewDelegate = self;
+                [self.navigationController pushViewController:rgView animated:YES];
+                [rgView release];
+            }
+            else{
+                self.objs = rows;
+                [self viewDidLoad];
+                [self.tableView reloadData];
+                [self doneLoadingTableViewData];
+            }
+                
+        }
+        else{
+            NSString *msg = (NSString*) [ret objectForKey:msgKey];
+            [self alert:@"错误" msg:msg];
+        }
+        
+    }
+    else{
+        
+    }
+    
+    if (canReload) {
+//        [self.activityIndicator stopAnimating];
+//        self.navigationItem.rightBarButtonItem = self.refreshButtonItem;
+        [self dismissActiveIndicatorView];
+    }
+    
+}
 
 
+#pragma mark -
+#pragma mark Data Source Loading / Reloading Methods
+
+- (void)reloadTableViewDataSource{
+    
+    //  should be calling your tableviews data source model to reload
+    //  put here just for demo
+    _reloading = YES;
+    
+    [self getAllRg];
+}
+
+- (void)doneLoadingTableViewData{
+    
+    //  model should call this when its done loading
+    _reloading = NO;
+    [_refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:self.tableView];
+    
+}
+
+#pragma mark -
+#pragma mark UIScrollViewDelegate Methods
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
+    
+    [_refreshHeaderView egoRefreshScrollViewDidScroll:scrollView];
+    
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
+    
+    [_refreshHeaderView egoRefreshScrollViewDidEndDragging:scrollView];
+    
+}
+
+#pragma mark -
+#pragma mark EGORefreshTableHeaderDelegate Methods
+
+- (void)egoRefreshTableHeaderDidTriggerRefresh:(EGORefreshTableHeaderView*)view{
+    
+    [self reloadTableViewDataSource];
+    [self performSelector:@selector(doneLoadingTableViewData) withObject:nil afterDelay:4.0];
+    
+}
+
+- (BOOL)egoRefreshTableHeaderDataSourceIsLoading:(EGORefreshTableHeaderView*)view{
+    
+    return _reloading; // should return if data source model is reloading
+    
+}
+
+- (NSDate*)egoRefreshTableHeaderDataSourceLastUpdated:(EGORefreshTableHeaderView*)view{
+    
+    return [NSDate date]; // should return date data source was last changed
+    
+}
+
+- (IBAction) scrollToRefresh:(id)sender{
+    
+    [self getAllRg];
+}
 @end
