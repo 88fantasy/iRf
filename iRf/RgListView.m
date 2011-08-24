@@ -291,7 +291,7 @@ static NSString *msgKey = @"msg";
 //    self.navigationItem.rightBarButtonItem = nil;
     if (activityView==nil){        
         activityView = [[UIAlertView alloc] initWithTitle:nil 
-                                             message: @"读 取 中 ..."
+                                                  message: NSLocalizedString(@"Loading...","Loading...")
                                             delegate: self
                                    cancelButtonTitle: nil
                                    otherButtonTitles: nil];
