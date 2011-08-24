@@ -29,7 +29,7 @@
                 self.serviceUrl = [defaults stringForKey:@"serviceurl_preference"];
             }
             
-			self.serviceUrl = @"http://173.1.1.237:8070/gzmpcscm3/services/RgService";
+//			self.serviceUrl = @"http://173.1.1.237:8070/gzmpcscm3/services/RgService";
 			self.namespace = @"http://org/gzmpc/RgService";
 			self.headers = nil;
 			self.logging = NO;
