@@ -16,12 +16,14 @@
     UIImageView *resultImage;
     UITextField *resultText;
 	UISwitch *vswitch;
-    UIView *loadingView;
+    UIAlertView *activityView;
+    UIActivityIndicatorView *activityIndicator;
 }
 @property (nonatomic, retain) IBOutlet UIImageView *resultImage;
 @property (nonatomic, retain) IBOutlet UITextField *resultText;
 @property (nonatomic, retain) IBOutlet UISwitch *vswitch;
-@property (nonatomic, retain) IBOutlet UIView *loadingView;
+@property (nonatomic, retain) UIAlertView *activityView;
+@property (nonatomic, retain) UIActivityIndicatorView *activityIndicator;
 
 - (IBAction) scanButtonTapped;
 - (IBAction) searchButtonTapped;

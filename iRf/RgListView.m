@@ -77,6 +77,59 @@ static NSString *msgKey = @"msg";
     // Release any cached data, images, etc that aren't in use.
 }
 
+- (void) alert:(NSString*)title msg:(NSString*)msg {
+    // open an alert with just an OK button
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:msg
+                                                   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+    [alert show];	
+    [alert release];
+}
+
+//显示等待进度条
+- (void) displayActiveIndicatorView
+{
+    //    self.navigationItem.rightBarButtonItem = nil;
+    if (activityView==nil){        
+        activityView = [[UIAlertView alloc] initWithTitle:nil 
+                                                  message: NSLocalizedString(@"Loading...","Loading...")
+                                                 delegate: self
+                                        cancelButtonTitle: nil
+                                        otherButtonTitles: nil];
+        
+        activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+        activityIndicator.frame = CGRectMake(120.f, 48.0f, 38.0f, 38.0f);
+        [activityView addSubview:activityIndicator];
+    }
+    [activityIndicator startAnimating];
+    [activityView show];
+    
+}
+
+//取消等待进度条
+- (void) dismissActiveIndicatorView
+{
+    if (activityView)
+    {
+        [activityIndicator stopAnimating];
+        [activityView dismissWithClickedButtonIndex:0 animated:YES];
+    }
+}
+
+- (void) getAllRg{
+    
+    [self displayActiveIndicatorView];
+    
+    iRfRgService* service = [iRfRgService service];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *username = [defaults stringForKey:@"username_preference"];
+    NSString *password = [defaults stringForKey:@"password_preference"];
+    
+    [service getAllRg:self action:@selector(getAllRgHandler:) 
+             username: username 
+             password: password];
+    
+}
+
 #pragma mark - View lifecycle
 
 - (void)viewDidLoad
@@ -92,52 +145,44 @@ static NSString *msgKey = @"msg";
         if (self.refreshButtonItem == nil) {
             self.refreshButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh                                                                          target:self action:@selector(scrollToRefresh:)];
             
-//            self.activityIndicator = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0, 0, 20,20)];
-//            self.activityButtonItem = [[UIBarButtonItem alloc]initWithCustomView:activityIndicator] ;
-//            self.activityButtonItem.style = UIBarButtonItemStyleBordered;
         }
        
         self.navigationItem.rightBarButtonItem = self.refreshButtonItem;
     }
     
-    self.menuList = [NSMutableArray array];
-    
-    for (int i=0; i<[objs count]; i++) {
-        NSDictionary *obj = [objs objectAtIndex:i];
-        NSString *text = [obj objectForKey:@"goodsname"];
-        NSString *labeltype = [obj objectForKey:@"labeltype"];
+    if (objs != nil) {
+        self.menuList = [NSMutableArray array];
         
-        
-        NSString *detailText = @"";
-        if ([labeltype isEqualToString:@"1"]) {
-            detailText = [detailText stringByAppendingString:@"原件"];
+        for (int i=0; i<[objs count]; i++) {
+            NSDictionary *obj = [objs objectAtIndex:i];
+            NSString *text = [obj objectForKey:@"goodsname"];
+            NSString *labeltype = [obj objectForKey:@"labeltype"];
+            
+            
+            NSString *detailText = @"";
+            if ([labeltype isEqualToString:@"1"]) {
+                detailText = [detailText stringByAppendingString:@"原件"];
+            }
+            else{
+                detailText = [detailText stringByAppendingString:@"散件"];
+            }
+            
+            detailText = [detailText stringByAppendingString:@"     "];
+            detailText = [detailText stringByAppendingString:[obj objectForKey:@"goodstype"]];
+            detailText = [detailText stringByAppendingString:@"     "];
+            detailText = [detailText stringByAppendingString:[obj objectForKey:@"goodsqty"]];
+            detailText = [detailText stringByAppendingString:@"     "];
+            detailText = [detailText stringByAppendingString:[obj objectForKey:@"prodarea"]];
+            
+            
+            [self.menuList addObject:[NSDictionary dictionaryWithObjectsAndKeys:
+                                      text, kTitleKey,
+                                      detailText, kExplainKey,
+                                      obj,kObjKey,
+                                      nil]];
         }
-        else{
-            detailText = [detailText stringByAppendingString:@"散件"];
-        }
-        
-        detailText = [detailText stringByAppendingString:@"     "];
-        detailText = [detailText stringByAppendingString:[obj objectForKey:@"goodstype"]];
-        detailText = [detailText stringByAppendingString:@"     "];
-        detailText = [detailText stringByAppendingString:[obj objectForKey:@"goodsqty"]];
-        detailText = [detailText stringByAppendingString:@"     "];
-        detailText = [detailText stringByAppendingString:[obj objectForKey:@"prodarea"]];
-        
-//        NSLog(@"%@",text);
-//        NSLog(@"%@",detailText);
-        
-//        RgView* rgview = [[RgView alloc] initWithNibName:@"RgView" bundle:nil values:obj];
-        
-        [self.menuList addObject:[NSDictionary dictionaryWithObjectsAndKeys:
-                                  text, kTitleKey,
-                                  detailText, kExplainKey,
-//                                  rgview, kViewControllerKey,
-                                  obj,kObjKey,
-                                  nil]];
-//        [obj release];
-        
-//        [rgview release];
     }
+        
     
 }
 
@@ -269,6 +314,9 @@ static NSString *msgKey = @"msg";
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    if (self.objs == nil) {
+        [self getAllRg];
+    }
 	// this UIViewController is about to re-appear, make sure we remove the current selection in our table view
 	NSIndexPath *tableSelection = [self.tableView indexPathForSelectedRow];
 	[self.tableView deselectRowAtIndexPath:tableSelection animated:YES];
@@ -277,62 +325,7 @@ static NSString *msgKey = @"msg";
     
 }
 
-- (void) alert:(NSString*)title msg:(NSString*)msg {
-    // open an alert with just an OK button
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:msg
-                                                   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
-    [alert show];	
-    [alert release];
-}
 
-//显示等待进度条
-- (void) displayActiveIndicatorView
-{
-//    self.navigationItem.rightBarButtonItem = nil;
-    if (activityView==nil){        
-        activityView = [[UIAlertView alloc] initWithTitle:nil 
-                                                  message: NSLocalizedString(@"Loading...","Loading...")
-                                            delegate: self
-                                   cancelButtonTitle: nil
-                                   otherButtonTitles: nil];
-        
-        activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-        activityIndicator.frame = CGRectMake(120.f, 48.0f, 38.0f, 38.0f);
-        [activityView addSubview:activityIndicator];
-    }
-    [activityIndicator startAnimating];
-    [activityView show];
-    
-}
-
-//取消等待进度条
-- (void) dismissActiveIndicatorView
-{
-    if (activityView)
-    {
-        [activityIndicator stopAnimating];
-        [activityView dismissWithClickedButtonIndex:0 animated:YES];
-    }
-}
-
-- (void) getAllRg{
-    
-    
-    
-//    self.navigationItem.rightBarButtonItem.style = UIBarButtonItemStyleBordered;
-//    
-//    [self.activityIndicator startAnimating];
-    
-    iRfRgService* service = [iRfRgService service];
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *username = [defaults stringForKey:@"username_preference"];
-    NSString *password = [defaults stringForKey:@"password_preference"];
-    
-    [service getAllRg:self action:@selector(getAllRgHandler:) 
-             username: username 
-             password: password];
-    [self displayActiveIndicatorView];
-}
 // Handle the response from getRg.
 
 - (void) getAllRgHandler: (id) value {
@@ -346,11 +339,10 @@ static NSString *msgKey = @"msg";
 													   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
 		[alert show];	
 		[alert release];
-		return;
 	}
     
 	// Handle faults
-	if([value isKindOfClass:[SoapFault class]]) {
+	else if([value isKindOfClass:[SoapFault class]]) {
 		NSLog(@"%@", value);
         SoapFault * result = (SoapFault*)value;
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"soap连接失败" 
@@ -358,60 +350,58 @@ static NSString *msgKey = @"msg";
 													   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
 		[alert show];	
 		[alert release];
-		return;
 	}				
     
     
 	// Do something with the NSString* result
-    NSString* result = (NSString*)value;
-    //	resultText.text = [@"getRg returned the value: " stringByAppendingString:result] ;
-    NSLog(@"%@", result);
-    
-    
-    
-	SBJsonParser *parser = [[SBJsonParser alloc] init];
-    id json = [parser objectWithString:result];
-    
-    [parser release];
-    
-    if (json != nil) {
-        NSDictionary *ret = (NSDictionary*)json;
-        NSString *retflag = (NSString*) [ret objectForKey:retFlagKey];
+    else{
+        NSString* result = (NSString*)value;
+        //	resultText.text = [@"getRg returned the value: " stringByAppendingString:result] ;
+        NSLog(@"%@", result);
         
-        if ([retflag boolValue]) {
-            NSArray *rows = (NSArray*) [ret objectForKey:msgKey];
-            NSUInteger count = [rows count];
-            if (count <1) {
-                [self alert:@"提示" msg:@"已完成所有收货"];
-            }
-            else if (count == 1) {
-                NSDictionary *obj = (NSDictionary*)[rows objectAtIndex:0];
-                RgView *rgView = [[RgView alloc] initWithNibName:@"RgView" bundle:nil values:obj ];
-                //                    rgView.scanViewDelegate = self;
-                [self.navigationController pushViewController:rgView animated:YES];
-                [rgView release];
+        
+        
+        SBJsonParser *parser = [[SBJsonParser alloc] init];
+        id json = [parser objectWithString:result];
+        
+        [parser release];
+        
+        if (json != nil) {
+            NSDictionary *ret = (NSDictionary*)json;
+            NSString *retflag = (NSString*) [ret objectForKey:retFlagKey];
+            
+            if ([retflag boolValue]) {
+                NSArray *rows = (NSArray*) [ret objectForKey:msgKey];
+                NSUInteger count = [rows count];
+                if (count <1) {
+                    [self alert:@"提示" msg:@"已完成所有收货"];
+                }
+                else if (count == 1) {
+                    NSDictionary *obj = (NSDictionary*)[rows objectAtIndex:0];
+                    RgView *rgView = [[RgView alloc] initWithNibName:@"RgView" bundle:nil values:obj ];
+                    //                    rgView.scanViewDelegate = self;
+                    [self.navigationController pushViewController:rgView animated:YES];
+                    [rgView release];
+                }
+                else{
+                    self.objs = rows;
+                    [self viewDidLoad];
+                    [self.tableView reloadData];
+                    [self doneLoadingTableViewData];
+                }
+                    
             }
             else{
-                self.objs = rows;
-                [self viewDidLoad];
-                [self.tableView reloadData];
-                [self doneLoadingTableViewData];
+                NSString *msg = (NSString*) [ret objectForKey:msgKey];
+                [self alert:@"错误" msg:msg];
             }
-                
+            
         }
         else{
-            NSString *msg = (NSString*) [ret objectForKey:msgKey];
-            [self alert:@"错误" msg:msg];
+            
         }
-        
     }
-    else{
-        
-    }
-    
     if (canReload) {
-//        [self.activityIndicator stopAnimating];
-//        self.navigationItem.rightBarButtonItem = self.refreshButtonItem;
         [self dismissActiveIndicatorView];
     }
     

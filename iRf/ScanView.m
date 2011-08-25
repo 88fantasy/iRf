@@ -20,7 +20,7 @@ static NSString *msgKey = @"msg";
 
 @implementation ScanView
 
-@synthesize resultImage, resultText,vswitch,loadingView;
+@synthesize resultImage, resultText,vswitch,activityView,activityIndicator;
 
 - (void) alert:(NSString*)title msg:(NSString*)msg {
     // open an alert with just an OK button
@@ -44,6 +44,8 @@ static NSString *msgKey = @"msg";
     [resultImage release];
     [resultText release];
 	[vswitch release];
+    [activityView release];
+    [activityIndicator release];
     [super dealloc];
 }
 
@@ -72,6 +74,8 @@ static NSString *msgKey = @"msg";
     self.resultImage = nil;
     self.resultText = nil;
 	self.vswitch = nil;
+    self.activityView = nil;
+    self.activityIndicator = nil;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -150,8 +154,40 @@ static NSString *msgKey = @"msg";
     
 }
 
+//显示等待进度条
+- (void) displayActiveIndicatorView
+{
+    //    self.navigationItem.rightBarButtonItem = nil;
+    if (activityView==nil){        
+        activityView = [[UIAlertView alloc] initWithTitle:nil 
+                                                  message: NSLocalizedString(@"Loading...",@"Loading")
+                                                 delegate: self
+                                        cancelButtonTitle: nil
+                                        otherButtonTitles: nil];
+        
+        activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+        activityIndicator.frame = CGRectMake(120.f, 48.0f, 38.0f, 38.0f);
+        [activityView addSubview:activityIndicator];
+    }
+    [activityIndicator startAnimating];
+    [activityView show];
+    
+}
+
+//取消等待进度条
+- (void) dismissActiveIndicatorView
+{
+    if (activityView)
+    {
+        [activityIndicator stopAnimating];
+        [activityView dismissWithClickedButtonIndex:0 animated:YES];
+    }
+}
+
 - (IBAction) searchButtonTapped {
 	
+    [self displayActiveIndicatorView];
+    
     iRfRgService* service = [iRfRgService service];
     //    service.logging = YES;
     NSLog(@"getrg开始");
@@ -183,11 +219,10 @@ static NSString *msgKey = @"msg";
 													   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
 		[alert show];	
 		[alert release];
-		return;
 	}
     
 	// Handle faults
-	if([value isKindOfClass:[SoapFault class]]) {
+	else if([value isKindOfClass:[SoapFault class]]) {
 		NSLog(@"%@", value);
         SoapFault * result = (SoapFault*)value;
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"soap连接失败" 
@@ -195,65 +230,68 @@ static NSString *msgKey = @"msg";
 													   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
 		[alert show];	
 		[alert release];
-		return;
 	}				
     
-    
-	// Do something with the NSString* result
-    NSString* result = (NSString*)value;
-    //	resultText.text = [@"getRg returned the value: " stringByAppendingString:result] ;
-    NSLog(@"%@", result);
-    
-    
-    
-	SBJsonParser *parser = [[SBJsonParser alloc] init];
-    id json = [parser objectWithString:result];
-    
-    [parser release];
-    
-    if (json != nil) {
-        NSDictionary *ret = (NSDictionary*)json;
-        NSString *retflag = (NSString*) [ret objectForKey:retFlagKey];
+    else{
+        // Do something with the NSString* result
+        NSString* result = (NSString*)value;
+        //	resultText.text = [@"getRg returned the value: " stringByAppendingString:result] ;
+        NSLog(@"%@", result);
         
-        if ([retflag boolValue]) {
-            NSArray *rows = (NSArray*) [ret objectForKey:msgKey];
-            NSUInteger count = [rows count];
-            if (count <1) {
-                [self alert:@"提示" msg:@"找不到此收货号"];
-            }
-            else{
-                if (count == 1) {
-                    NSDictionary *obj = (NSDictionary*)[rows objectAtIndex:0];
-                    RgView *rgView = [[RgView alloc] initWithNibName:@"RgView" bundle:nil values:obj ];
-//                    rgView.scanViewDelegate = self;
-                    [self.navigationController pushViewController:rgView animated:YES];
-                    [rgView release];
+        
+        
+        SBJsonParser *parser = [[SBJsonParser alloc] init];
+        id json = [parser objectWithString:result];
+        
+        [parser release];
+        
+        if (json != nil) {
+            NSDictionary *ret = (NSDictionary*)json;
+            NSString *retflag = (NSString*) [ret objectForKey:retFlagKey];
+            
+            if ([retflag boolValue]) {
+                NSArray *rows = (NSArray*) [ret objectForKey:msgKey];
+                NSUInteger count = [rows count];
+                if (count <1) {
+                    [self alert:@"提示" msg:@"找不到此收货号"];
                 }
                 else{
-                    
-                    RgListView *rgListView =[[RgListView alloc] initWithStyle:UITableViewStylePlain
-                                                                         objs:rows ];
-                    [self.navigationController pushViewController:rgListView animated:YES];
-                    
-                    [rgListView release];
+                    if (count == 1) {
+                        NSDictionary *obj = (NSDictionary*)[rows objectAtIndex:0];
+                        RgView *rgView = [[RgView alloc] initWithNibName:@"RgView" bundle:nil values:obj ];
+    //                    rgView.scanViewDelegate = self;
+                        [self.navigationController pushViewController:rgView animated:YES];
+                        [rgView release];
+                    }
+                    else{
+                        
+                        RgListView *rgListView =[[RgListView alloc] initWithStyle:UITableViewStylePlain
+                                                                             objs:rows ];
+                        [self.navigationController pushViewController:rgListView animated:YES];
+                        
+                        [rgListView release];
+                        
+                    }
                     
                 }
-                
             }
+            else{
+                NSString *msg = (NSString*) [ret objectForKey:msgKey];
+                [self alert:@"错误" msg:msg];
+            }
+            
         }
         else{
-            NSString *msg = (NSString*) [ret objectForKey:msgKey];
-            [self alert:@"错误" msg:msg];
+            
         }
-        
     }
-    else{
-        
-    }
+    [self dismissActiveIndicatorView];
 }
 
 -(void)confirmCallBack:(BOOL )_confirm values:(NSDictionary *)_obj{
     
 }
+
+
 
 @end

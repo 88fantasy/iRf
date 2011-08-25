@@ -14,6 +14,7 @@
 	<array>
 		<string>57b.png</string>
 		<string>114.png</string>
+		<string>72b.png</string>
 	</array>
 	<key>CFBundleIdentifier</key>
 	<string>gzmpc.${PRODUCT_NAME:rfc1034identifier}</string>

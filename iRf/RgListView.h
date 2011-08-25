@@ -31,7 +31,7 @@
 @property (nonatomic, retain) UIActivityIndicatorView *activityIndicator;
 
 - (id)initWithStyle:(UITableViewStyle)style objs:(NSArray*)_arrays;
-
+- (IBAction) scrollToRefresh:(id)sender;
 - (void)reloadTableViewDataSource; 
 - (void)doneLoadingTableViewData;
 @end
