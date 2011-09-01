@@ -181,15 +181,19 @@ static NSString *msgKey = @"msg";
     NSDictionary *obj = [[self.menuList objectAtIndex:indexPath.row] objectForKey:kObjKey];
     
     NSString *cusgdsid = (NSString*) [obj objectForKey:@"cusgdsid"];
-    if ([cusgdsid isEqualToString:@""]) {
-        cell.textLabel.backgroundColor = [UIColor clearColor];
-        cell.detailTextLabel.backgroundColor = [UIColor clearColor];
-        
-        UIView *backgrdView = [[UIView alloc] initWithFrame:cell.frame];
+    
+    cell.textLabel.backgroundColor = [UIColor clearColor];
+    cell.detailTextLabel.backgroundColor = [UIColor clearColor];
+    
+    UIView *backgrdView = [[UIView alloc] initWithFrame:cell.frame];
+    if ([cusgdsid isEqualToString:@""]) {    
         backgrdView.backgroundColor = [UIColor greenColor];
-        cell.backgroundView = backgrdView;
-        [backgrdView release];
     }
+    else{
+        backgrdView.backgroundColor = [UIColor whiteColor];
+    }
+    cell.backgroundView = backgrdView;
+    [backgrdView release];
     return cell;
 }
 
@@ -247,11 +251,10 @@ static NSString *msgKey = @"msg";
 {
     // Navigation logic may go here. Create and push another view controller.
     
-//    NSDictionary *obj = [[self.menuList objectAtIndex: indexPath.row] objectForKey:kObjKey];
-//    NSString *ugoodsid = [obj objectForKey:@"ugoodsid"];
-//    TrView* targetViewController = [[TrView alloc] initWithNibName:@"TrView" bundle:nil ugoodsid:ugoodsid];
-//    //    targetViewController.scanViewDelegate = self;
-//	[[self navigationController] pushViewController:targetViewController animated:YES];
+    NSDictionary *obj = [[self.menuList objectAtIndex: indexPath.row] objectForKey:kObjKey];
+    TrView* targetViewController = [[TrView alloc] initWithNibName:@"TrView" bundle:nil values:obj];
+    //    targetViewController.scanViewDelegate = self;
+	[[self navigationController] pushViewController:targetViewController animated:YES];
     
 }
 
@@ -260,8 +263,11 @@ static NSString *msgKey = @"msg";
 
 - (void)viewWillAppear:(BOOL)animated
 {
-
-    [self getTrGds];
+    if (!_firstloaded) {
+        [self getTrGds];
+        _firstloaded = YES;
+    }
+    
 	// this UIViewController is about to re-appear, make sure we remove the current selection in our table view
 	NSIndexPath *tableSelection = [self.tableView indexPathForSelectedRow];
 	[self.tableView deselectRowAtIndexPath:tableSelection animated:YES];

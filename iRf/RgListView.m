@@ -236,16 +236,20 @@ static NSString *msgKey = @"msg";
     
     NSDictionary *obj = [[self.menuList objectAtIndex:indexPath.row] objectForKey:kObjKey];
     
+    cell.textLabel.backgroundColor = [UIColor clearColor];
+    cell.detailTextLabel.backgroundColor = [UIColor clearColor];
+    
+    UIView *backgrdView = [[UIView alloc] initWithFrame:cell.frame];
+    
     NSString *rfflag = (NSString*) [obj objectForKey:@"rgflag"];
     if ([rfflag intValue]==1) {
-        cell.textLabel.backgroundColor = [UIColor clearColor];
-        cell.detailTextLabel.backgroundColor = [UIColor clearColor];
-        
-        UIView *backgrdView = [[UIView alloc] initWithFrame:cell.frame];
         backgrdView.backgroundColor = [UIColor greenColor];
-        cell.backgroundView = backgrdView;
-        [backgrdView release];
     }
+    else{
+        backgrdView.backgroundColor = [UIColor whiteColor];
+    }
+    cell.backgroundView = backgrdView;
+    [backgrdView release];
     return cell;
 }
 

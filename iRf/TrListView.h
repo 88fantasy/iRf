@@ -16,7 +16,7 @@
     
     EGORefreshTableHeaderView *_refreshHeaderView; 
     BOOL _reloading;
-    
+    BOOL _firstloaded;
     UIBarButtonItem *refreshButtonItem;
     UIAlertView *activityView;
     UIActivityIndicatorView *activityIndicator;
