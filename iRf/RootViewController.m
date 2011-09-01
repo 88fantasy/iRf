@@ -9,6 +9,7 @@
 #import "RootViewController.h"
 #import "ScanView.h"
 #import "RgListView.h"
+#import "TrListView.h"
 
 static NSString *kCellIdentifier = @"MyIdentifier";
 static NSString *kTitleKey = @"title";
@@ -77,18 +78,24 @@ static NSString *kViewControllerKey = @"viewController";
     self.menuList = [NSMutableArray array];
     
     ScanView* scanview = [[ScanView alloc] initWithNibName:@"ScanView" bundle:nil];
-    
-    RgListView *rglistView = [[RgListView alloc] initWithStyle:UITableViewStylePlain];
-    
     [self.menuList addObject:[NSDictionary dictionaryWithObjectsAndKeys:
                               @"收货管理", kTitleKey,
                               @"扫描或手输条码进行收货", kExplainKey,
                               scanview, kViewControllerKey,
 							  nil]];
+    
+    RgListView *rglistView = [[RgListView alloc] initWithStyle:UITableViewStylePlain];
     [self.menuList addObject:[NSDictionary dictionaryWithObjectsAndKeys:
                               @"未收货列表", kTitleKey,
                               @"查询一个月内所有未收货的信息", kExplainKey,
                               rglistView, kViewControllerKey,
+							  nil]];
+    TrListView *trListView = [[TrListView alloc] initWithStyle:UITableViewStylePlain];
+
+    [self.menuList addObject:[NSDictionary dictionaryWithObjectsAndKeys:
+                              @"货品对应关系", kTitleKey,
+                              @"查询货品的对应关系情况", kExplainKey,
+                              trListView, kViewControllerKey,
 							  nil]];
     
 	[scanview release];
