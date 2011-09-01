@@ -20,13 +20,10 @@
 	[service doRg:self action:@selector(doRgHandler:) username: @"" password: @"" splid: @"" rgqty: @"" locno: @""];
 
 	// Returns NSString*. 
-	[service doTr:self action:@selector(doTrHandler:) username: @"" password: @"" splid: @"" cusgdsid: @"" multi: @"" ugoodsid: @"" companyid: @""];
+	[service doTr:self action:@selector(doTrHandler:) username: @"" password: @"" ugoodsid: @"" goodsname: @"" goodstype: @"" tradename: @"" factno: @"" goodsunit: @"" cusgdsid: @"" multi: @""];
 
 	// Returns NSString*. 
 	[service getAllRg:self action:@selector(getAllRgHandler:) username: @"" password: @""];
-
-	// Returns NSString*. 
-	[service getNtrGds:self action:@selector(getNtrGdsHandler:) username: @"" password: @""];
 
 	// Returns NSString*. 
 	[service getRg:self action:@selector(getRgHandler:) username: @"" password: @"" labelno: @""];
@@ -35,7 +32,7 @@
 	[service getRgs:self action:@selector(getRgsHandler:) queryxml: @"" code: @""];
 
 	// Returns NSString*. 
-	[service getTr:self action:@selector(getTrHandler:) username: @"" password: @"" labelno: @""];
+	[service getTrGds:self action:@selector(getTrGdsHandler:) username: @"" password: @"" page: 0];
 
 	// Returns NSString*. 
 	[service queryJSON:self action:@selector(queryJSONHandler:) sql: @"" dbname: @""];
@@ -121,30 +118,6 @@
 }
 	
 
-// Handle the response from getNtrGds.
-		
-- (void) getNtrGdsHandler: (id) value {
-
-	// Handle errors
-	if([value isKindOfClass:[NSError class]]) {
-		NSLog(@"%@", value);
-		return;
-	}
-
-	// Handle faults
-	if([value isKindOfClass:[SoapFault class]]) {
-		NSLog(@"%@", value);
-		return;
-	}				
-			
-
-	// Do something with the NSString* result
-		NSString* result = (NSString*)value;
-	NSLog(@"getNtrGds returned the value: %@", result);
-			
-}
-	
-
 // Handle the response from getRg.
 		
 - (void) getRgHandler: (id) value {
@@ -193,9 +166,9 @@
 }
 	
 
-// Handle the response from getTr.
+// Handle the response from getTrGds.
 		
-- (void) getTrHandler: (id) value {
+- (void) getTrGdsHandler: (id) value {
 
 	// Handle errors
 	if([value isKindOfClass:[NSError class]]) {
@@ -212,7 +185,7 @@
 
 	// Do something with the NSString* result
 		NSString* result = (NSString*)value;
-	NSLog(@"getTr returned the value: %@", result);
+	NSLog(@"getTrGds returned the value: %@", result);
 			
 }
 	
