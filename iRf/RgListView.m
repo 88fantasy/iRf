@@ -91,7 +91,7 @@ static NSString *msgKey = @"msg";
     //    self.navigationItem.rightBarButtonItem = nil;
     if (activityView==nil){        
         activityView = [[UIAlertView alloc] initWithTitle:nil 
-                                                  message: NSLocalizedString(@"Loading...","Loading...")
+                                                  message: NSLocalizedString(@"Loading...",@"Loading...")
                                                  delegate: self
                                         cancelButtonTitle: nil
                                         otherButtonTitles: nil];
@@ -174,11 +174,13 @@ static NSString *msgKey = @"msg";
             detailText = [detailText stringByAppendingString:@"     "];
             detailText = [detailText stringByAppendingString:[obj objectForKey:@"prodarea"]];
             
+            NSString *idv = [obj objectForKey:@"spdid"];
             
             [self.menuList addObject:[NSDictionary dictionaryWithObjectsAndKeys:
                                       text, kTitleKey,
                                       detailText, kExplainKey,
                                       obj,kObjKey,
+                                      idv,kCellIdentifier,
                                       nil]];
         }
     }
@@ -221,10 +223,10 @@ static NSString *msgKey = @"msg";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCellIdentifier];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:[[self.menuList objectAtIndex:indexPath.row] objectForKey:kCellIdentifier]];
 	if (cell == nil)
 	{
-		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:kCellIdentifier] autorelease];
+		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:[[self.menuList objectAtIndex:indexPath.row] objectForKey:kCellIdentifier]] autorelease];
 		cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 	}
 	
