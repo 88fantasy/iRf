@@ -90,7 +90,7 @@ static NSString *kViewControllerKey = @"viewController";
                               @"查询一个月内所有未收货的信息", kExplainKey,
                               rglistView, kViewControllerKey,
 							  nil]];
-    TrListView *trListView = [[TrListView alloc] initWithStyle:UITableViewStylePlain];
+    TrListView *trListView = [[TrListView alloc]initWithNibName:@"TrListView" bundle:nil];
 
     [self.menuList addObject:[NSDictionary dictionaryWithObjectsAndKeys:
                               @"货品对应关系", kTitleKey,
