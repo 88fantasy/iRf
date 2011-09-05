@@ -190,6 +190,7 @@ static NSString *kViewControllerKey = @"viewController";
 		if (pwdfield.text !=nil && ![@"" isEqualToString:pwdfield.text]) {
 			[defaults setValue: pwdfield.text forKey:@"password_preference"];
 		}
+        [defaults setBool: YES forKey:@"enabled_preference"];
 	}
 	else {
 		[self confirmUser];
