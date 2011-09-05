@@ -21,17 +21,18 @@ static NSString *msgKey = @"msg";
 @implementation TrListView
 
 @synthesize menuList,refreshButtonItem,activityView,activityIndicator;
+@synthesize tablelistView,filteredListContent, savedSearchTerm, savedScopeButtonIndex, searchWasActive;
 
-- (id)initWithStyle:(UITableViewStyle)style
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
-    self = [super initWithStyle:style];
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
         if (_refreshHeaderView == nil) {
-            
-            EGORefreshTableHeaderView *view = [[EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0.0f, 0.0f - self.tableView.bounds.size.height, self.view.frame.size.width, self.tableView.bounds.size.height)];
+            self.tablelistView  = (UITableView*)self.view;
+            EGORefreshTableHeaderView *view = [[EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0.0f, 0.0f - self.view.bounds.size.height, self.view.frame.size.width, self.view.bounds.size.height)];
             view.delegate = self;
-            [self.tableView addSubview:view];
+            [self.view addSubview:view];
             _refreshHeaderView = view;
             [view release];
             
@@ -39,7 +40,6 @@ static NSString *msgKey = @"msg";
         
         //  update the last update date
         [_refreshHeaderView refreshLastUpdatedDate];
-
     }
     return self;
 }
@@ -50,6 +50,8 @@ static NSString *msgKey = @"msg";
     [refreshButtonItem release];
     [activityView release];
     [activityIndicator release];
+    
+    [filteredListContent release];
     [menuList release];
     [super dealloc];
 }
@@ -129,7 +131,18 @@ static NSString *msgKey = @"msg";
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
 
     
-    
+	
+	// restore search settings if they were saved in didReceiveMemoryWarning.
+    if (self.savedSearchTerm)
+	{
+        [self.searchDisplayController setActive:self.searchWasActive];
+        [self.searchDisplayController.searchBar setSelectedScopeButtonIndex:self.savedScopeButtonIndex];
+        [self.searchDisplayController.searchBar setText:savedSearchTerm];
+        
+        self.savedSearchTerm = nil;
+    }
+	
+	[self.tablelistView reloadData];
     
 }
 
@@ -138,6 +151,7 @@ static NSString *msgKey = @"msg";
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
+    self.filteredListContent = nil;
     self.menuList = nil;
     _refreshHeaderView = nil;
     self.activityView = nil;
@@ -162,23 +176,41 @@ static NSString *msgKey = @"msg";
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    return [self.menuList count];
+    if (tableView == self.searchDisplayController.searchResultsTableView)
+	{
+        return [self.filteredListContent count];
+    }
+	else
+	{
+        return [self.menuList count];
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:[[self.menuList objectAtIndex:indexPath.row] objectForKey:kCellIdentifier]];
+    NSDictionary *row = nil;
+    if (tableView == self.searchDisplayController.searchResultsTableView)
+	{
+        row = [self.filteredListContent objectAtIndex:indexPath.row];
+    }
+	else
+	{
+        row = [self.menuList objectAtIndex:indexPath.row];
+    }
+
+    
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:[row objectForKey:kCellIdentifier]];
 	if (cell == nil)
 	{
-		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:[[self.menuList objectAtIndex:indexPath.row] objectForKey:kCellIdentifier]] autorelease];
+		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:[row objectForKey:kCellIdentifier]] autorelease];
 		cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 	}
 	
-	cell.textLabel.text = [[self.menuList objectAtIndex:indexPath.row] objectForKey:kTitleKey];
-    cell.detailTextLabel.text = [[self.menuList objectAtIndex:indexPath.row] objectForKey:kExplainKey];
+	cell.textLabel.text = [row objectForKey:kTitleKey];
+    cell.detailTextLabel.text = [row objectForKey:kExplainKey];
     cell.detailTextLabel.textAlignment = UITextAlignmentRight;
     
-    NSDictionary *obj = [[self.menuList objectAtIndex:indexPath.row] objectForKey:kObjKey];
+    NSDictionary *obj = [row objectForKey:kObjKey];
     
     NSString *cusgdsid = (NSString*) [obj objectForKey:@"cusgdsid"];
     
@@ -249,9 +281,18 @@ static NSString *msgKey = @"msg";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    NSDictionary *row = nil;
+    if (tableView == self.searchDisplayController.searchResultsTableView)
+	{
+        row = [self.filteredListContent objectAtIndex:indexPath.row];
+    }
+	else
+	{
+        row = [self.menuList objectAtIndex:indexPath.row];
+    }
     // Navigation logic may go here. Create and push another view controller.
     
-    NSDictionary *obj = [[self.menuList objectAtIndex: indexPath.row] objectForKey:kObjKey];
+    NSDictionary *obj = [row objectForKey:kObjKey];
     TrView* targetViewController = [[TrView alloc] initWithNibName:@"TrView" bundle:nil values:obj];
     //    targetViewController.scanViewDelegate = self;
 	[[self navigationController] pushViewController:targetViewController animated:YES];
@@ -269,13 +310,20 @@ static NSString *msgKey = @"msg";
     }
     
 	// this UIViewController is about to re-appear, make sure we remove the current selection in our table view
-	NSIndexPath *tableSelection = [self.tableView indexPathForSelectedRow];
-	[self.tableView deselectRowAtIndexPath:tableSelection animated:YES];
+	NSIndexPath *tableSelection = [self.tablelistView indexPathForSelectedRow];
+	[self.tablelistView deselectRowAtIndexPath:tableSelection animated:YES];
     
-    [self.tableView reloadData];
+    [self.tablelistView reloadData];
     
 }
 
+- (void)viewDidDisappear:(BOOL)animated
+{
+    // save the state of the search UI so that it can be restored if the view is re-created
+    self.searchWasActive = [self.searchDisplayController isActive];
+    self.savedSearchTerm = [self.searchDisplayController.searchBar text];
+    self.savedScopeButtonIndex = [self.searchDisplayController.searchBar selectedScopeButtonIndex];
+}
 
 // Handle the response from getRg.
 
@@ -362,8 +410,12 @@ static NSString *msgKey = @"msg";
                                                   idv,kCellIdentifier,
                                                   nil]];
                     }
-                    [self.tableView reloadData];
-                    [self doneLoadingTableViewData];
+                    
+                    
+                    self.filteredListContent = [NSMutableArray arrayWithCapacity:[self.menuList count]];
+                    
+                    [self.tablelistView reloadData];
+//                    [self doneLoadingTableViewData];
                 }
                 
             }
@@ -398,7 +450,7 @@ static NSString *msgKey = @"msg";
     
     //  model should call this when its done loading
     _reloading = NO;
-    [_refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:self.tableView];
+    [_refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:self.tablelistView];
     
 }
 
@@ -443,4 +495,56 @@ static NSString *msgKey = @"msg";
     
     [self getTrGds];
 }
+
+
+#pragma mark -
+#pragma mark Content Filtering
+
+- (void)filterContentForSearchText:(NSString*)searchText scope:(NSString*)scope
+{
+	/*
+	 Update the filtered array based on the search text and scope.
+	 */
+	
+	[self.filteredListContent removeAllObjects]; // First clear the filtered array.
+	
+	/*
+	 Search the main list for products whose type matches the scope (if selected) and whose name matches searchText; add items that match to the filtered array.
+	 */
+	for (NSDictionary *row in menuList)
+	{
+//		if ([scope isEqualToString:@"All"] || [product.type isEqualToString:scope])
+//		{
+			NSComparisonResult result = [[row objectForKey:kTitleKey] compare:searchText options:(NSCaseInsensitiveSearch|NSDiacriticInsensitiveSearch) range:NSMakeRange(0, [searchText length])];
+            if (result == NSOrderedSame)
+			{
+				[self.filteredListContent addObject:row];
+            }
+//		}
+	}
+}
+
+
+#pragma mark -
+#pragma mark UISearchDisplayController Delegate Methods
+
+- (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString
+{
+    [self filterContentForSearchText:searchString scope:
+     [[self.searchDisplayController.searchBar scopeButtonTitles] objectAtIndex:[self.searchDisplayController.searchBar selectedScopeButtonIndex]]];
+    
+    // Return YES to cause the search result table view to be reloaded.
+    return YES;
+}
+
+
+- (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchScope:(NSInteger)searchOption
+{
+    [self filterContentForSearchText:[self.searchDisplayController.searchBar text] scope:
+     [[self.searchDisplayController.searchBar scopeButtonTitles] objectAtIndex:searchOption]];
+    
+    // Return YES to cause the search result table view to be reloaded.
+    return YES;
+}
+
 @end

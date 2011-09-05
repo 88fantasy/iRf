@@ -9,8 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "EGORefreshTableHeaderView.h"
 
-@interface TrListView : UITableViewController
-<UITableViewDelegate,UITableViewDataSource,EGORefreshTableHeaderDelegate>
+@interface TrListView : UIViewController
+<UITableViewDelegate,UITableViewDataSource,EGORefreshTableHeaderDelegate
+,UISearchDisplayDelegate, UISearchBarDelegate>
 {
     NSMutableArray *menuList;
     
@@ -20,13 +21,30 @@
     UIBarButtonItem *refreshButtonItem;
     UIAlertView *activityView;
     UIActivityIndicatorView *activityIndicator;
+    
+    
+    NSString		*savedSearchTerm;
+    NSInteger		savedScopeButtonIndex;
+    BOOL			searchWasActive;
+    NSMutableArray	*filteredListContent;	// The content filtered as a result of a search.
+    UISearchDisplayController *seachDispalyController;
+    UITableView *tablelistView;
 }
 
 @property (nonatomic, retain) NSMutableArray *menuList;
 @property (nonatomic, retain) UIBarButtonItem *refreshButtonItem;
 @property (nonatomic, retain) UIAlertView *activityView;
 @property (nonatomic, retain) UIActivityIndicatorView *activityIndicator;
+@property (nonatomic, retain) UITableView *tablelistView;
 
+@property (nonatomic, retain) NSMutableArray *filteredListContent;
+
+@property (nonatomic, copy) NSString *savedSearchTerm;
+@property (nonatomic) NSInteger savedScopeButtonIndex;
+@property (nonatomic) BOOL searchWasActive;
+
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil;
 
 - (IBAction) scrollToRefresh:(id)sender;
 - (void)reloadTableViewDataSource; 
