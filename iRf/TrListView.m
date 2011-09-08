@@ -50,7 +50,7 @@ static NSString *msgKey = @"msg";
     [refreshButtonItem release];
     [activityView release];
     [activityIndicator release];
-    
+    [tablelistView release];
     [filteredListContent release];
     [menuList release];
     [super dealloc];
@@ -141,7 +141,7 @@ static NSString *msgKey = @"msg";
         
         self.savedSearchTerm = nil;
     }
-	
+	self.searchDisplayController.searchBar.placeholder = NSLocalizedString(@"Search", @"Search");
 	[self.tablelistView reloadData];
     
 }
@@ -157,6 +157,7 @@ static NSString *msgKey = @"msg";
     self.activityView = nil;
     self.refreshButtonItem = nil;
     self.activityIndicator = nil;
+    self.tablelistView = nil;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -508,20 +509,33 @@ static NSString *msgKey = @"msg";
 	
 	[self.filteredListContent removeAllObjects]; // First clear the filtered array.
 	
+    
+    NSString *searchKey = nil;
+    if ([scope isEqualToString:@"规格"] )
+    {
+        searchKey = @"goodstype";
+    }
+    else if([scope isEqualToString:@"厂家"] )
+    {
+        searchKey = @"factno";
+    }
+    else{
+        searchKey = kTitleKey;
+    }
 	/*
 	 Search the main list for products whose type matches the scope (if selected) and whose name matches searchText; add items that match to the filtered array.
 	 */
 	for (NSDictionary *row in menuList)
 	{
-//		if ([scope isEqualToString:@"All"] || [product.type isEqualToString:scope])
-//		{
-			NSComparisonResult result = [[row objectForKey:kTitleKey] compare:searchText options:(NSCaseInsensitiveSearch|NSDiacriticInsensitiveSearch) range:NSMakeRange(0, [searchText length])];
-            if (result == NSOrderedSame)
-			{
-				[self.filteredListContent addObject:row];
-            }
-//		}
+       
+        NSString *field = [[row objectForKey:kObjKey] objectForKey:searchKey];
+        if ( [field  rangeOfString:searchText].location != NSNotFound )
+        {
+            [self.filteredListContent addObject:row];
+        }
+        
 	}
+    [searchKey release];
 }
 
 

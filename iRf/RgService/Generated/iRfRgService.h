@@ -24,8 +24,8 @@
 	- (SoapRequest*) setRgSuccess: (id) target action: (SEL) action ids: (NSMutableArray*) ids code: (NSString*) code;
 
 	/* Returns NSString*.  */
-	- (SoapRequest*) getAllRg: (id <SoapDelegate>) handler username: (NSString*) username password: (NSString*) password;
-	- (SoapRequest*) getAllRg: (id) target action: (SEL) action username: (NSString*) username password: (NSString*) password;
+	- (SoapRequest*) getAllRg: (id <SoapDelegate>) handler username: (NSString*) username password: (NSString*) password queryjson: (NSString*) queryjson;
+	- (SoapRequest*) getAllRg: (id) target action: (SEL) action username: (NSString*) username password: (NSString*) password queryjson: (NSString*) queryjson;
 
 	/* Returns NSString*.  */
 	- (SoapRequest*) getTrGds: (id <SoapDelegate>) handler username: (NSString*) username password: (NSString*) password page: (int) page;

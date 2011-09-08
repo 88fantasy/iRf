@@ -21,7 +21,7 @@ static NSString *msgKey = @"msg";
 
 @implementation RgListView
 
-@synthesize menuList,objs,refreshButtonItem,activityView,activityIndicator;
+@synthesize menuList,objs,refreshButtonItem,activityView,activityIndicator,searchObj;
 
 
 - (id)initWithStyle:(UITableViewStyle)style
@@ -42,7 +42,6 @@ static NSString *msgKey = @"msg";
         
         //  update the last update date
         [_refreshHeaderView refreshLastUpdatedDate];
-        
     }
     return self;
 }
@@ -61,10 +60,12 @@ static NSString *msgKey = @"msg";
 
 - (void)dealloc
 {
+    searchObj = nil;
      _refreshHeaderView=nil; 
     [refreshButtonItem release];
     [activityView release];
     [activityIndicator release];
+    [searchObj release];
     [menuList release];
     [super dealloc];
 }
@@ -124,9 +125,13 @@ static NSString *msgKey = @"msg";
     NSString *username = [defaults stringForKey:@"username_preference"];
     NSString *password = [defaults stringForKey:@"password_preference"];
     
+    SBJsonWriter *writer = [[SBJsonWriter alloc] init];
+    NSString *json = [writer stringWithObject:self.searchObj];
     [service getAllRg:self action:@selector(getAllRgHandler:) 
              username: username 
-             password: password];
+             password: password
+             queryjson:json
+     ];
     
 }
 
@@ -143,16 +148,17 @@ static NSString *msgKey = @"msg";
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     if (canReload) {
         if (self.refreshButtonItem == nil) {
-            self.refreshButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh                                                                          target:self action:@selector(scrollToRefresh:)];
+            self.refreshButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch                                                                          target:self action:@selector(setSearchJson:)];
             
         }
        
         self.navigationItem.rightBarButtonItem = self.refreshButtonItem;
     }
     
-    if (objs != nil) {
-        self.menuList = [NSMutableArray array];
-        
+    
+    
+     self.menuList = [NSMutableArray array];
+     if (objs != nil) {   
         for (int i=0; i<[objs count]; i++) {
             NSDictionary *obj = [objs objectAtIndex:i];
             NSString *text = [obj objectForKey:@"goodsname"];
@@ -320,9 +326,9 @@ static NSString *msgKey = @"msg";
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    if (self.objs == nil) {
-        [self getAllRg];
-    }
+//    if (canReload) {
+//        [self getAllRg];
+//    }
 	// this UIViewController is about to re-appear, make sure we remove the current selection in our table view
 	NSIndexPath *tableSelection = [self.tableView indexPathForSelectedRow];
 	[self.tableView deselectRowAtIndexPath:tableSelection animated:YES];
@@ -378,23 +384,10 @@ static NSString *msgKey = @"msg";
             
             if ([retflag boolValue]) {
                 NSArray *rows = (NSArray*) [ret objectForKey:msgKey];
-                NSUInteger count = [rows count];
-                if (count <1) {
-                    [self alert:@"提示" msg:@"已完成所有收货"];
-                }
-                else if (count == 1) {
-                    NSDictionary *obj = (NSDictionary*)[rows objectAtIndex:0];
-                    RgView *rgView = [[RgView alloc] initWithNibName:@"RgView" bundle:nil values:obj ];
-                    //                    rgView.scanViewDelegate = self;
-                    [self.navigationController pushViewController:rgView animated:YES];
-                    [rgView release];
-                }
-                else{
-                    self.objs = rows;
-                    [self viewDidLoad];
-                    [self.tableView reloadData];
-                    [self doneLoadingTableViewData];
-                }
+                self.objs = rows;
+                [self viewDidLoad];
+                [self.tableView reloadData];
+                [self doneLoadingTableViewData];
                     
             }
             else{
@@ -471,8 +464,23 @@ static NSString *msgKey = @"msg";
     
 }
 
-- (IBAction) scrollToRefresh:(id)sender{
+- (IBAction) setSearchJson:(id)sender{
+    RgListSearchView *rsv = [[RgListSearchView alloc] initWithNibName:@"RgListSearchView" bundle:nil];
+    rsv.rgListSearchViewDelegate = self;
+    [self.navigationController pushViewController:rsv animated:YES];
     
+    rsv.goodsname.text = [self.searchObj objectForKey:@"goodsname"];
+    rsv.prodarea.text = [self.searchObj objectForKey:@"prodarea"];
+    rsv.lotno.text = [self.searchObj objectForKey:@"lotno"];
+    rsv.invno.text = [self.searchObj objectForKey:@"invno"];
+    rsv.startdate.text = [self.searchObj objectForKey:@"startdate"];
+    rsv.enddate.text = [self.searchObj objectForKey:@"enddate"];
+    
+    [rsv release];
+}
+
+-(void)searchCallBack:(NSDictionary *)_fields{
+    self.searchObj = _fields;
     [self getAllRg];
 }
 @end

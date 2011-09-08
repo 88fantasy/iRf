@@ -8,9 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import "EGORefreshTableHeaderView.h"
+#import "RgListSearchView.h"
 
 @interface RgListView : UITableViewController
-<UITableViewDelegate,UITableViewDataSource,EGORefreshTableHeaderDelegate>
+<UITableViewDelegate,UITableViewDataSource,EGORefreshTableHeaderDelegate,RgListSearchViewDelegate>
 {
     NSMutableArray *menuList;
     NSArray *objs;
@@ -22,6 +23,8 @@
     UIBarButtonItem *refreshButtonItem;
     UIAlertView *activityView;
     UIActivityIndicatorView *activityIndicator;
+    
+    NSDictionary *searchObj;
 }
 
 @property (nonatomic, retain) NSMutableArray *menuList;
@@ -29,9 +32,11 @@
 @property (nonatomic, retain) UIBarButtonItem *refreshButtonItem;
 @property (nonatomic, retain) UIAlertView *activityView;
 @property (nonatomic, retain) UIActivityIndicatorView *activityIndicator;
+@property (nonatomic, retain) NSDictionary *searchObj;
 
 - (id)initWithStyle:(UITableViewStyle)style objs:(NSArray*)_arrays;
-- (IBAction) scrollToRefresh:(id)sender;
+- (IBAction) setSearchJson:(id)sender;
 - (void)reloadTableViewDataSource; 
 - (void)doneLoadingTableViewData;
+- (void)searchCallBack:(NSDictionary *)_fields;
 @end
