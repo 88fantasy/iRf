@@ -56,6 +56,8 @@
 //    self.invno.text = [searchFields objectForKey:@"invno"];
 //    self.startdate.text = [searchFields objectForKey:@"startdate"];
 //    self.enddate.text = [searchFields objectForKey:@"enddate"];
+    
+   
 }
 
 - (void)viewDidUnload
@@ -129,13 +131,13 @@
 		CGSize pickerSize = [self.pickerView sizeThatFits:CGSizeZero];
 		CGRect startRect = CGRectMake(0.0,
 									  screenRect.origin.y + screenRect.size.height,
-									  pickerSize.width, pickerSize.height);
+									  screenRect.size.width, pickerSize.height);
 		self.pickerView.frame = startRect;
 		
 		// compute the end frame
 		CGRect pickerRect = CGRectMake(0.0,
 									   screenRect.origin.y + screenRect.size.height - pickerSize.height,
-									   pickerSize.width,
+									   screenRect.size.width,
 									   pickerSize.height);
 		// start the slide up animation
 		[UIView beginAnimations:nil context:NULL];

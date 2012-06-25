@@ -5,7 +5,7 @@
 //  Created by pro on 11-7-18.
 //  Copyright 2011年 __MyCompanyName__. All rights reserved.
 //
-
+#import "Const.h"
 #import "RootViewController.h"
 #import "ScanView.h"
 #import "RgListView.h"
@@ -100,6 +100,8 @@ static NSString *kViewControllerKey = @"viewController";
     
 	[scanview release];
     [rglistView release];
+    
+    
 	[self confirmUser];
 }
 
@@ -145,6 +147,7 @@ static NSString *kViewControllerKey = @"viewController";
 	}
 	
 	cell.textLabel.text = [[self.menuList objectAtIndex:indexPath.row] objectForKey:kTitleKey];
+    [cell.textLabel setFont: [UIFont fontWithName:@"Heiti SC" size:20]];
     cell.detailTextLabel.text = [[self.menuList objectAtIndex:indexPath.row] objectForKey:kExplainKey];
 	return cell;
 }

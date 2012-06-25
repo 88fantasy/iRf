@@ -23,7 +23,13 @@ static NSString *msgKey = @"msg";
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil values:(NSDictionary*)obj 
 //         readOnlyFlag:(BOOL) _readOnlyFlag
 {
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if(IsPad){
+        self = [super initWithNibName:[nibNameOrNil stringByAppendingString:@"HD"] bundle:nibBundleOrNil];
+    }
+    else{
+        self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    }
+    
     if (self) {
         // Custom initialization
         

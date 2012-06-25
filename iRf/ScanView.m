@@ -32,7 +32,12 @@ static NSString *msgKey = @"msg";
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if(IsPad){
+        self = [super initWithNibName:[nibNameOrNil stringByAppendingString:@"HD"] bundle:nibBundleOrNil];
+    }
+    else{
+        self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    }
     if (self) {
         // Custom initialization
 //        resultText.delegate = self;
@@ -64,6 +69,13 @@ static NSString *msgKey = @"msg";
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     self.title = @"扫描收货号"; 
+    
+    if (IsPad) {
+        CGRect rect = self.resultText.frame;
+        
+        rect.size.height = 60;
+        self.resultText.frame = rect;
+    }
 }
 
 - (void)viewDidUnload

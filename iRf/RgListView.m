@@ -237,6 +237,7 @@ static NSString *msgKey = @"msg";
 	}
 	
 	cell.textLabel.text = [[self.menuList objectAtIndex:indexPath.row] objectForKey:kTitleKey];
+    [cell.textLabel setFont: [UIFont fontWithName:@"Heiti SC" size:20]];
     cell.detailTextLabel.text = [[self.menuList objectAtIndex:indexPath.row] objectForKey:kExplainKey];
     cell.detailTextLabel.textAlignment = UITextAlignmentRight;
     

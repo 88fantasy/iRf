@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8F0CB2BC1592B33D00195B49 /* ScanViewHD.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8F0CB2BB1592B33D00195B49 /* ScanViewHD.xib */; };
+		8F0CB2BE1592D87C00195B49 /* RgViewHD.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8F0CB2BD1592D87C00195B49 /* RgViewHD.xib */; };
+		8F32116315931CC80070CC41 /* TrViewHD.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8F32116215931CC80070CC41 /* TrViewHD.xib */; };
+		8F64B6331591C6C400C1C50B /* MainWindow-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8F64B6321591C6C400C1C50B /* MainWindow-iPad.xib */; };
 		8F8E85F713D7B1D2000AC9C8 /* RgListView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F8E857913D7B1D2000AC9C8 /* RgListView.m */; };
 		8F8E85F913D7B1D2000AC9C8 /* RgListView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8F8E857C13D7B1D2000AC9C8 /* RgListView.xib */; };
 		8F8E863E13D7BD57000AC9C8 /* RgView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F8E863C13D7BD57000AC9C8 /* RgView.m */; };
@@ -91,8 +95,6 @@
 		CE353E7114038E1100012DF3 /* 58.png in Resources */ = {isa = PBXBuildFile; fileRef = CE353E6214038E1100012DF3 /* 58.png */; };
 		CE353E7214038E1100012DF3 /* 58a.png in Resources */ = {isa = PBXBuildFile; fileRef = CE353E6314038E1100012DF3 /* 58a.png */; };
 		CE353E7314038E1100012DF3 /* 58b.png in Resources */ = {isa = PBXBuildFile; fileRef = CE353E6414038E1100012DF3 /* 58b.png */; };
-		CE353E7414038E1100012DF3 /* 72.png in Resources */ = {isa = PBXBuildFile; fileRef = CE353E6514038E1100012DF3 /* 72.png */; };
-		CE353E7514038E1100012DF3 /* 72a.png in Resources */ = {isa = PBXBuildFile; fileRef = CE353E6614038E1100012DF3 /* 72a.png */; };
 		CE353E7614038E1100012DF3 /* 72b.png in Resources */ = {isa = PBXBuildFile; fileRef = CE353E6714038E1100012DF3 /* 72b.png */; };
 		CE4BB94014049EB5006FF3F6 /* EGORefreshTableHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4BB93F14049EB5006FF3F6 /* EGORefreshTableHeaderView.m */; };
 		CE4BB94B1404ECCF006FF3F6 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE4BB94D1404ECCF006FF3F6 /* Localizable.strings */; };
@@ -125,6 +127,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		8F0CB2BB1592B33D00195B49 /* ScanViewHD.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ScanViewHD.xib; sourceTree = "<group>"; };
+		8F0CB2BD1592D87C00195B49 /* RgViewHD.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RgViewHD.xib; sourceTree = "<group>"; };
+		8F32116215931CC80070CC41 /* TrViewHD.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TrViewHD.xib; sourceTree = "<group>"; };
+		8F64B6321591C6C400C1C50B /* MainWindow-iPad.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = "MainWindow-iPad.xib"; path = "iPad/MainWindow-iPad.xib"; sourceTree = "<group>"; };
 		8F8E857913D7B1D2000AC9C8 /* RgListView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RgListView.m; sourceTree = "<group>"; };
 		8F8E857B13D7B1D2000AC9C8 /* RgListView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RgListView.h; sourceTree = "<group>"; };
 		8F8E857C13D7B1D2000AC9C8 /* RgListView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RgListView.xib; sourceTree = "<group>"; };
@@ -265,6 +271,7 @@
 		8F93E43613D42C42006BF26D /* SBJsonUTF8Stream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonUTF8Stream.m; sourceTree = "<group>"; };
 		8F93E43713D42C42006BF26D /* SBJsonWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonWriter.h; sourceTree = "<group>"; };
 		8F93E43813D42C42006BF26D /* SBJsonWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonWriter.m; sourceTree = "<group>"; };
+		8FF14E321597FB8500AFB828 /* iRf.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = iRf.entitlements; sourceTree = "<group>"; };
 		CE04389814161CBF0078D955 /* RgListSearchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RgListSearchView.h; sourceTree = "<group>"; };
 		CE04389914161CBF0078D955 /* RgListSearchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RgListSearchView.m; sourceTree = "<group>"; };
 		CE04389A14161CBF0078D955 /* RgListSearchView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RgListSearchView.xib; sourceTree = "<group>"; };
@@ -279,8 +286,6 @@
 		CE353E6214038E1100012DF3 /* 58.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 58.png; sourceTree = "<group>"; };
 		CE353E6314038E1100012DF3 /* 58a.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 58a.png; sourceTree = "<group>"; };
 		CE353E6414038E1100012DF3 /* 58b.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 58b.png; sourceTree = "<group>"; };
-		CE353E6514038E1100012DF3 /* 72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 72.png; sourceTree = "<group>"; };
-		CE353E6614038E1100012DF3 /* 72a.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 72a.png; sourceTree = "<group>"; };
 		CE353E6714038E1100012DF3 /* 72b.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 72b.png; sourceTree = "<group>"; };
 		CE4BB93E14049EB5006FF3F6 /* EGORefreshTableHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EGORefreshTableHeaderView.h; sourceTree = "<group>"; };
 		CE4BB93F14049EB5006FF3F6 /* EGORefreshTableHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EGORefreshTableHeaderView.m; sourceTree = "<group>"; };
@@ -339,6 +344,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8F64B6311591C6C400C1C50B /* iPad */ = {
+			isa = PBXGroup;
+			children = (
+				8F64B6321591C6C400C1C50B /* MainWindow-iPad.xib */,
+			);
+			name = iPad;
+			sourceTree = "<group>";
+		};
 		8F93E2CA13D41B6E006BF26D = {
 			isa = PBXGroup;
 			children = (
@@ -378,6 +391,8 @@
 		8F93E2E113D41B6F006BF26D /* iRf */ = {
 			isa = PBXGroup;
 			children = (
+				8FF14E321597FB8500AFB828 /* iRf.entitlements */,
+				8F64B6311591C6C400C1C50B /* iPad */,
 				CE4BB93D14049EB5006FF3F6 /* RefreshTableHeaderView */,
 				CE353E5914038E1100012DF3 /* logo */,
 				8F93E41F13D42C42006BF26D /* JSON */,
@@ -394,16 +409,19 @@
 				8F93E3F413D420F3006BF26D /* ScanView.h */,
 				8F93E3F513D420F3006BF26D /* ScanView.m */,
 				8F93E3F613D420F3006BF26D /* ScanView.xib */,
+				8F0CB2BB1592B33D00195B49 /* ScanViewHD.xib */,
 				8F93E2E213D41B6F006BF26D /* Supporting Files */,
 				8F8E863B13D7BD57000AC9C8 /* RgView.h */,
 				8F8E863C13D7BD57000AC9C8 /* RgView.m */,
 				8F8E863D13D7BD57000AC9C8 /* RgView.xib */,
+				8F0CB2BD1592D87C00195B49 /* RgViewHD.xib */,
 				8F8E857B13D7B1D2000AC9C8 /* RgListView.h */,
 				8F8E857913D7B1D2000AC9C8 /* RgListView.m */,
 				8F8E857C13D7B1D2000AC9C8 /* RgListView.xib */,
 				CECB5016140E1B8D00DD8568 /* TrView.h */,
 				CECB5017140E1B8D00DD8568 /* TrView.m */,
 				CECB5018140E1B8D00DD8568 /* TrView.xib */,
+				8F32116215931CC80070CC41 /* TrViewHD.xib */,
 				CED2DE19140F84AC00ADAB43 /* Settings.bundle */,
 				CE6224E11414B93700E65616 /* TrListView.h */,
 				CE6224E21414B93700E65616 /* TrListView.m */,
@@ -659,8 +677,6 @@
 				CE353E6214038E1100012DF3 /* 58.png */,
 				CE353E6314038E1100012DF3 /* 58a.png */,
 				CE353E6414038E1100012DF3 /* 58b.png */,
-				CE353E6514038E1100012DF3 /* 72.png */,
-				CE353E6614038E1100012DF3 /* 72a.png */,
 				CE353E6714038E1100012DF3 /* 72b.png */,
 			);
 			path = logo;
@@ -727,6 +743,9 @@
 /* Begin PBXProject section */
 		8F93E2CC13D41B6E006BF26D /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0430;
+			};
 			buildConfigurationList = 8F93E2CF13D41B6E006BF26D /* Build configuration list for PBXProject "iRf" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
@@ -772,8 +791,6 @@
 				CE353E7114038E1100012DF3 /* 58.png in Resources */,
 				CE353E7214038E1100012DF3 /* 58a.png in Resources */,
 				CE353E7314038E1100012DF3 /* 58b.png in Resources */,
-				CE353E7414038E1100012DF3 /* 72.png in Resources */,
-				CE353E7514038E1100012DF3 /* 72a.png in Resources */,
 				CE353E7614038E1100012DF3 /* 72b.png in Resources */,
 				CE4BB94B1404ECCF006FF3F6 /* Localizable.strings in Resources */,
 				CE4BB95F1404EF52006FF3F6 /* blackArrow.png in Resources */,
@@ -788,6 +805,10 @@
 				CED2DE1A140F84AD00ADAB43 /* Settings.bundle in Resources */,
 				CE6224E51414B93700E65616 /* TrListView.xib in Resources */,
 				CE04389C14161CBF0078D955 /* RgListSearchView.xib in Resources */,
+				8F64B6331591C6C400C1C50B /* MainWindow-iPad.xib in Resources */,
+				8F0CB2BC1592B33D00195B49 /* ScanViewHD.xib in Resources */,
+				8F0CB2BE1592D87C00195B49 /* RgViewHD.xib in Resources */,
+				8F32116315931CC80070CC41 /* TrViewHD.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -919,7 +940,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CODE_SIGN_IDENTITY = "iPhone Developer: Wisdon Peng (TC46TY92DH)";
+				CODE_SIGN_IDENTITY = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
@@ -928,10 +949,11 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
+				INSTALL_PATH = /Users/xianweijian/Applications/;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.1;
 				OTHER_LDFLAGS = "-lxml2";
-				PROVISIONING_PROFILE = "AD1725F6-5E9E-45CD-9FED-FEBE85DE8FCE";
 				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Debug;
@@ -940,17 +962,18 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CODE_SIGN_IDENTITY = "iPhone Developer: Wisdon Peng (TC46TY92DH)";
+				CODE_SIGN_IDENTITY = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
+				INSTALL_PATH = /Users/xianweijian/Applications/;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.1;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				OTHER_LDFLAGS = "-lxml2";
-				PROVISIONING_PROFILE = "AD1725F6-5E9E-45CD-9FED-FEBE85DE8FCE";
 				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -959,20 +982,23 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Wisdon Peng (TC46TY92DH)";
+				CODE_SIGN_ENTITLEMENTS = iRf/iRf.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "iRf/iRf-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "iRf/iRf-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.1;
+				INSTALL_PATH = /Applications;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/iRf/ZBarSDK\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "AD1725F6-5E9E-45CD-9FED-FEBE85DE8FCE";
-				TARGETED_DEVICE_FAMILY = 1;
+				PROVISIONING_PROFILE = "";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 			};
@@ -982,20 +1008,23 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Wisdon Peng (TC46TY92DH)";
-				COPY_PHASE_STRIP = YES;
+				CODE_SIGN_ENTITLEMENTS = iRf/iRf.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "iRf/iRf-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "iRf/iRf-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.1;
+				INSTALL_PATH = /Applications;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/iRf/ZBarSDK\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "AD1725F6-5E9E-45CD-9FED-FEBE85DE8FCE";
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 			};
@@ -1012,6 +1041,7 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "iRfTests/iRfTests-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "iRfTests/iRfTests-Info.plist";
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -1034,6 +1064,7 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "iRfTests/iRfTests-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "iRfTests/iRfTests-Info.plist";
 				OTHER_LDFLAGS = (
 					"-framework",
