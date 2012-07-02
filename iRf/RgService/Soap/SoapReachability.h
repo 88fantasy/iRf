@@ -5,7 +5,7 @@
 //  Created by Jason Kichline on 9/21/09.
 //  Copyright 2009 andCulture. All rights reserved.
 //
-
+#import <netinet/in.h>
 #import <Foundation/Foundation.h>
 #import <SystemConfiguration/SystemConfiguration.h>
 

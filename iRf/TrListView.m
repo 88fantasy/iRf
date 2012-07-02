@@ -220,7 +220,7 @@ static NSString *msgKey = @"msg";
     cell.detailTextLabel.backgroundColor = [UIColor clearColor];
     
     UIView *backgrdView = [[UIView alloc] initWithFrame:cell.frame];
-    if ([cusgdsid isEqualToString:@""]) {    
+    if ([cusgdsid isEqualToString:@""]|| (!IsInternet&&[cusgdsid rangeOfString:@"tmp" options:NSCaseInsensitiveSearch].location != NSNotFound)) {    
         backgrdView.backgroundColor = [UIColor greenColor];
     }
     else{
@@ -377,13 +377,6 @@ static NSString *msgKey = @"msg";
                 if (count <1) {
                     [self alert:@"提示" msg:@"没有找到货品关系"];
                 }
-//                else if (count == 1) {
-//                    NSDictionary *obj = (NSDictionary*)[rows objectAtIndex:0];
-//                    RgView *rgView = [[RgView alloc] initWithNibName:@"RgView" bundle:nil values:obj ];
-//                    //                    rgView.scanViewDelegate = self;
-//                    [self.navigationController pushViewController:rgView animated:YES];
-//                    [rgView release];
-//                }
                 else{
                     if (self.refreshButtonItem == nil) {
                         self.refreshButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh                                                                          target:self action:@selector(scrollToRefresh:)];
@@ -521,7 +514,7 @@ static NSString *msgKey = @"msg";
         searchKey = @"factno";
     }
     else{
-        searchKey = kTitleKey;
+        searchKey = @"goodsname";
     }
 	/*
 	 Search the main list for products whose type matches the scope (if selected) and whose name matches searchText; add items that match to the filtered array.

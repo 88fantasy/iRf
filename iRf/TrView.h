@@ -20,6 +20,7 @@
     UITextField *goodsunit;
     UITextField *cusgdsid;
     UITextField *multi;
+    UITextField *companyname;
     NSDictionary *values;
 }
 
@@ -32,6 +33,7 @@
 @property (nonatomic, retain) IBOutlet UITextField *goodsunit;
 @property (nonatomic, retain) IBOutlet UITextField *cusgdsid;
 @property (nonatomic, retain) IBOutlet UITextField *multi;
+@property (nonatomic, retain) IBOutlet UITextField *companyname;
 @property (nonatomic, retain) IBOutlet NSDictionary *values;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil values:(NSDictionary*)obj ;

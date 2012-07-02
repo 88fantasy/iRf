@@ -16,7 +16,7 @@ static NSString *msgKey = @"msg";
 @implementation RgView
 
 @synthesize scrollView,invno,goodsname,goodstype,factoryname,goodsprice,goodsunit,lotno
-,packsize,validto,orgrow,goodsqty,rgqty,locno;
+,packsize,validto,orgrow,goodsqty,rgqty,locno,companyname;
 
 @synthesize spdid,values;
 
@@ -109,6 +109,7 @@ static NSString *msgKey = @"msg";
     
     self.rgqty.text = (NSString*) [values objectForKey:@"goodsqty"];
     self.locno.text = (NSString*) [values objectForKey:@"locno"];
+    self.companyname.text = (NSString*) [values objectForKey:@"companyname"];
     
     self.spdid = (NSString*) [values objectForKey:@"spdid"];
     
@@ -239,7 +240,7 @@ static NSString *msgKey = @"msg";
 }
 
 - (IBAction) scrollToBottom:(id)sender{
-    [self.scrollView setContentOffset:CGPointMake(0, 250) animated:YES];
+    [self.scrollView setContentOffset:CGPointMake(0, 320) animated:YES];
 }
 
 - (IBAction) scanButtonTapped

@@ -11,7 +11,7 @@
 #import "SBJson.h"
 
 @implementation TrView
-@synthesize ugoodsid,goodsname,goodstype,tradename,factno,goodsunit,cusgdsid,multi;
+@synthesize ugoodsid,goodsname,goodstype,tradename,factno,goodsunit,cusgdsid,multi,companyname;
 @synthesize scrollView,values;
 
 NSString const *retFlagKey = @"ret";
@@ -75,6 +75,7 @@ NSString const *msgKey = @"msg";
     self.goodsunit.text = (NSString*) [values objectForKey:@"goodsunit"];
     self.cusgdsid.text = (NSString*) [values objectForKey:@"cusgdsid"];
     self.multi.text = (NSString*) [values objectForKey:@"multi"];
+    self.companyname.text = (NSString*) [values objectForKey:@"companyname"];
 }
 
 - (void)viewDidUnload

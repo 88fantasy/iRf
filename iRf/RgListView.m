@@ -163,7 +163,10 @@ static NSString *msgKey = @"msg";
             NSDictionary *obj = [objs objectAtIndex:i];
             NSString *text = [obj objectForKey:@"goodsname"];
             NSString *labeltype = [obj objectForKey:@"labeltype"];
-            
+            NSString *goodstype = [obj objectForKey:@"goodstype"];
+            NSString *goodsqty = [obj objectForKey:@"goodsqty"];
+            NSString *prodarea = [obj objectForKey:@"prodarea"];
+            NSString *companyname = [obj objectForKey:@"companyname"];
             
             NSString *detailText = @"";
             if ([labeltype isEqualToString:@"1"]) {
@@ -173,12 +176,24 @@ static NSString *msgKey = @"msg";
                 detailText = [detailText stringByAppendingString:@"散件"];
             }
             
-            detailText = [detailText stringByAppendingString:@"     "];
-            detailText = [detailText stringByAppendingString:[obj objectForKey:@"goodstype"]];
-            detailText = [detailText stringByAppendingString:@"     "];
-            detailText = [detailText stringByAppendingString:[obj objectForKey:@"goodsqty"]];
-            detailText = [detailText stringByAppendingString:@"     "];
-            detailText = [detailText stringByAppendingString:[obj objectForKey:@"prodarea"]];
+            if (goodstype != nil) {
+                detailText = [detailText stringByAppendingString:@"     "];
+                detailText = [detailText stringByAppendingString:goodstype];
+            }
+            if (goodsqty != nil) {
+                detailText = [detailText stringByAppendingString:@"     "];
+                detailText = [detailText stringByAppendingString:goodsqty];
+            }
+            if (prodarea != nil) {
+                detailText = [detailText stringByAppendingString:@"     "];
+                detailText = [detailText stringByAppendingString:prodarea];
+            }
+            if (companyname != nil) {
+                detailText = [detailText stringByAppendingString:@"     "];
+                detailText = [detailText stringByAppendingString:companyname];
+            }
+            
+            
             
             NSString *idv = [obj objectForKey:@"spdid"];
             

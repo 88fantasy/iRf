@@ -114,6 +114,16 @@ static NSString *msgKey = @"msg";
     ZBarReaderViewController *reader = [ZBarReaderViewController new];
     reader.readerDelegate = self;
 	
+    
+//    CGRect rect_screen = [[UIScreen mainScreen] bounds];
+//    CGRect rect = reader.readerView.frame;
+//    
+//    rect.size.height = rect_screen.size.height;
+//    rect.size.width = rect_screen.size.width;
+//    reader.readerView.frame = rect;
+    
+    
+    
 	//reader.showsZBarControls = NO;
 	
 	
