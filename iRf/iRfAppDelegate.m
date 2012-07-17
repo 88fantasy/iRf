@@ -29,7 +29,8 @@
 	NetworkStatus netStatus = [hostReach currentReachabilityStatus];
 	if (netStatus == NotReachable ) {
 		// open an alert with just an OK button
-		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"连接服务器出现错误" message:@"请检查是否已连上互联网"
+		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"连接服务器出现错误" 
+                                                        message:@"请检查是否已连上互联网"
 													   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
 		[alert show];	
 		[alert release];
@@ -49,8 +50,10 @@
        
     // Finish app initialization...
     
-    [iRfAppDelegate checkHostReachability];
-    
+    if (IsInternet) {
+        [iRfAppDelegate checkHostReachability];
+    }
+        
     // Add the navigation controller's view to the window and display.
     self.window.rootViewController = self.navigationController;
     [self.window makeKeyAndVisible];

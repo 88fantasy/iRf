@@ -41,13 +41,13 @@
   
 	- (NSMutableString*) serialize: (NSString*) nodeName
 	{
-		NSMutableString* s = [[NSMutableString alloc] init];
+		NSMutableString* s = [NSMutableString string];
 		[s appendFormat: @"<%@", nodeName];
 		[s appendString: [self serializeAttributes]];
 		[s appendString: @">"];
 		[s appendString: [self serializeElements]];
 		[s appendFormat: @"</%@>", nodeName];
-		return [s autorelease];
+		return s;
 	}
 	
 	- (NSMutableString*) serializeElements

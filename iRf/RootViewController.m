@@ -10,11 +10,14 @@
 #import "ScanView.h"
 #import "RgListView.h"
 #import "TrListView.h"
+#import "StockAdjustView.h"
 
 static NSString *kCellIdentifier = @"MyIdentifier";
 static NSString *kTitleKey = @"title";
 static NSString *kExplainKey = @"explanation";
 static NSString *kViewControllerKey = @"viewController";
+static NSString *iconKey = @"iconfile";
+
 
 
 @interface RootViewController ()
@@ -82,6 +85,7 @@ static NSString *kViewControllerKey = @"viewController";
                               @"收货管理", kTitleKey,
                               @"扫描或手输条码进行收货", kExplainKey,
                               scanview, kViewControllerKey,
+                              @"收货管理.png",iconKey,
 							  nil]];
     
     RgListView *rglistView = [[RgListView alloc] initWithStyle:UITableViewStylePlain];
@@ -89,6 +93,7 @@ static NSString *kViewControllerKey = @"viewController";
                               @"未收货列表", kTitleKey,
                               @"查询一个月内所有未收货的信息", kExplainKey,
                               rglistView, kViewControllerKey,
+                              @"库存查询.png",iconKey,
 							  nil]];
     TrListView *trListView = [[TrListView alloc]initWithNibName:@"TrListView" bundle:nil];
 
@@ -96,11 +101,32 @@ static NSString *kViewControllerKey = @"viewController";
                               @"货品对应关系", kTitleKey,
                               @"查询货品的对应关系情况", kExplainKey,
                               trListView, kViewControllerKey,
+                              @"基础数据.png",iconKey,
 							  nil]];
     
-	[scanview release];
-    [rglistView release];
     
+    [scanview release];
+    [rglistView release];
+    [trListView release];
+    
+    if (!IsInternet) {
+        
+        if (!IsPad) {
+            StockAdjustView *stockAdjustView = [[StockAdjustView alloc]initWithNibName:@"StockAdjustView" bundle:nil];
+            
+            [self.menuList addObject:[NSDictionary dictionaryWithObjectsAndKeys:
+                                      @"库存调整", kTitleKey,
+                                      @"可进行移库或退货等操作", kExplainKey,
+                                      stockAdjustView, kViewControllerKey,
+                                      @"库存调整.png",iconKey,
+                                      nil]];
+            [stockAdjustView release];
+        }
+        
+    }
+    
+    
+	
     
 	[self confirmUser];
 }
@@ -145,10 +171,14 @@ static NSString *kViewControllerKey = @"viewController";
 		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:kCellIdentifier] autorelease];
 		cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 	}
-	
+    
 	cell.textLabel.text = [[self.menuList objectAtIndex:indexPath.row] objectForKey:kTitleKey];
     [cell.textLabel setFont: [UIFont fontWithName:@"Heiti SC" size:20]];
     cell.detailTextLabel.text = [[self.menuList objectAtIndex:indexPath.row] objectForKey:kExplainKey];
+    
+    UIImage *cellIcon = [UIImage imageNamed:[[self.menuList objectAtIndex:indexPath.row] objectForKey:iconKey]];
+	[[cell imageView] setImage:cellIcon];
+    
 	return cell;
 }
 

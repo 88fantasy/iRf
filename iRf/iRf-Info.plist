@@ -9,13 +9,27 @@
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIconFile</key>
-	<string></string>
+	<string>57b.png</string>
 	<key>CFBundleIconFiles</key>
 	<array>
 		<string>57b.png</string>
 		<string>114.png</string>
 		<string>72b.png</string>
+		<string>144.png</string>
 	</array>
+	<key>CFBundleIcons</key>
+	<dict>
+		<key>CFBundlePrimaryIcon</key>
+		<dict>
+			<key>CFBundleIconFiles</key>
+			<array>
+				<string>57b.png</string>
+				<string>114.png</string>
+				<string>72b.png</string>
+				<string>144.png</string>
+			</array>
+		</dict>
+	</dict>
 	<key>CFBundleIdentifier</key>
 	<string>com.gzmpc.iRf</string>
 	<key>CFBundleInfoDictionaryVersion</key>

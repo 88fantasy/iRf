@@ -1,8 +1,21 @@
-/*
- SoapArray.m
- Implementation of the SoapArray base object
- Authors:	Jason Kichline, andCulture - Harrisburg, Pennsylvania USA
-*/
+//
+//  SoapArray.m
+//
+//  Created by Jason Kichline on 12/14/10.
+//  Copyright 2010 Jason Kichline
+//
+//  Licensed under the Apache License, Version 2.0 (the "License");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
+//
+//  http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+
 #import "SoapArray.h"
 
 @implementation SoapArray
@@ -16,7 +29,7 @@
 	return self;
 }
 
-+(NSMutableArray*)newWithNode: (CXMLNode*) node {
++(SoapArray*)newWithNode: (CXMLNode*) node {
 	return [[[self alloc] initWithNode:node] autorelease];
 }
 
@@ -30,7 +43,7 @@
 }
 
 + (NSMutableString*) serialize: (NSArray*) array {
-	return [Soap serialize:array];
+	return [NSMutableString stringWithString:[Soap serialize:array]];
 }
 
 - (id) object {
@@ -231,7 +244,11 @@
 }
 
 - (id)initWithCapacity:(NSUInteger)numItems {
-	return [self.items initWithCapacity:numItems];
+	self = [self init];
+	if(self) {
+		self.items = [[[NSMutableArray alloc] initWithCapacity:numItems] autorelease];
+	}
+	return self;
 }
 
 + (id)array {
@@ -246,14 +263,14 @@
 	return [[[SoapArray alloc] initWithObjects:objects count:cnt] autorelease];
 }
 
-+ (id)arrayWithObjects:(id)firstObj, ...{
++ (id)arrayWithObjects:(id)firstObj, ... {
 	SoapArray* a = [SoapArray array];
 	id eachObject;
 	va_list argumentList;
 	if (firstObj) {
 		[a.items addObject: firstObj];
 		va_start(argumentList, firstObj);
-		while (eachObject == va_arg(argumentList, id)) {
+		while ((eachObject = va_arg(argumentList, id))) {
 			[a.items addObject: eachObject];
 		}
 		va_end(argumentList);
@@ -261,14 +278,14 @@
 	return a;
 }
 
-- (id)initWithObjects:(id)firstObj, ...{
+- (id)initWithObjects:(id)firstObj, ... {
 	if(self = [self init]) {
 		id eachObject;
 		va_list argumentList;
 		if (firstObj) {
 			[self.items addObject: firstObj];
 			va_start(argumentList, firstObj);
-			while (eachObject == va_arg(argumentList, id)) {
+			while ((eachObject = va_arg(argumentList, id))) {
 				[self.items addObject: eachObject];
 			}
 			va_end(argumentList);
@@ -294,23 +311,43 @@
 }
 
 - (id)initWithObjects:(const id *)objects count:(NSUInteger)cnt {
-	return [self.items initWithObjects:objects count:cnt];
+	self = [self init];
+	if(self) {
+		self.items = [[[NSMutableArray alloc] initWithObjects:objects count:cnt] autorelease];
+	}
+	return self;
 }
 
 - (id)initWithArray:(NSArray *)array {
-	return [self.items initWithArray:array];
+	self = [self init];
+	if(self) {
+		self.items = [[[NSMutableArray alloc] initWithArray:array] autorelease];
+	}
+	return self;
 }
 
 - (id)initWithArray:(NSArray *)array copyItems:(BOOL)flag {
-	return [self.items initWithArray:array copyItems:flag];
+	self = [self init];
+	if(self) {
+		self.items = [[[NSMutableArray alloc] initWithArray:array copyItems:flag] autorelease];
+	}
+	return self;
 }
 
 - (id)initWithContentsOfFile:(NSString *)path {
-	return [self.items initWithContentsOfFile:path];
+	self = [self init];
+	if(self) {
+		self.items = [[[NSMutableArray alloc] initWithContentsOfFile:path] autorelease];
+	}
+	return self;
 }
 
 - (id)initWithContentsOfURL:(NSURL *)url {
-	return [self.items initWithContentsOfURL:url];
+	self = [self init];
+	if(self) {
+		self.items = [[[NSMutableArray alloc] initWithContentsOfURL:url] autorelease];
+	}
+	return self;
 }
 
 - (NSArray *)sortedArrayUsingFunction:(NSInteger (*)(id, id, void *))comparator context:(void *)context {
@@ -334,7 +371,11 @@
 }
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
-	return [self.items initWithCoder:aDecoder];
+	self = [self init];
+	if(self) {
+		self.items = [[[NSMutableArray alloc] initWithCoder:aDecoder] autorelease];
+	}
+	return self;
 }
 
 - (id)copyWithZone:(NSZone *)zone {

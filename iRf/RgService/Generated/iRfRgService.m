@@ -8,7 +8,6 @@
 				
 #import "Soap.h"
 	
-#import "iRfArrayOfString.h"
 #import "iRfRet.h"
 
 /* Implementation of the service */
@@ -29,7 +28,7 @@
                 self.serviceUrl = [defaults stringForKey:@"serviceurl_preference"];
             }
             
-//			self.serviceUrl = @"http://173.1.1.237:8070/gzmpcscm3/services/RgService";
+//			self.serviceUrl = @"http://192.168.200.237:8070/gzmpcscm3/services/RgService";
 			self.namespace = @"http://org/gzmpc/RgService";
 			self.headers = nil;
 			self.logging = NO;
@@ -70,20 +69,21 @@
 		return _request;
 	}
 
-	/* Returns iRfRet*.  */
-	- (SoapRequest*) setRgSuccess: (id <SoapDelegate>) handler ids: (NSMutableArray*) ids code: (NSString*) code
+	/* Returns NSString*.  */
+	- (SoapRequest*) mvConfirm: (id <SoapDelegate>) handler username: (NSString*) username password: (NSString*) password jsonObject: (NSString*) jsonObject
 	{
-		return [self setRgSuccess: handler action: nil ids: ids code: code];
+		return [self mvConfirm: handler action: nil username: username password: password jsonObject: jsonObject];
 	}
 
-	- (SoapRequest*) setRgSuccess: (id) _target action: (SEL) _action ids: (NSMutableArray*) ids code: (NSString*) code
+	- (SoapRequest*) mvConfirm: (id) _target action: (SEL) _action username: (NSString*) username password: (NSString*) password jsonObject: (NSString*) jsonObject
 		{
 		NSMutableArray* _params = [NSMutableArray array];
 		
-		[_params addObject: [[[SoapParameter alloc] initWithValue: ids forName: @"ids"] autorelease]];
-		[_params addObject: [[[SoapParameter alloc] initWithValue: code forName: @"code"] autorelease]];
-		NSString* _envelope = [Soap createEnvelope: @"setRgSuccess" forNamespace: self.namespace withParameters: _params withHeaders: self.headers];
-		SoapRequest* _request = [SoapRequest create: _target action: _action service: self soapAction: @"" postData: _envelope deserializeTo: [[iRfRet alloc] autorelease]];
+		[_params addObject: [[[SoapParameter alloc] initWithValue: username forName: @"username"] autorelease]];
+		[_params addObject: [[[SoapParameter alloc] initWithValue: password forName: @"password"] autorelease]];
+		[_params addObject: [[[SoapParameter alloc] initWithValue: jsonObject forName: @"jsonObject"] autorelease]];
+		NSString* _envelope = [Soap createEnvelope: @"mvConfirm" forNamespace: self.namespace withParameters: _params withHeaders: self.headers];
+		SoapRequest* _request = [SoapRequest create: _target action: _action service: self soapAction: @"" postData: _envelope deserializeTo: @"NSString"];
 		[_request send];
 		return _request;
 	}
@@ -126,20 +126,20 @@
 		return _request;
 	}
 
-	/* Returns iRfRet*.  */
-	- (SoapRequest*) getRgs: (id <SoapDelegate>) handler queryxml: (NSString*) queryxml code: (NSString*) code
+	/* Returns NSString*.  */
+	- (SoapRequest*) getReqInfo: (id <SoapDelegate>) handler username: (NSString*) username password: (NSString*) password
 	{
-		return [self getRgs: handler action: nil queryxml: queryxml code: code];
+		return [self getReqInfo: handler action: nil username: username password: password];
 	}
 
-	- (SoapRequest*) getRgs: (id) _target action: (SEL) _action queryxml: (NSString*) queryxml code: (NSString*) code
+	- (SoapRequest*) getReqInfo: (id) _target action: (SEL) _action username: (NSString*) username password: (NSString*) password
 		{
 		NSMutableArray* _params = [NSMutableArray array];
 		
-		[_params addObject: [[[SoapParameter alloc] initWithValue: queryxml forName: @"queryxml"] autorelease]];
-		[_params addObject: [[[SoapParameter alloc] initWithValue: code forName: @"code"] autorelease]];
-		NSString* _envelope = [Soap createEnvelope: @"getRgs" forNamespace: self.namespace withParameters: _params withHeaders: self.headers];
-		SoapRequest* _request = [SoapRequest create: _target action: _action service: self soapAction: @"" postData: _envelope deserializeTo: [[iRfRet alloc] autorelease]];
+		[_params addObject: [[[SoapParameter alloc] initWithValue: username forName: @"username"] autorelease]];
+		[_params addObject: [[[SoapParameter alloc] initWithValue: password forName: @"password"] autorelease]];
+		NSString* _envelope = [Soap createEnvelope: @"getReqInfo" forNamespace: self.namespace withParameters: _params withHeaders: self.headers];
+		SoapRequest* _request = [SoapRequest create: _target action: _action service: self soapAction: @"" postData: _envelope deserializeTo: @"NSString"];
 		[_request send];
 		return _request;
 	}
@@ -210,6 +210,23 @@
 		return _request;
 	}
 
+	/* Returns iRfRet*.  */
+	- (SoapRequest*) setEdisRg: (id <SoapDelegate>) handler xml: (NSString*) xml
+	{
+		return [self setEdisRg: handler action: nil xml: xml];
+	}
+
+	- (SoapRequest*) setEdisRg: (id) _target action: (SEL) _action xml: (NSString*) xml
+		{
+		NSMutableArray* _params = [NSMutableArray array];
+		
+		[_params addObject: [[[SoapParameter alloc] initWithValue: xml forName: @"xml"] autorelease]];
+		NSString* _envelope = [Soap createEnvelope: @"setEdisRg" forNamespace: self.namespace withParameters: _params withHeaders: self.headers];
+		SoapRequest* _request = [SoapRequest create: _target action: _action service: self soapAction: @"" postData: _envelope deserializeTo: [[iRfRet alloc] autorelease]];
+		[_request send];
+		return _request;
+	}
+
 	/* Returns NSString*.  */
 	- (SoapRequest*) queryJSON: (id <SoapDelegate>) handler sql: (NSString*) sql dbname: (NSString*) dbname
 	{
@@ -223,6 +240,25 @@
 		[_params addObject: [[[SoapParameter alloc] initWithValue: sql forName: @"sql"] autorelease]];
 		[_params addObject: [[[SoapParameter alloc] initWithValue: dbname forName: @"dbname"] autorelease]];
 		NSString* _envelope = [Soap createEnvelope: @"queryJSON" forNamespace: self.namespace withParameters: _params withHeaders: self.headers];
+		SoapRequest* _request = [SoapRequest create: _target action: _action service: self soapAction: @"" postData: _envelope deserializeTo: @"NSString"];
+		[_request send];
+		return _request;
+	}
+
+	/* Returns NSString*.  */
+	- (SoapRequest*) getStockByLoc: (id <SoapDelegate>) handler username: (NSString*) username password: (NSString*) password locno: (NSString*) locno
+	{
+		return [self getStockByLoc: handler action: nil username: username password: password locno: locno];
+	}
+
+	- (SoapRequest*) getStockByLoc: (id) _target action: (SEL) _action username: (NSString*) username password: (NSString*) password locno: (NSString*) locno
+		{
+		NSMutableArray* _params = [NSMutableArray array];
+		
+		[_params addObject: [[[SoapParameter alloc] initWithValue: username forName: @"username"] autorelease]];
+		[_params addObject: [[[SoapParameter alloc] initWithValue: password forName: @"password"] autorelease]];
+		[_params addObject: [[[SoapParameter alloc] initWithValue: locno forName: @"locno"] autorelease]];
+		NSString* _envelope = [Soap createEnvelope: @"getStockByLoc" forNamespace: self.namespace withParameters: _params withHeaders: self.headers];
 		SoapRequest* _request = [SoapRequest create: _target action: _action service: self soapAction: @"" postData: _envelope deserializeTo: @"NSString"];
 		[_request send];
 		return _request;

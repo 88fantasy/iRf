@@ -19,7 +19,7 @@ iRfRgService* rgService;
 +(iRfServices*)service;
 +(iRfServices*)serviceWithServer:(NSString*)serverName;
 
-@property BOOL logging;
+@property (nonatomic) BOOL logging;
 @property (nonatomic, retain) NSString* server;
 @property (nonatomic, retain) NSString* defaultServer;
 

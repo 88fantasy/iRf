@@ -26,13 +26,19 @@
 	[service getAllRg:self action:@selector(getAllRgHandler:) username: @"" password: @"" queryjson: @""];
 
 	// Returns NSString*. 
+	[service getReqInfo:self action:@selector(getReqInfoHandler:) username: @"" password: @""];
+
+	// Returns NSString*. 
 	[service getRg:self action:@selector(getRgHandler:) username: @"" password: @"" labelno: @""];
 
-	// Returns iRfRet*. 
-	[service getRgs:self action:@selector(getRgsHandler:) queryxml: @"" code: @""];
+	// Returns NSString*. 
+	[service getStockByLoc:self action:@selector(getStockByLocHandler:) username: @"" password: @"" locno: @""];
 
 	// Returns NSString*. 
 	[service getTrGds:self action:@selector(getTrGdsHandler:) username: @"" password: @"" page: 0];
+
+	// Returns NSString*. 
+	[service mvConfirm:self action:@selector(mvConfirmHandler:) username: @"" password: @"" jsonObject: @""];
 
 	// Returns NSString*. 
 	[service queryJSON:self action:@selector(queryJSONHandler:) sql: @"" dbname: @""];
@@ -41,7 +47,7 @@
 	[service queryXML:self action:@selector(queryXMLHandler:) sql: @"" dbname: @""];
 
 	// Returns iRfRet*. 
-	[service setRgSuccess:self action:@selector(setRgSuccessHandler:) ids: [NSMutableArray array] code: @""];
+	[service setEdisRg:self action:@selector(setEdisRgHandler:) xml: @""];
 }
 
 	
@@ -118,6 +124,30 @@
 }
 	
 
+// Handle the response from getReqInfo.
+		
+- (void) getReqInfoHandler: (id) value {
+
+	// Handle errors
+	if([value isKindOfClass:[NSError class]]) {
+		NSLog(@"%@", value);
+		return;
+	}
+
+	// Handle faults
+	if([value isKindOfClass:[SoapFault class]]) {
+		NSLog(@"%@", value);
+		return;
+	}				
+			
+
+	// Do something with the NSString* result
+		NSString* result = (NSString*)value;
+	NSLog(@"getReqInfo returned the value: %@", result);
+			
+}
+	
+
 // Handle the response from getRg.
 		
 - (void) getRgHandler: (id) value {
@@ -142,9 +172,9 @@
 }
 	
 
-// Handle the response from getRgs.
+// Handle the response from getStockByLoc.
 		
-- (void) getRgsHandler: (id) value {
+- (void) getStockByLocHandler: (id) value {
 
 	// Handle errors
 	if([value isKindOfClass:[NSError class]]) {
@@ -159,9 +189,9 @@
 	}				
 			
 
-	// Do something with the iRfRet* result
-		iRfRet* result = (iRfRet*)value;
-	NSLog(@"getRgs returned the value: %@", result);
+	// Do something with the NSString* result
+		NSString* result = (NSString*)value;
+	NSLog(@"getStockByLoc returned the value: %@", result);
 			
 }
 	
@@ -186,6 +216,30 @@
 	// Do something with the NSString* result
 		NSString* result = (NSString*)value;
 	NSLog(@"getTrGds returned the value: %@", result);
+			
+}
+	
+
+// Handle the response from mvConfirm.
+		
+- (void) mvConfirmHandler: (id) value {
+
+	// Handle errors
+	if([value isKindOfClass:[NSError class]]) {
+		NSLog(@"%@", value);
+		return;
+	}
+
+	// Handle faults
+	if([value isKindOfClass:[SoapFault class]]) {
+		NSLog(@"%@", value);
+		return;
+	}				
+			
+
+	// Do something with the NSString* result
+		NSString* result = (NSString*)value;
+	NSLog(@"mvConfirm returned the value: %@", result);
 			
 }
 	
@@ -238,9 +292,9 @@
 }
 	
 
-// Handle the response from setRgSuccess.
+// Handle the response from setEdisRg.
 		
-- (void) setRgSuccessHandler: (id) value {
+- (void) setEdisRgHandler: (id) value {
 
 	// Handle errors
 	if([value isKindOfClass:[NSError class]]) {
@@ -257,7 +311,7 @@
 
 	// Do something with the iRfRet* result
 		iRfRet* result = (iRfRet*)value;
-	NSLog(@"setRgSuccess returned the value: %@", result);
+	NSLog(@"setEdisRg returned the value: %@", result);
 			
 }
 	
