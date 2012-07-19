@@ -28,6 +28,7 @@ NSString const *msgKey = @"msg";
     
     if (self) {
         // Custom initialization
+        self.title = @"货品对应关系明细";
         UIBarButtonItem *saveButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemSave
                                             target:self action:@selector(confirmTr:)];
         self.navigationItem.rightBarButtonItem = saveButton;

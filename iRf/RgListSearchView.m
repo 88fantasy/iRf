@@ -19,7 +19,7 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
-//        searchFields = [[NSDictionary alloc] initWithObjectsAndKeys: nil];
+        self.title = @"查询条件";
     }
     return self;
 }

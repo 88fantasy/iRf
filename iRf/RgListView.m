@@ -29,6 +29,7 @@ static NSString *msgKey = @"msg";
     self = [super initWithStyle:style];
     if (self) {
         // Custom initialization
+        self.title = @"未收货列表";
         canReload = YES;
         if (_refreshHeaderView == nil) {
             

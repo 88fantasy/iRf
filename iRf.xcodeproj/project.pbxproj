@@ -33,7 +33,6 @@
 		8F93E31C13D41BCB006BF26D /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F93E31A13D41BCB006BF26D /* Reachability.m */; };
 		8F93E39E13D41D3B006BF26D /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8F93E39D13D41D3B006BF26D /* SystemConfiguration.framework */; };
 		8F93E3DA13D41E85006BF26D /* iRfRgServiceExample.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F93E3A213D41E85006BF26D /* iRfRgServiceExample.m */; };
-		8F93E3DB13D41E85006BF26D /* iRfArrayOfString.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F93E3A513D41E85006BF26D /* iRfArrayOfString.m */; };
 		8F93E3DC13D41E85006BF26D /* iRfRet.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F93E3A713D41E85006BF26D /* iRfRet.m */; };
 		8F93E3DD13D41E85006BF26D /* iRfRgService.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F93E3A913D41E85006BF26D /* iRfRgService.m */; };
 		8F93E3DE13D41E85006BF26D /* iRfServices.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F93E3AB13D41E85006BF26D /* iRfServices.m */; };
@@ -42,7 +41,6 @@
 		8F93E3E113D41E85006BF26D /* NSMutableArray+Soap.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F93E3B213D41E85006BF26D /* NSMutableArray+Soap.m */; };
 		8F93E3E213D41E85006BF26D /* Soap.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F93E3B413D41E85006BF26D /* Soap.m */; };
 		8F93E3E313D41E85006BF26D /* SoapArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F93E3B613D41E85006BF26D /* SoapArray.m */; };
-		8F93E3E413D41E85006BF26D /* SoapDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F93E3B913D41E85006BF26D /* SoapDictionary.m */; };
 		8F93E3E513D41E85006BF26D /* SoapFault.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F93E3BB13D41E85006BF26D /* SoapFault.m */; };
 		8F93E3E613D41E85006BF26D /* SoapHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F93E3BD13D41E85006BF26D /* SoapHandler.m */; };
 		8F93E3E713D41E85006BF26D /* SoapLiteral.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F93E3BF13D41E85006BF26D /* SoapLiteral.m */; };
@@ -102,6 +100,11 @@
 		8FF0B4981599A06600846BEC /* zbar-help.html in Resources */ = {isa = PBXBuildFile; fileRef = 8FF0B4931599A06600846BEC /* zbar-help.html */; };
 		8FF0B4991599A06600846BEC /* zbar-helpicons.png in Resources */ = {isa = PBXBuildFile; fileRef = 8FF0B4941599A06600846BEC /* zbar-helpicons.png */; };
 		8FF0B49A1599A06600846BEC /* zbar-samples.png in Resources */ = {isa = PBXBuildFile; fileRef = 8FF0B4951599A06600846BEC /* zbar-samples.png */; };
+		8FFB455815B7B388009ED1FC /* MedicineReqCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FFB455315B7B388009ED1FC /* MedicineReqCell.m */; };
+		8FFB455915B7B388009ED1FC /* MedicineReqCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8FFB455415B7B388009ED1FC /* MedicineReqCell.xib */; };
+		8FFB455A15B7B388009ED1FC /* MedicineReqListView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FFB455615B7B388009ED1FC /* MedicineReqListView.m */; };
+		8FFB455B15B7B388009ED1FC /* MedicineReqListView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8FFB455715B7B388009ED1FC /* MedicineReqListView.xib */; };
+		8FFB455D15B7F682009ED1FC /* barcode.png in Resources */ = {isa = PBXBuildFile; fileRef = 8FFB455C15B7F682009ED1FC /* barcode.png */; };
 		CE04389B14161CBF0078D955 /* RgListSearchView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE04389914161CBF0078D955 /* RgListSearchView.m */; };
 		CE04389C14161CBF0078D955 /* RgListSearchView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE04389A14161CBF0078D955 /* RgListSearchView.xib */; };
 		CE353E6914038E1100012DF3 /* 114.png in Resources */ = {isa = PBXBuildFile; fileRef = CE353E5A14038E1100012DF3 /* 114.png */; };
@@ -182,8 +185,6 @@
 		8F93E39D13D41D3B006BF26D /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		8F93E3A113D41E85006BF26D /* iRfRgServiceExample.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iRfRgServiceExample.h; sourceTree = "<group>"; };
 		8F93E3A213D41E85006BF26D /* iRfRgServiceExample.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = iRfRgServiceExample.m; sourceTree = "<group>"; };
-		8F93E3A413D41E85006BF26D /* iRfArrayOfString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iRfArrayOfString.h; sourceTree = "<group>"; };
-		8F93E3A513D41E85006BF26D /* iRfArrayOfString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = iRfArrayOfString.m; sourceTree = "<group>"; };
 		8F93E3A613D41E85006BF26D /* iRfRet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iRfRet.h; sourceTree = "<group>"; };
 		8F93E3A713D41E85006BF26D /* iRfRet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = iRfRet.m; sourceTree = "<group>"; };
 		8F93E3A813D41E85006BF26D /* iRfRgService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iRfRgService.h; sourceTree = "<group>"; };
@@ -201,8 +202,6 @@
 		8F93E3B513D41E85006BF26D /* SoapArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SoapArray.h; sourceTree = "<group>"; };
 		8F93E3B613D41E85006BF26D /* SoapArray.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SoapArray.m; sourceTree = "<group>"; };
 		8F93E3B713D41E85006BF26D /* SoapDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SoapDelegate.h; sourceTree = "<group>"; };
-		8F93E3B813D41E85006BF26D /* SoapDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SoapDictionary.h; sourceTree = "<group>"; };
-		8F93E3B913D41E85006BF26D /* SoapDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SoapDictionary.m; sourceTree = "<group>"; };
 		8F93E3BA13D41E85006BF26D /* SoapFault.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SoapFault.h; sourceTree = "<group>"; };
 		8F93E3BB13D41E85006BF26D /* SoapFault.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SoapFault.m; sourceTree = "<group>"; };
 		8F93E3BC13D41E85006BF26D /* SoapHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SoapHandler.h; sourceTree = "<group>"; };
@@ -314,6 +313,13 @@
 		8FF0B4941599A06600846BEC /* zbar-helpicons.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "zbar-helpicons.png"; sourceTree = "<group>"; };
 		8FF0B4951599A06600846BEC /* zbar-samples.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "zbar-samples.png"; sourceTree = "<group>"; };
 		8FF14E321597FB8500AFB828 /* iRf.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = iRf.entitlements; sourceTree = "<group>"; };
+		8FFB455215B7B388009ED1FC /* MedicineReqCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MedicineReqCell.h; sourceTree = "<group>"; };
+		8FFB455315B7B388009ED1FC /* MedicineReqCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MedicineReqCell.m; sourceTree = "<group>"; };
+		8FFB455415B7B388009ED1FC /* MedicineReqCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MedicineReqCell.xib; sourceTree = "<group>"; };
+		8FFB455515B7B388009ED1FC /* MedicineReqListView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MedicineReqListView.h; sourceTree = "<group>"; };
+		8FFB455615B7B388009ED1FC /* MedicineReqListView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MedicineReqListView.m; sourceTree = "<group>"; };
+		8FFB455715B7B388009ED1FC /* MedicineReqListView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MedicineReqListView.xib; sourceTree = "<group>"; };
+		8FFB455C15B7F682009ED1FC /* barcode.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = barcode.png; sourceTree = "<group>"; };
 		CE04389814161CBF0078D955 /* RgListSearchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RgListSearchView.h; sourceTree = "<group>"; };
 		CE04389914161CBF0078D955 /* RgListSearchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RgListSearchView.m; sourceTree = "<group>"; };
 		CE04389A14161CBF0078D955 /* RgListSearchView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RgListSearchView.xib; sourceTree = "<group>"; };
@@ -477,6 +483,12 @@
 				8FE4843F15B3C1A200A9FB32 /* BaseCodeTableView.h */,
 				8FE4844015B3C1A200A9FB32 /* BaseCodeTableView.m */,
 				8FE4844115B3C1A300A9FB32 /* BaseCodeTableView.xib */,
+				8FFB455515B7B388009ED1FC /* MedicineReqListView.h */,
+				8FFB455615B7B388009ED1FC /* MedicineReqListView.m */,
+				8FFB455715B7B388009ED1FC /* MedicineReqListView.xib */,
+				8FFB455215B7B388009ED1FC /* MedicineReqCell.h */,
+				8FFB455315B7B388009ED1FC /* MedicineReqCell.m */,
+				8FFB455415B7B388009ED1FC /* MedicineReqCell.xib */,
 			);
 			path = iRf;
 			sourceTree = "<group>";
@@ -546,8 +558,6 @@
 		8F93E3A313D41E85006BF26D /* Generated */ = {
 			isa = PBXGroup;
 			children = (
-				8F93E3A413D41E85006BF26D /* iRfArrayOfString.h */,
-				8F93E3A513D41E85006BF26D /* iRfArrayOfString.m */,
 				8F93E3A613D41E85006BF26D /* iRfRet.h */,
 				8F93E3A713D41E85006BF26D /* iRfRet.m */,
 				8F93E3A813D41E85006BF26D /* iRfRgService.h */,
@@ -572,8 +582,6 @@
 				8F93E3B513D41E85006BF26D /* SoapArray.h */,
 				8F93E3B613D41E85006BF26D /* SoapArray.m */,
 				8F93E3B713D41E85006BF26D /* SoapDelegate.h */,
-				8F93E3B813D41E85006BF26D /* SoapDictionary.h */,
-				8F93E3B913D41E85006BF26D /* SoapDictionary.m */,
 				8F93E3BA13D41E85006BF26D /* SoapFault.h */,
 				8F93E3BB13D41E85006BF26D /* SoapFault.m */,
 				8F93E3BC13D41E85006BF26D /* SoapHandler.h */,
@@ -743,6 +751,7 @@
 		CE353E5914038E1100012DF3 /* logo */ = {
 			isa = PBXGroup;
 			children = (
+				8FFB455C15B7F682009ED1FC /* barcode.png */,
 				8FCC925B15A3EDB400B444F9 /* 44X44 */,
 				8FCC924515A3ED9000B444F9 /* 88X88 */,
 				CE353E5A14038E1100012DF3 /* 114.png */,
@@ -906,6 +915,9 @@
 				8FA6637A15AC20570043009C /* 144.png in Resources */,
 				8FE1DA9215AD164700EA5331 /* StockAdjustView.xib in Resources */,
 				8FE4844315B3C1A300A9FB32 /* BaseCodeTableView.xib in Resources */,
+				8FFB455915B7B388009ED1FC /* MedicineReqCell.xib in Resources */,
+				8FFB455B15B7B388009ED1FC /* MedicineReqListView.xib in Resources */,
+				8FFB455D15B7F682009ED1FC /* barcode.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -947,7 +959,6 @@
 				8F93E2F513D41B6F006BF26D /* RootViewController.m in Sources */,
 				8F93E31C13D41BCB006BF26D /* Reachability.m in Sources */,
 				8F93E3DA13D41E85006BF26D /* iRfRgServiceExample.m in Sources */,
-				8F93E3DB13D41E85006BF26D /* iRfArrayOfString.m in Sources */,
 				8F93E3DC13D41E85006BF26D /* iRfRet.m in Sources */,
 				8F93E3DD13D41E85006BF26D /* iRfRgService.m in Sources */,
 				8F93E3DE13D41E85006BF26D /* iRfServices.m in Sources */,
@@ -956,7 +967,6 @@
 				8F93E3E113D41E85006BF26D /* NSMutableArray+Soap.m in Sources */,
 				8F93E3E213D41E85006BF26D /* Soap.m in Sources */,
 				8F93E3E313D41E85006BF26D /* SoapArray.m in Sources */,
-				8F93E3E413D41E85006BF26D /* SoapDictionary.m in Sources */,
 				8F93E3E513D41E85006BF26D /* SoapFault.m in Sources */,
 				8F93E3E613D41E85006BF26D /* SoapHandler.m in Sources */,
 				8F93E3E713D41E85006BF26D /* SoapLiteral.m in Sources */,
@@ -993,6 +1003,8 @@
 				CE04389B14161CBF0078D955 /* RgListSearchView.m in Sources */,
 				8FE1DA9115AD164700EA5331 /* StockAdjustView.m in Sources */,
 				8FE4844215B3C1A300A9FB32 /* BaseCodeTableView.m in Sources */,
+				8FFB455815B7B388009ED1FC /* MedicineReqCell.m in Sources */,
+				8FFB455A15B7B388009ED1FC /* MedicineReqListView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1095,7 +1107,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/iRf/ZBarSDK\"",
-					"\"$(SRCROOT)/iRf/ZBarSDK/ZBarSDK\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -1121,7 +1132,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/iRf/ZBarSDK\"",
-					"\"$(SRCROOT)/iRf/ZBarSDK/ZBarSDK\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";

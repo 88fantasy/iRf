@@ -28,6 +28,7 @@ static NSString *msgKey = @"msg";
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
+        self.title = @"货品对应关系";
         if (_refreshHeaderView == nil) {
             self.tablelistView  = (UITableView*)self.view;
             EGORefreshTableHeaderView *view = [[EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0.0f, 0.0f - self.view.bounds.size.height, self.view.frame.size.width, self.view.bounds.size.height)];

@@ -22,6 +22,7 @@ static NSString *kExplainKey = @"explanation";
     if (self) {
         // Custom initialization
         self.codenum = -1;
+        self.title = @"扫描基药码";
     }
     return self;
 }
@@ -38,7 +39,9 @@ static NSString *kExplainKey = @"explanation";
     self.navigationItem.rightBarButtonItem = addButton;
 //    [addButton release];
     
-    UIButton *button = [UIButton buttonWithType:UIButtonTypeInfoDark];
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    button.frame = CGRectMake(0, 0, 60, 31);
+    [button setImage:[UIImage imageNamed:@"barcode.png"] forState:UIControlStateNormal];
     [button addTarget:self action:@selector(scanAction:) forControlEvents:UIControlEventTouchUpInside];
     self.codeinput.rightView = button;
     self.codeinput.rightViewMode = UITextFieldViewModeAlways;

@@ -51,6 +51,10 @@
 	- (SoapRequest*) setEdisRg: (id) target action: (SEL) action xml: (NSString*) xml;
 
 	/* Returns NSString*.  */
+	- (SoapRequest*) doReqComfirm: (id <SoapDelegate>) handler username: (NSString*) username password: (NSString*) password jsonArray: (NSString*) jsonArray;
+	- (SoapRequest*) doReqComfirm: (id) target action: (SEL) action username: (NSString*) username password: (NSString*) password jsonArray: (NSString*) jsonArray;
+
+	/* Returns NSString*.  */
 	- (SoapRequest*) queryJSON: (id <SoapDelegate>) handler sql: (NSString*) sql dbname: (NSString*) dbname;
 	- (SoapRequest*) queryJSON: (id) target action: (SEL) action sql: (NSString*) sql dbname: (NSString*) dbname;
 

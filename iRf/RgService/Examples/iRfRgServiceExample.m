@@ -17,6 +17,9 @@
 	
 
 	// Returns NSString*. 
+	[service doReqComfirm:self action:@selector(doReqComfirmHandler:) username: @"" password: @"" jsonArray: @""];
+
+	// Returns NSString*. 
 	[service doRg:self action:@selector(doRgHandler:) username: @"" password: @"" splid: @"" rgqty: @"" locno: @""];
 
 	// Returns NSString*. 
@@ -50,6 +53,30 @@
 	[service setEdisRg:self action:@selector(setEdisRgHandler:) xml: @""];
 }
 
+	
+
+// Handle the response from doReqComfirm.
+		
+- (void) doReqComfirmHandler: (id) value {
+
+	// Handle errors
+	if([value isKindOfClass:[NSError class]]) {
+		NSLog(@"%@", value);
+		return;
+	}
+
+	// Handle faults
+	if([value isKindOfClass:[SoapFault class]]) {
+		NSLog(@"%@", value);
+		return;
+	}				
+			
+
+	// Do something with the NSString* result
+		NSString* result = (NSString*)value;
+	NSLog(@"doReqComfirm returned the value: %@", result);
+			
+}
 	
 
 // Handle the response from doRg.

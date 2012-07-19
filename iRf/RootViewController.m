@@ -11,6 +11,7 @@
 #import "RgListView.h"
 #import "TrListView.h"
 #import "StockAdjustView.h"
+#import "MedicineReqListView.h"
 
 static NSString *kCellIdentifier = @"MyIdentifier";
 static NSString *kTitleKey = @"title";
@@ -123,6 +124,14 @@ static NSString *iconKey = @"iconfile";
             [stockAdjustView release];
         }
         
+        MedicineReqListView *medicineReqListView = [[MedicineReqListView alloc] initWithNibName:@"MedicineReqListView" bundle:nil];
+        [self.menuList addObject:[NSDictionary dictionaryWithObjectsAndKeys:
+                                  @"药房领药", kTitleKey,
+                                  @"对低于库存下限的货品进行批量移库", kExplainKey,
+                                  medicineReqListView, kViewControllerKey,
+                                  @"药房领药.png",iconKey,
+                                  nil]];
+        [medicineReqListView release];
     }
     
     

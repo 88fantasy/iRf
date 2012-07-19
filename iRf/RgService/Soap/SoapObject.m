@@ -19,9 +19,8 @@
 //  Authors:
 //    Jason Kichline, andCulture - Harrisburg, Pennsylvania USA
 //    Karl Schulenburg, UMAI Development - Shoreditch, London UK
-
+#import "CXMLNode.h"
 #import "Soap.h"
-#import "SoapObject.h"
 
 @implementation SoapObject
 
@@ -34,7 +33,7 @@
 
 // Static method for initializing from a node.
 + (id) newWithNode: (CXMLNode*) node {
-	return (id)[[[SoapObject alloc] initWithNode: node] autorelease];
+	return (id)[[SoapObject alloc] initWithNode: node];
 }
 
 // Called when initializing the object from a node
@@ -67,10 +66,6 @@
 
 - (NSString*) description {
 	return [Soap serialize:self];
-}
-
-- (void) dealloc {
-	[super dealloc];
 }
 
 @end

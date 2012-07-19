@@ -22,11 +22,11 @@
 }
 
 +(iRfServices*)service{
-	return (iRfServices*)[[[iRfServices alloc] init] autorelease];
+	return (iRfServices*)[[iRfServices alloc] init];
 }
 
 +(iRfServices*)serviceWithServer:(NSString*)serverName{
-	return (iRfServices*)[[[iRfServices alloc] initWithServer:serverName] autorelease];
+	return (iRfServices*)[[iRfServices alloc] initWithServer:serverName];
 }
 
 #pragma mark Methods
@@ -37,8 +37,7 @@
 }
 
 -(void)setServer:(NSString*)value{
-	[server release];
-	server = [value retain];
+	server = value;
 	[self updateServices];
 }
 
