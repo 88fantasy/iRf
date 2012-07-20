@@ -142,6 +142,8 @@ static NSString *msgKey = @"msg";
                     
                     [self.tableView reloadData];
                     [self doneLoadingTableViewData];
+                    
+                    
                 }
                 
             }
@@ -161,15 +163,17 @@ static NSString *msgKey = @"msg";
 
 - (void) reqConfirm
 {
+    if ([self.dataList count]>0) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Info", @"Info")
+                                                        message:@"确定以当前列表领药??"
+                                                       delegate:self 
+                                              cancelButtonTitle:NSLocalizedString(@"Cancel", @"Cancel")  
+                                              otherButtonTitles: NSLocalizedString(@"Apply", @"Apply")
+                              ,nil];
+        [alert show];	
+        [alert release];
+    }
     
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Info", @"Info")
-                            message:@"确定以当前列表领药??"
-                           delegate:self 
-                  cancelButtonTitle:NSLocalizedString(@"Cancel", @"Cancel")  
-                  otherButtonTitles: NSLocalizedString(@"Apply", @"Apply")
-                          ,nil];
-    [alert show];	
-    [alert release];
     
 }
 
@@ -287,6 +291,10 @@ static NSString *msgKey = @"msg";
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
+    NSString *title = @"领药列表(共";
+    title = [title stringByAppendingFormat:@"%d",[self.dataList count]];
+    title = [title stringByAppendingString:@"条)"];
+    self.title = title;
     return [self.dataList count];
 }
 
@@ -297,7 +305,8 @@ static NSString *msgKey = @"msg";
     
     static BOOL nibsRegistered = NO;
     if (!nibsRegistered) {
-        UINib *nib = [UINib nibWithNibName:@"MedicineReqCell" bundle:nil];
+        UINib *nib = [UINib nibWithNibName:IsPad? @"MedicineReqCellHD" :@"MedicineReqCell" 
+                                    bundle:nil];
         [tableView registerNib:nib forCellReuseIdentifier:kCellIdentifier];
         nibsRegistered = YES;
     }
@@ -317,7 +326,13 @@ static NSString *msgKey = @"msg";
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 152.0;
+    if (IsPad) {
+        return 100.0;
+    }
+    else {
+        return 152.0;
+    }
+    
 }
 
 // Override to support conditional editing of the table view.
