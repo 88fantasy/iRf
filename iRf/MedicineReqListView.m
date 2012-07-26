@@ -291,10 +291,7 @@ static NSString *msgKey = @"msg";
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    NSString *title = @"领药列表(共";
-    title = [title stringByAppendingFormat:@"%d",[self.dataList count]];
-    title = [title stringByAppendingString:@"条)"];
-    self.title = title;
+    self.title = [NSString stringWithFormat:@"领药列表(共%d条)",[self.dataList count]];
     return [self.dataList count];
 }
 

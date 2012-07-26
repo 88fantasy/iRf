@@ -11,7 +11,7 @@
 
 @interface StockAdjustView : UIViewController
 // ADD: delegate protocol
-< ZBarReaderDelegate,UITextFieldDelegate,NSXMLParserDelegate,UITableViewDelegate,UITableViewDataSource,BaseCodeTableViewDelegate >
+< ZBarReaderDelegate,UITextFieldDelegate,NSXMLParserDelegate,UITableViewDelegate,UITableViewDataSource,BaseCodeTableViewDelegate,UIPickerViewDataSource,UIPickerViewDelegate >
 {
     UITextField *orglocno;
     UITextField *tolocno;
@@ -25,6 +25,10 @@
     UIScrollView *scrollView;
     NSMutableArray *stockList;
     NSArray *baseCodeList;
+    NSArray *venders;
+    UIPickerView *venderPickerView;
+    NSDictionary *vender;
+    NSString *defaultflag;
 }
 
 @property (nonatomic, retain) IBOutlet UITextField *orglocno;
@@ -38,6 +42,10 @@
 @property (nonatomic, retain) IBOutlet UIScrollView *scrollView;
 @property (nonatomic, retain) NSMutableArray *stockList;
 @property (nonatomic, retain) NSArray *baseCodeList;
+@property (nonatomic, retain) NSArray *venders;
+@property (nonatomic, retain) UIPickerView *venderPickerView;
+@property (nonatomic, retain) NSDictionary *vender;
+@property (nonatomic, retain) NSString *defaultflag;
 
 - (IBAction) orgButtonTapped;
 - (IBAction) toButtonTapped;

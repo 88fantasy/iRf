@@ -43,8 +43,8 @@ static NSString *kExplainKey = @"explanation";
     button.frame = CGRectMake(0, 0, 60, 31);
     [button setImage:[UIImage imageNamed:@"barcode.png"] forState:UIControlStateNormal];
     [button addTarget:self action:@selector(scanAction:) forControlEvents:UIControlEventTouchUpInside];
-    self.codeinput.rightView = button;
-    self.codeinput.rightViewMode = UITextFieldViewModeAlways;
+    self.codeinput.leftView = button;
+    self.codeinput.leftViewMode = UITextFieldViewModeAlways;
 //    [button release];
     
     self.codeList = [NSMutableArray array];

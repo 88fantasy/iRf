@@ -112,7 +112,7 @@ static NSString *iconKey = @"iconfile";
     
     if (!IsInternet) {
         
-        if (!IsPad) {
+//        if (!IsPad) {
             StockAdjustView *stockAdjustView = [[StockAdjustView alloc]initWithNibName:@"StockAdjustView" bundle:nil];
             
             [self.menuList addObject:[NSDictionary dictionaryWithObjectsAndKeys:
@@ -122,7 +122,7 @@ static NSString *iconKey = @"iconfile";
                                       @"库存调整.png",iconKey,
                                       nil]];
             [stockAdjustView release];
-        }
+//        }
         
         MedicineReqListView *medicineReqListView = [[MedicineReqListView alloc] initWithNibName:@"MedicineReqListView" bundle:nil];
         [self.menuList addObject:[NSDictionary dictionaryWithObjectsAndKeys:

@@ -514,6 +514,9 @@ static NSString *msgKey = @"msg";
     {
         searchKey = @"factno";
     }
+    else if ([scope isEqualToString:@"货品码"]) {
+        searchKey = @"cusgdsid";
+    }
     else{
         searchKey = @"goodsname";
     }

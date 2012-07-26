@@ -22,9 +22,14 @@ static NSString *msgKey = @"msg";
 
 @synthesize orglocno,tolocno,goodsqty,orgswitch,toswitch,stocktableview;
 @synthesize activityView,activityIndicator,scrollView,stockList,baseCodeList;
+@synthesize venders,venderPickerView,vender;
+@synthesize defaultflag;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
+    if (IsPad) {
+        nibNameOrNil = [nibNameOrNil stringByAppendingString:@"HD"];
+    }
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
@@ -34,6 +39,21 @@ static NSString *msgKey = @"msg";
         UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Apply",@"Apply") style:UIBarButtonItemStyleBordered target:self action:@selector(confirmAdjust)];
         self.navigationItem.rightBarButtonItem = addButton;
         [addButton release];
+        
+        venderPickerView = [[UIPickerView alloc] initWithFrame:CGRectMake(0, 100, 320, 250)];
+        venderPickerView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
+        
+
+        [venderPickerView setCenter:CGPointMake(self.view.frame.size.width/2, self.view.frame.size.height/2)];
+
+        
+        venderPickerView.delegate = self;
+        
+        venderPickerView.showsSelectionIndicator = YES;
+        
+        // add this picker to our view controller, initially hidden
+        venderPickerView.hidden = YES;
+        [self.view addSubview:venderPickerView];
     }
     return self;
 }
@@ -42,18 +62,36 @@ static NSString *msgKey = @"msg";
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    UIToolbar* numberToolbar = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 0, 320, 50)];
-    numberToolbar.barStyle = UIBarStyleBlackTranslucent;
-    numberToolbar.items = [NSArray arrayWithObjects:
-                           [[UIBarButtonItem alloc]initWithTitle:NSLocalizedString(@"Cancel",@"Cancel") style:UIBarButtonItemStyleBordered target:self action:@selector(cancelNumberPad)],
-                           [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil],
-                           [[UIBarButtonItem alloc]initWithTitle:NSLocalizedString(@"Apply",@"Apply") style:UIBarButtonItemStyleDone target:self action:@selector(doneWithNumberPad)],
-                           nil];
-    [numberToolbar sizeToFit];
-    self.goodsqty.inputAccessoryView = numberToolbar;
-    [numberToolbar release];
+    if (!IsPad) {
+        UIToolbar* numberToolbar = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 0, 320, 50)];
+        numberToolbar.barStyle = UIBarStyleBlackTranslucent;
+        numberToolbar.items = [NSArray arrayWithObjects:
+                               [[UIBarButtonItem alloc]initWithTitle:NSLocalizedString(@"Cancel",@"Cancel") style:UIBarButtonItemStyleBordered target:self action:@selector(cancelNumberPad)],
+                               [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil],
+                               [[UIBarButtonItem alloc]initWithTitle:NSLocalizedString(@"Apply",@"Apply") style:UIBarButtonItemStyleDone target:self action:@selector(doneWithNumberPad)],
+                               nil];
+        [numberToolbar sizeToFit];
+        self.goodsqty.inputAccessoryView = numberToolbar;
+        [numberToolbar release];
+    }
     
     self.baseCodeList = [NSArray array];
+    self.venders = [NSArray array];
+    
+    if (IsPad) {
+        CGRect frame =  self.orglocno.frame;
+        frame.size.height = 60;
+        self.orglocno.frame = frame;
+        
+        frame = self.tolocno.frame;
+        frame.size.height = 60;
+        self.tolocno.frame = frame;
+
+        frame = self.goodsqty.frame;
+        frame.size.height = 60;
+        self.goodsqty.frame = frame;
+        
+    }
 }
 
 - (void)viewDidUnload
@@ -72,6 +110,9 @@ static NSString *msgKey = @"msg";
     self.activityIndicator = nil;
     self.stockList = nil;
     self.baseCodeList = nil;
+    self.venders = nil;
+    self.vender = nil;
+    self.defaultflag = nil;
 }
 
 - (IBAction) orgButtonTapped
@@ -119,6 +160,7 @@ static NSString *msgKey = @"msg";
     switch (txtindex) {
         case 1:
             orglocno.text = symbol.data;
+            [self getStockList];
             break;
             
         default:
@@ -137,6 +179,7 @@ static NSString *msgKey = @"msg";
 - (IBAction) getStockList
 {
     NSString *orgtext = [self.orglocno.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    orgtext = [orgtext uppercaseString];
     if ( [orgtext length]>0) {
         [self displayActiveIndicatorView];
         
@@ -260,21 +303,65 @@ static NSString *msgKey = @"msg";
 
 - (void) confirmAdjust
 {
+    if (!self.venderPickerView.hidden) {
+        [self.venderPickerView setHidden:YES];
+    }
+    [self.orglocno resignFirstResponder];
+    [self.tolocno resignFirstResponder];
+    [self.goodsqty resignFirstResponder];
+    [self.scrollView setContentOffset:CGPointMake(0, 0) animated:YES];
+    
+    NSString *orgtext = [self.orglocno.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSString *totext = [self.tolocno.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    
     NSIndexPath *indexPath = [self.stocktableview indexPathForSelectedRow];
     if (indexPath!=nil
-        &&self.orglocno.text.length>0
-        &&self.tolocno.text.length>0
+        &&orgtext.length>0
+        &&totext.length>0
         &&self.goodsqty.text.length>0)
     {
-        NSDictionary *obj = [[self.stockList objectAtIndex:indexPath.row] objectForKey:kObjKey] ;
+        orgtext = [orgtext uppercaseString];
+        totext = [totext uppercaseString];
+        NSDictionary *obj = [[self.stockList objectAtIndex:indexPath.row] objectForKey:kObjKey];
+        NSString *goodsname = [obj objectForKey:@"goodsname"];
+        NSString *houselocno = [obj objectForKey:@"houselocno"];
         NSString *basecode = [obj objectForKey:@"basecode"];
         if (![@"" isEqualToString:basecode]
-            &&[[self.tolocno.text substringToIndex:1] isEqualToString:@"C"]
+            &&[[totext substringToIndex:1] isEqualToString:@"C"]
             &&[self.baseCodeList count]!=[self.goodsqty.text intValue]) {
             BaseCodeTableView *basetable = [[BaseCodeTableView alloc]initWithNibName:@"BaseCodeTableView" bundle:nil];
             basetable.codenum = [self.goodsqty.text intValue];
             basetable.baseCodeTableViewDelegate = self;
             [[self navigationController] pushViewController:basetable animated:YES];      
+        }
+        else if ([@"C01" isEqualToString:orgtext]&&[[totext substringToIndex:1] isEqualToString:@"B"]&&[houselocno isEqualToString:@""]&&self.defaultflag==nil) {
+            UIAlertView *alert = [[UIAlertView alloc] 
+                                  initWithTitle:@"药房默认货位提示"
+                                  message:[NSString stringWithFormat:@"是否将 %@ 的药房默认货位设置成 %@ ??",goodsname,totext] 
+                                  delegate:self 
+                                  cancelButtonTitle:NSLocalizedString(@"Cancel", @"Cancel") 
+                                  otherButtonTitles:NSLocalizedString(@"Apply", @"Apply"),
+                                  nil];
+            [alert show];	
+            [alert release];
+        }
+        else if ([totext isEqualToString:@"TH"]&&vender == nil) {
+            
+            iRfRgService* service = [iRfRgService service];
+            
+            [service queryJSON:self action:@selector(showVenderPicker:) 
+                           sql:@"select * from edis_company x where nvl(companytype,0) = 0" 
+                        dbname:nil];
+            
+        }
+        else if ([totext isEqualToString:@"KSLY"]&&vender == nil) {
+            
+            iRfRgService* service = [iRfRgService service];
+            
+            [service queryJSON:self action:@selector(showVenderPicker:) 
+                           sql:@"select * from edis_company x where nvl(companytype,0) = 1" 
+                        dbname:nil];
+            
         }
         else {
             [self displayActiveIndicatorView];
@@ -289,12 +376,21 @@ static NSString *msgKey = @"msg";
                     basecode = [basecode stringByAppendingString:[@"," stringByAppendingString: [self.baseCodeList objectAtIndex:i]]];
                 }
             }
+            NSMutableDictionary *params = [NSMutableDictionary dictionary];
+            if (vender!=nil) {
+                [params setObject:vender forKey:@"venderobj"];
+            }
+            if (self.defaultflag!=nil) {
+                [params setObject:self.defaultflag forKey:@"defaultflag"];
+            }
+            
             NSDictionary *jsonobj =[NSDictionary dictionaryWithObjectsAndKeys:
-                                    self.orglocno.text,@"orglocno",
-                                    self.tolocno.text,@"tolocno",
+                                    orgtext,@"orglocno",
+                                    totext,@"tolocno",
                                     self.goodsqty.text,@"goodsqty",
                                     basecode,@"basecode",
                                     stock,@"stockobj",
+                                    params,@"params",
                                     nil];
             SBJsonWriter *writer = [[SBJsonWriter alloc] init];
             NSString *json =[writer stringWithObject:jsonobj];
@@ -312,6 +408,20 @@ static NSString *msgKey = @"msg";
                       password: password
                     jsonObject:json];
         }
+    }
+    
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if ([alertView.title isEqualToString:@"药房默认货位提示"]) {
+        if (buttonIndex==1) {
+            self.defaultflag = @"1";
+        }
+        else {
+            self.defaultflag = @"0";
+        }
+        [self confirmAdjust];
     }
     
 }
@@ -375,7 +485,8 @@ static NSString *msgKey = @"msg";
             NSString *msg = (NSString*) [ret objectForKey:msgKey];
             [self alert:NSLocalizedString(@"Error",@"Error") msg:msg];
         }
-        
+        self.vender = nil;
+        self.defaultflag = nil;
     }
     
 }
@@ -425,14 +536,15 @@ static NSString *msgKey = @"msg";
 
 
 - (IBAction) scrollToBottom:(id)sender{
-    [self.scrollView setContentOffset:CGPointMake(0, 280) animated:YES];
+    UITextField *field = (UITextField *)sender;
+    [self.scrollView setContentOffset:CGPointMake(0, field.frame.origin.y) animated:YES];
 }
 
-- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
-{
-    textField.text = [textField.text uppercaseString];
-    return YES;
-}
+//- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+//{
+//    textField.text = [textField.text uppercaseString];
+//    return YES;
+//}
 
 -(void)cancelNumberPad{
     [self.goodsqty resignFirstResponder];
@@ -491,7 +603,107 @@ static NSString *msgKey = @"msg";
 {
 	// the user pressed the "Done" button, so dismiss the keyboard
 	[textField resignFirstResponder];
+    [self.scrollView setContentOffset:CGPointMake(0, 0) animated:YES];
+    textField.text = [textField.text uppercaseString];
 	return YES;
+}
+
+
+#pragma mark -
+#pragma mark UIPickerViewDataSource
+
+//- (CGFloat)pickerView:(UIPickerView *)pickerView widthForComponent:(NSInteger)component
+//{
+//	return [CustomView viewWidth];
+//}
+//
+//- (CGFloat)pickerView:(UIPickerView *)pickerView rowHeightForComponent:(NSInteger)component
+//{
+//	return [CustomView viewHeight];
+//}
+
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
+{
+	return [self.venders count];
+}
+
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
+{
+	return 1;
+}
+
+#pragma mark -
+#pragma mark UIPickerViewDelegate
+- (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
+{
+    return [[self.venders objectAtIndex:row] objectForKey:@"edis_companyname"];
+}
+
+- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
+{
+    vender = [self.venders objectAtIndex:row ];
+}
+
+- (void) showVenderPicker:(id)value
+{
+    if([value isKindOfClass:[NSError class]]) {
+		NSLog(@"%@", value);
+        NSError* result = (NSError*)value;
+        [self alert:@"连接失败" msg:[result localizedFailureReason]];
+	}
+    
+	// Handle faults
+	else if([value isKindOfClass:[SoapFault class]]) {
+		NSLog(@"%@", value);
+        SoapFault * result = (SoapFault*)value;
+        [self alert:@"soap连接失败" msg:[result faultString]];
+	}
+    
+	// Do something with the NSString* result
+    
+    NSString* result = (NSString*)value;
+    NSLog(@"%@", result);
+    
+    SBJsonParser *parser = [[SBJsonParser alloc] init];
+    id retObj = [parser objectWithString:result];
+    
+    [parser release];
+    
+    [self dismissActiveIndicatorView];
+    
+    if (retObj != nil) {
+        NSDictionary *ret = (NSDictionary*)retObj;
+        NSString *retflag = (NSString*) [ret objectForKey:retFlagKey];
+        
+        if ([retflag boolValue]==YES) {
+            
+            
+            NSArray *rows = (NSArray*) [ret objectForKey:msgKey];
+            NSUInteger count = [rows count];
+            if (count <1) {
+                [self alert:@"提示" msg:@"没有设置供应商"];
+            }
+            else{
+                
+                self.venders = [rows copy];
+                
+                [self.scrollView setContentOffset:CGPointMake(0, 0) animated:YES];
+                
+                [self.venderPickerView reloadAllComponents];
+                [self.venderPickerView setHidden:NO];
+                [self.venderPickerView selectRow:0 inComponent:0 animated:YES];
+                [self pickerView:self.venderPickerView didSelectRow:0 inComponent:0];
+            }
+            
+            
+        }
+        else{
+            NSString *msg = (NSString*) [ret objectForKey:msgKey];
+            [self alert:NSLocalizedString(@"Error",@"Error") msg:msg];
+        }
+        
+    }
+
 }
 
 @end

@@ -12,6 +12,7 @@
 		8F32116315931CC80070CC41 /* TrViewHD.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8F32116215931CC80070CC41 /* TrViewHD.xib */; };
 		8F64B6331591C6C400C1C50B /* MainWindow-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8F64B6321591C6C400C1C50B /* MainWindow-iPad.xib */; };
 		8F85239515B8E75A007B376C /* MedicineReqCellHD.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8F85239415B8E75A007B376C /* MedicineReqCellHD.xib */; };
+		8F85239A15B8F7D9007B376C /* StockAdjustViewHD.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8F85239815B8F7D9007B376C /* StockAdjustViewHD.xib */; };
 		8F8E85F713D7B1D2000AC9C8 /* RgListView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F8E857913D7B1D2000AC9C8 /* RgListView.m */; };
 		8F8E85F913D7B1D2000AC9C8 /* RgListView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8F8E857C13D7B1D2000AC9C8 /* RgListView.xib */; };
 		8F8E863E13D7BD57000AC9C8 /* RgView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F8E863C13D7BD57000AC9C8 /* RgView.m */; };
@@ -156,6 +157,7 @@
 		8F32116215931CC80070CC41 /* TrViewHD.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TrViewHD.xib; sourceTree = "<group>"; };
 		8F64B6321591C6C400C1C50B /* MainWindow-iPad.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = "MainWindow-iPad.xib"; path = "iPad/MainWindow-iPad.xib"; sourceTree = "<group>"; };
 		8F85239415B8E75A007B376C /* MedicineReqCellHD.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MedicineReqCellHD.xib; sourceTree = "<group>"; };
+		8F85239815B8F7D9007B376C /* StockAdjustViewHD.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StockAdjustViewHD.xib; sourceTree = "<group>"; };
 		8F8E857913D7B1D2000AC9C8 /* RgListView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RgListView.m; sourceTree = "<group>"; };
 		8F8E857B13D7B1D2000AC9C8 /* RgListView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RgListView.h; sourceTree = "<group>"; };
 		8F8E857C13D7B1D2000AC9C8 /* RgListView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RgListView.xib; sourceTree = "<group>"; };
@@ -482,6 +484,7 @@
 				8FE1DA8E15AD164700EA5331 /* StockAdjustView.h */,
 				8FE1DA8F15AD164700EA5331 /* StockAdjustView.m */,
 				8FE1DA9015AD164700EA5331 /* StockAdjustView.xib */,
+				8F85239815B8F7D9007B376C /* StockAdjustViewHD.xib */,
 				8FE4843F15B3C1A200A9FB32 /* BaseCodeTableView.h */,
 				8FE4844015B3C1A200A9FB32 /* BaseCodeTableView.m */,
 				8FE4844115B3C1A300A9FB32 /* BaseCodeTableView.xib */,
@@ -922,6 +925,7 @@
 				8FFB455B15B7B388009ED1FC /* MedicineReqListView.xib in Resources */,
 				8FFB455D15B7F682009ED1FC /* barcode.png in Resources */,
 				8F85239515B8E75A007B376C /* MedicineReqCellHD.xib in Resources */,
+				8F85239A15B8F7D9007B376C /* StockAdjustViewHD.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
