@@ -246,6 +246,7 @@
                             self.invno.text==nil?@"":self.invno.text,@"invno",
                             self.startdate.text==nil?@"":self.startdate.text,@"startdate",
                             self.enddate.text==nil?@"":self.enddate.text,@"enddate",
+                            @"0",@"rgflag",
                             nil];
     [self.navigationController popViewControllerAnimated:YES];
     if (self.rgListSearchViewDelegate!=nil) { 

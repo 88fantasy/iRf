@@ -9,6 +9,9 @@
 #import <UIKit/UIKit.h>
 
 #import <CoreData/CoreData.h>
+#import "KDGoalBar.h"
+
+static bool syncflag = NO;
 
 @interface RootViewController : UITableViewController
 <UIAlertViewDelegate>
@@ -17,10 +20,25 @@
 	UITextField *userfield;
 	UITextField *pwdfield;
 	
-	
+	UIAlertView *activityView;
+    UIActivityIndicatorView *activityIndicator;
+    
+    UIAlertView *goalBarView;
+    KDGoalBar *goalBar;
+    
+    int notDoRgCount;
+    int doneDoRgCoount;
 }
 
 @property (nonatomic, retain) NSMutableArray *menuList;
 @property (nonatomic, retain) UITextField *userfield;
 @property (nonatomic, retain) UITextField *pwdfield;
+
+@property (nonatomic, retain) UIAlertView *activityView;
+@property (nonatomic, retain) UIActivityIndicatorView *activityIndicator;
+
+@property (nonatomic, retain) UIAlertView *goalBarView;
+@property (nonatomic, retain) KDGoalBar *goalBar;
+
++ (bool) isSync ;
 @end

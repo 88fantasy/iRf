@@ -9,6 +9,7 @@
 #import "RgView.h"
 #import "iRfRgService.h"
 #import "SBJson.h"
+#import "RootViewController.h"
 
 static NSString *retFlagKey = @"ret";
 static NSString *msgKey = @"msg";
@@ -109,7 +110,7 @@ static NSString *msgKey = @"msg";
     
     self.rgqty.text = (NSString*) [values objectForKey:@"goodsqty"];
     self.locno.text = (NSString*) [values objectForKey:@"locno"];
-    self.companyname.text = (NSString*) [values objectForKey:@"companyname"];
+    self.companyname.text = (NSString*) [values objectForKey:@"uvender"];
     
     self.spdid = (NSString*) [values objectForKey:@"spdid"];
     
@@ -167,7 +168,16 @@ static NSString *msgKey = @"msg";
             rgqty: self.rgqty.text 
             locno: self.locno.text];
     
+    if ([RootViewController isSync]) {
+        FMDatabase *db = [DbUtil retConnectionForResource:@"iRf" ofType:@"rdb"];
+        if(db != nil) {
+            [db executeUpdate:@"update scm_rg set rgqty = ?,locno = ?rgflag = 1 where spdid = ?",
+                                self.rgqty.text, self.locno.text, self.spdid];
+            [db close];
+        }
+    }
     
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)doRgHandler:(id)value {
@@ -211,11 +221,22 @@ static NSString *msgKey = @"msg";
         
         if ([retflag boolValue]==YES) {
             [values setValue:@"1" forKey:@"rgflag"];
+            NSDictionary *msg = (NSDictionary*) [ret objectForKey:msgKey];
+            NSString *sid = (NSString*) [msg objectForKey:@"spdid"];
+            
+            if ([RootViewController isSync]) {
+                FMDatabase *db = [DbUtil retConnectionForResource:@"iRf" ofType:@"rdb"];
+                if(db != nil) {
+                    [db executeUpdate:@"update scm_rg set rgdate = datetime('now') where spdid = ?",sid];
+                    [db close];
+                }
+            }
+            
 //            if (self.scanViewDelegate!=nil) { 
 //                //调用回调函数 
 //                [self.scanViewDelegate confirmCallBack:YES values:values]; 
 //            } 
-            [self.navigationController popViewControllerAnimated:YES];
+//            [self.navigationController popViewControllerAnimated:YES];
         }
         else{
             NSString *msg = (NSString*) [ret objectForKey:msgKey];

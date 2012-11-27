@@ -10,6 +10,8 @@
 #import "SBJson.h"
 #import "RgListView.h"
 #import "RgView.h"
+#import "RootViewController.h"
+#import "DbUtil.h"
 
 static NSString *kCellIdentifier = @"MyIdentifier";
 static NSString *kTitleKey = @"title";
@@ -30,6 +32,9 @@ static NSString *msgKey = @"msg";
     if (self) {
         // Custom initialization
         self.title = @"未收货列表";
+        
+     
+        
         canReload = YES;
         if (_refreshHeaderView == nil) {
             
@@ -62,7 +67,7 @@ static NSString *msgKey = @"msg";
 - (void)dealloc
 {
     searchObj = nil;
-     _refreshHeaderView=nil; 
+    _refreshHeaderView=nil;
     [refreshButtonItem release];
     [activityView release];
     [activityIndicator release];
@@ -83,7 +88,7 @@ static NSString *msgKey = @"msg";
     // open an alert with just an OK button
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:msg
                                                    delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
-    [alert show];	
+    [alert show];
     [alert release];
 }
 
@@ -91,8 +96,8 @@ static NSString *msgKey = @"msg";
 - (void) displayActiveIndicatorView
 {
     //    self.navigationItem.rightBarButtonItem = nil;
-    if (activityView==nil){        
-        activityView = [[UIAlertView alloc] initWithTitle:nil 
+    if (activityView==nil){
+        activityView = [[UIAlertView alloc] initWithTitle:nil
                                                   message: NSLocalizedString(@"Loading...",@"Loading...")
                                                  delegate: self
                                         cancelButtonTitle: nil
@@ -121,19 +126,80 @@ static NSString *msgKey = @"msg";
     
     [self displayActiveIndicatorView];
     
-    iRfRgService* service = [iRfRgService service];
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *username = [defaults stringForKey:@"username_preference"];
-    NSString *password = [defaults stringForKey:@"password_preference"];
-    
-    SBJsonWriter *writer = [[SBJsonWriter alloc] init];
-    NSString *json = [writer stringWithObject:self.searchObj];
-    [service getAllRg:self action:@selector(getAllRgHandler:) 
-             username: username 
-             password: password
-             queryjson:json
-     ];
-    
+    if ([RootViewController isSync] ) {
+        FMDatabase *db = [DbUtil retConnectionForResource:@"iRf" ofType:@"rdb"];
+        if (db != nil) {
+            
+            NSString *sql = @"select * from scm_rg where rgflag in ('',0)";
+            NSString *goodsname = [self.searchObj objectForKey:@"goodsname"];
+            if (![goodsname isEqualToString:@""] && goodsname != nil) {
+                sql = [sql stringByAppendingFormat:@" and goodsname like '%@%%'",goodsname];
+            }
+            NSString *prodarea = [self.searchObj objectForKey:@"prodarea"];
+            if (![prodarea isEqualToString:@""] && prodarea != nil) {
+                sql = [sql stringByAppendingFormat:@" and prodarea like '%@%%'",prodarea];
+            }
+            NSString *lotno = [self.searchObj objectForKey:@"lotno"];
+            if (![lotno isEqualToString:@""] && lotno != nil) {
+                sql = [sql stringByAppendingFormat:@" and lotno like '%@%%'",lotno];
+            }
+            NSString *invno = [self.searchObj objectForKey:@"invno"];
+            if (![invno isEqualToString:@""] && invno != nil) {
+                sql = [sql stringByAppendingFormat:@" and invno like '%@%%'",invno];
+            }
+            NSString *startdate = [self.searchObj objectForKey:@"startdate"];
+            if (![startdate isEqualToString:@""] && startdate != nil) {
+                sql = [sql stringByAppendingFormat:@" and credate >= date('%@')",startdate];
+            }
+            NSString *enddate = [self.searchObj objectForKey:@"enddate"];
+            if (![enddate isEqualToString:@""] && enddate != nil) {
+                sql = [sql stringByAppendingFormat:@" and credate <= date('%@')",enddate];
+            }
+            
+            FMResultSet *rs = [db executeQuery:sql];
+            NSMutableArray *rows =  [NSMutableArray array];
+            while ([rs next]) {
+                
+                NSMutableDictionary *row =  [NSMutableDictionary dictionary];
+                
+                for (int i=0; i < [rs columnCount]; i++) {
+                    NSString *key = [rs columnNameForIndex:i];
+                    NSString *value = [rs stringForColumnIndex:i];
+                    
+                    if (value == nil) {
+                        [row setObject:@"" forKey:key];
+                    }
+                    else {
+                        [row setObject:value forKey:key];
+                    }
+                    
+                }
+                
+                [rows addObject: row];
+            }
+            
+            [db close];
+            
+            self.objs = rows;
+            [self reload];
+        }
+        
+        [self dismissActiveIndicatorView];
+    }
+    else{
+        iRfRgService* service = [iRfRgService service];
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        NSString *username = [defaults stringForKey:@"username_preference"];
+        NSString *password = [defaults stringForKey:@"password_preference"];
+        
+        SBJsonWriter *writer = [[SBJsonWriter alloc] init];
+        NSString *json = [writer stringWithObject:self.searchObj];
+        [service getAllRg:self action:@selector(getAllRgHandler:)
+                 username: username
+                 password: password
+                queryjson:json
+         ];
+    }
 }
 
 #pragma mark - View lifecycle
@@ -141,73 +207,25 @@ static NSString *msgKey = @"msg";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
-         
+    
+    
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
- 
+    
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     if (canReload) {
         if (self.refreshButtonItem == nil) {
             self.refreshButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch                                                                          target:self action:@selector(setSearchJson:)];
             
         }
-       
+        
         self.navigationItem.rightBarButtonItem = self.refreshButtonItem;
     }
     
-    
-    
-     self.menuList = [NSMutableArray array];
-     if (objs != nil) {   
-        for (int i=0; i<[objs count]; i++) {
-            NSDictionary *obj = [objs objectAtIndex:i];
-            NSString *text = [obj objectForKey:@"goodsname"];
-            NSString *labeltype = [obj objectForKey:@"labeltype"];
-            NSString *goodstype = [obj objectForKey:@"goodstype"];
-            NSString *goodsqty = [obj objectForKey:@"goodsqty"];
-            NSString *prodarea = [obj objectForKey:@"prodarea"];
-            NSString *companyname = [obj objectForKey:@"companyname"];
-            
-            NSString *detailText = @"";
-            if ([labeltype isEqualToString:@"1"]) {
-                detailText = [detailText stringByAppendingString:@"原件"];
-            }
-            else{
-                detailText = [detailText stringByAppendingString:@"散件"];
-            }
-            
-            if (goodstype != nil) {
-                detailText = [detailText stringByAppendingString:@"     "];
-                detailText = [detailText stringByAppendingString:goodstype];
-            }
-            if (goodsqty != nil) {
-                detailText = [detailText stringByAppendingString:@"     "];
-                detailText = [detailText stringByAppendingString:goodsqty];
-            }
-            if (prodarea != nil) {
-                detailText = [detailText stringByAppendingString:@"     "];
-                detailText = [detailText stringByAppendingString:prodarea];
-            }
-            if (companyname != nil) {
-                detailText = [detailText stringByAppendingString:@"     "];
-                detailText = [detailText stringByAppendingString:companyname];
-            }
-            
-            
-            
-            NSString *idv = [obj objectForKey:@"spdid"];
-            
-            [self.menuList addObject:[NSDictionary dictionaryWithObjectsAndKeys:
-                                      text, kTitleKey,
-                                      detailText, kExplainKey,
-                                      obj,kObjKey,
-                                      idv,kCellIdentifier,
-                                      nil]];
-        }
-    }
-        
-    
+    self.searchObj = [NSDictionary dictionaryWithObjectsAndKeys:
+                      @"0",@"rgflag",
+                      nil];
+    [self reload];
 }
 
 - (void)viewDidUnload
@@ -240,6 +258,7 @@ static NSString *msgKey = @"msg";
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
+    self.title = [NSString stringWithFormat:@"未收货列表 (%d)" ,[self.menuList count]] ;
     return [self.menuList count];
 }
 
@@ -277,43 +296,43 @@ static NSString *msgKey = @"msg";
 }
 
 /*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
+ // Override to support conditional editing of the table view.
+ - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+ {
+ // Return NO if you do not want the specified item to be editable.
+ return YES;
+ }
+ */
 
 /*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    }   
-    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
+ // Override to support editing the table view.
+ - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+ {
+ if (editingStyle == UITableViewCellEditingStyleDelete) {
+ // Delete the row from the data source
+ [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+ }
+ else if (editingStyle == UITableViewCellEditingStyleInsert) {
+ // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
+ }
+ }
+ */
 
 /*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
+ // Override to support rearranging the table view.
+ - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
+ {
+ }
+ */
 
 /*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
+ // Override to support conditional rearranging of the table view.
+ - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
+ {
+ // Return NO if you do not want the item to be re-orderable.
+ return YES;
+ }
+ */
 
 #pragma mark -
 #pragma mark ScanView delegate
@@ -330,12 +349,12 @@ static NSString *msgKey = @"msg";
 {
     // Navigation logic may go here. Create and push another view controller.
     
-//    UIViewController *targetViewController = [[self.menuList objectAtIndex: indexPath.row] objectForKey:kViewControllerKey];
+    //    UIViewController *targetViewController = [[self.menuList objectAtIndex: indexPath.row] objectForKey:kViewControllerKey];
     NSDictionary *obj = [[self.menuList objectAtIndex: indexPath.row] objectForKey:kObjKey];
     RgView* targetViewController = [[RgView alloc] initWithNibName:@"RgView" bundle:nil values:obj];
-//    targetViewController.scanViewDelegate = self;
+    //    targetViewController.scanViewDelegate = self;
 	[[self navigationController] pushViewController:targetViewController animated:YES];
-     
+    
 }
 
 #pragma mark -
@@ -343,9 +362,10 @@ static NSString *msgKey = @"msg";
 
 - (void)viewWillAppear:(BOOL)animated
 {
-//    if (canReload) {
-//        [self getAllRg];
-//    }
+    if (canReload &&
+            ([self.tableView numberOfRowsInSection:0] == 0 || [RootViewController isSync]) ) {
+        [self getAllRg];
+    }
 	// this UIViewController is about to re-appear, make sure we remove the current selection in our table view
 	NSIndexPath *tableSelection = [self.tableView indexPathForSelectedRow];
 	[self.tableView deselectRowAtIndexPath:tableSelection animated:YES];
@@ -363,10 +383,10 @@ static NSString *msgKey = @"msg";
 	if([value isKindOfClass:[NSError class]]) {
 		NSLog(@"%@", value);
         NSError* result = (NSError*)value;
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"连接失败" 
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"连接失败"
                                                         message: [result localizedFailureReason]
 													   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
-		[alert show];	
+		[alert show];
 		[alert release];
 	}
     
@@ -374,12 +394,12 @@ static NSString *msgKey = @"msg";
 	else if([value isKindOfClass:[SoapFault class]]) {
 		NSLog(@"%@", value);
         SoapFault * result = (SoapFault*)value;
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"soap连接失败" 
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"soap连接失败"
                                                         message: [result faultString]
 													   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
-		[alert show];	
+		[alert show];
 		[alert release];
-	}				
+	}
     
     
 	// Do something with the NSString* result
@@ -402,10 +422,7 @@ static NSString *msgKey = @"msg";
             if ([retflag boolValue]) {
                 NSArray *rows = (NSArray*) [ret objectForKey:msgKey];
                 self.objs = rows;
-                [self viewDidLoad];
-                [self.tableView reloadData];
-                [self doneLoadingTableViewData];
-                    
+                [self reload];
             }
             else{
                 NSString *msg = (NSString*) [ret objectForKey:msgKey];
@@ -423,6 +440,61 @@ static NSString *msgKey = @"msg";
     
 }
 
+- (void) reload {
+    self.menuList = [NSMutableArray array];
+    if (objs != nil) {
+        
+        for (int i=0; i<[objs count]; i++) {
+            NSDictionary *obj = [objs objectAtIndex:i];
+            NSString *text = [obj objectForKey:@"goodsname"];
+            NSString *labeltype = [obj objectForKey:@"labeltype"];
+            NSString *goodstype = [obj objectForKey:@"goodstype"];
+            NSString *goodsqty = [obj objectForKey:@"goodsqty"];
+            NSString *prodarea = [obj objectForKey:@"prodarea"];
+            NSString *companyname = [obj objectForKey:@"socompanyname"];
+            
+            NSString *detailText = @"";
+            if ([labeltype isEqualToString:@"1"]) {
+                detailText = [detailText stringByAppendingString:@"原件"];
+            }
+            else{
+                detailText = [detailText stringByAppendingString:@"散件"];
+            }
+            
+            if (goodstype != nil) {
+                detailText = [detailText stringByAppendingString:@"     "];
+                detailText = [detailText stringByAppendingString:goodstype];
+            }
+            if (goodsqty != nil) {
+                detailText = [detailText stringByAppendingString:@"     "];
+                detailText = [detailText stringByAppendingString:goodsqty];
+            }
+            if (prodarea != nil) {
+                detailText = [detailText stringByAppendingString:@"     "];
+                detailText = [detailText stringByAppendingString:prodarea];
+            }
+            if (companyname != nil) {
+                detailText = [detailText stringByAppendingString:@"     "];
+                detailText = [detailText stringByAppendingString:companyname];
+            }
+            
+            
+            
+            NSString *idv = [obj objectForKey:@"spdid"];
+            
+            [self.menuList addObject:[NSDictionary dictionaryWithObjectsAndKeys:
+                                      text, kTitleKey,
+                                      detailText, kExplainKey,
+                                      obj,kObjKey,
+                                      idv,kCellIdentifier,
+                                      nil]];
+            
+        }
+        
+    }
+    [self.tableView reloadData];
+    [self doneLoadingTableViewData];
+}
 
 #pragma mark -
 #pragma mark Data Source Loading / Reloading Methods
@@ -465,7 +537,7 @@ static NSString *msgKey = @"msg";
 - (void)egoRefreshTableHeaderDidTriggerRefresh:(EGORefreshTableHeaderView*)view{
     
     [self reloadTableViewDataSource];
-    [self performSelector:@selector(doneLoadingTableViewData) withObject:nil afterDelay:4.0];
+    [self performSelector:@selector(doneLoadingTableViewData) withObject:nil afterDelay:0.0];
     
 }
 

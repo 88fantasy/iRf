@@ -9,13 +9,18 @@
 #endif
 
 #ifdef __OBJC__
-    #import <UIKit/UIKit.h>
-    #import <Foundation/Foundation.h>
-    #import <CoreData/CoreData.h>
-    #import "ZBarSDK.h"
-    #import "Const.h"
+#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
+#import <CoreData/CoreData.h>
+#import "ZBarSDK.h"
+#import "Const.h"
+#import "sqlite3.h"
+#import "FMDatabase.h"
+#import "CommonUtil.h"
+#import "DbUtil.h"
 
 #define IsPad (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)//定义是否是Ipad的宏
 #define fcccf(__x__,__y__) GetPointbyPhoneXandY(__x__,__y__)//为了与ccp用法一致
 #define IsInternet ([[NSUserDefaults standardUserDefaults] boolForKey:@"enabled_preference"])//互联网检查
+#define isIPhone5 ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(640, 1136), [[UIScreen mainScreen] currentMode].size) : NO)  //iphone5分辨率检查
 #endif

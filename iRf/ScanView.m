@@ -9,8 +9,10 @@
 #import "ScanView.h"
 #import "iRfRgService.h"
 #import "SBJson.h"
+#import "DbUtil.h"
 #import "RgView.h"
 #import "RgListView.h"
+#import "RootViewController.h"
 
 
 static NSString *retFlagKey = @"ret";
@@ -210,22 +212,54 @@ static NSString *msgKey = @"msg";
 	
     [self displayActiveIndicatorView];
     
-    iRfRgService* service = [iRfRgService service];
-    //    service.logging = YES;
-    NSLog(@"getrg开始");
-    
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *username = [defaults stringForKey:@"username_preference"];
-    NSString *password = [defaults stringForKey:@"password_preference"];
-    
-    [service getRg:self action:@selector(getRgHandler:) 
-          username: username 
-          password: password
-           labelno: resultText.text];//resultText.text];1200010586734,1100009542948,0200009541779
-    
-    //    [defaults release];
-    //    [username release];
-    //    [password release];
+    if ([RootViewController isSync] ) {
+        FMDatabase *db = [DbUtil retConnectionForResource:@"iRf" ofType:@"rdb"];
+        if (db != nil) {
+            FMResultSet *rs = [db executeQuery:@"select * from scm_rg where labelno = ?",resultText.text];
+            NSMutableArray *rows =  [NSMutableArray array];
+            while ([rs next]) {
+                
+                NSMutableDictionary *row =  [NSMutableDictionary dictionary];
+                
+                for (int i=0; i < [rs columnCount]; i++) {
+                    NSString *key = [rs columnNameForIndex:i];
+                    NSString *value = [rs stringForColumnIndex:i];
+                    
+                    if (value == nil) {
+                        [row setObject:@"" forKey:key];
+                    }
+                    else {
+                        [row setObject:value forKey:key];
+                    }
+                    
+                }
+                
+                [rows addObject: row];
+            }
+            
+            [db close];
+            
+            [self showRg:rows];
+        }
+        
+        [self dismissActiveIndicatorView];
+    }
+    else {
+        iRfRgService* service = [iRfRgService service];
+        //    service.logging = YES;
+        NSLog(@"getrg开始");
+        
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        NSString *username = [defaults stringForKey:@"username_preference"];
+        NSString *password = [defaults stringForKey:@"password_preference"];
+        
+        [service getRg:self action:@selector(getRgHandler:) 
+              username: username 
+              password: password
+               labelno: resultText.text];//resultText.text];1200010586734,1100009542948,0200009541779
+        
+
+    }
 }
 
 // Handle the response from getRg.
@@ -273,29 +307,8 @@ static NSString *msgKey = @"msg";
             
             if ([retflag boolValue]) {
                 NSArray *rows = (NSArray*) [ret objectForKey:msgKey];
-                NSUInteger count = [rows count];
-                if (count <1) {
-                    [self alert:@"提示" msg:@"找不到此收货号"];
-                }
-                else{
-                    if (count == 1) {
-                        NSDictionary *obj = (NSDictionary*)[rows objectAtIndex:0];
-                        RgView *rgView = [[RgView alloc] initWithNibName:@"RgView" bundle:nil values:obj ];
-    //                    rgView.scanViewDelegate = self;
-                        [self.navigationController pushViewController:rgView animated:YES];
-                        [rgView release];
-                    }
-                    else{
-                        
-                        RgListView *rgListView =[[RgListView alloc] initWithStyle:UITableViewStylePlain
-                                                                             objs:rows ];
-                        [self.navigationController pushViewController:rgListView animated:YES];
-                        
-                        [rgListView release];
-                        
-                    }
-                    
-                }
+                
+                [self showRg:rows];
             }
             else{
                 NSString *msg = (NSString*) [ret objectForKey:msgKey];
@@ -308,6 +321,32 @@ static NSString *msgKey = @"msg";
         }
     }
     [self dismissActiveIndicatorView];
+}
+
+-(void) showRg:(NSArray*)rows{
+    NSUInteger count = [rows count];
+    if (count <1) {
+        [self alert:@"提示" msg:@"找不到此收货号"];
+    }
+    else{
+        if (count == 1) {
+            NSDictionary *obj = (NSDictionary*)[rows objectAtIndex:0];
+            RgView *rgView = [[RgView alloc] initWithNibName:@"RgView" bundle:nil values:obj ];
+            //                    rgView.scanViewDelegate = self;
+            [self.navigationController pushViewController:rgView animated:YES];
+            [rgView release];
+        }
+        else{
+            
+            RgListView *rgListView =[[RgListView alloc] initWithStyle:UITableViewStylePlain
+                                                                 objs:rows ];
+            [self.navigationController pushViewController:rgListView animated:YES];
+            
+            [rgListView release];
+            
+        }
+        
+    }
 }
 
 -(void)confirmCallBack:(BOOL )_confirm values:(NSDictionary *)_obj{

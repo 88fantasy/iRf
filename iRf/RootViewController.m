@@ -6,6 +6,9 @@
 //  Copyright 2011年 __MyCompanyName__. All rights reserved.
 //
 #import "Const.h"
+#import "SBJson.h"
+#import "DbUtil.h"
+#import "iRfRgService.h"
 #import "RootViewController.h"
 #import "ScanView.h"
 #import "RgListView.h"
@@ -13,22 +16,34 @@
 #import "StockAdjustView.h"
 #import "MedicineReqListView.h"
 
+
 static NSString *kCellIdentifier = @"MyIdentifier";
 static NSString *kTitleKey = @"title";
 static NSString *kExplainKey = @"explanation";
 static NSString *kViewControllerKey = @"viewController";
 static NSString *iconKey = @"iconfile";
 
+static NSString *retFlagKey = @"ret";
+static NSString *msgKey = @"msg";
 
 
-@interface RootViewController ()
+enum {
+    UserAlert = 0,
+    SyncAlert
+};
+
+//@interface RootViewController ()
 //- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
-@end
+//@end
 
 @implementation RootViewController
 
-@synthesize menuList,userfield,pwdfield;
+@synthesize menuList,userfield,pwdfield,activityIndicator,activityView,goalBarView,goalBar;
 
+
++ (bool) isSync {
+    return syncflag && IsInternet;
+}
 
 - (void)confirmUser{
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -61,8 +76,9 @@ static NSString *iconKey = @"iconfile";
 			[prompt addSubview:pwdfield];
 			
 		}
+        [prompt setTag:UserAlert];
 		// set place
-		[prompt setCenter:self.view.center];		
+		[prompt setCenter:self.view.center];
 		[prompt show];
 		[prompt release];
 		
@@ -74,10 +90,12 @@ static NSString *iconKey = @"iconfile";
     [super viewDidLoad];
     // Set up the edit and add buttons.
 //    self.navigationItem.leftBarButtonItem = self.editButtonItem;
-//
-//    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject)];
-//    self.navigationItem.rightBarButtonItem = addButton;
-//    [addButton release];
+    
+    if (IsInternet) {
+        UIBarButtonItem *syncButton = [[UIBarButtonItem alloc] initWithTitle:@"0" style:UIBarButtonItemStylePlain target:self action:@selector(syncAction:)];
+        self.navigationItem.rightBarButtonItem = syncButton;
+        [syncButton release];
+    }
     
     self.menuList = [NSMutableArray array];
     
@@ -134,8 +152,6 @@ static NSString *iconKey = @"iconfile";
         [medicineReqListView release];
     }
     
-    
-	
     
 	[self confirmUser];
 }
@@ -209,6 +225,10 @@ static NSString *iconKey = @"iconfile";
 	self.menuList = nil;
 	self.userfield = nil;
 	self.pwdfield = nil;
+    self.activityIndicator = nil;
+    self.activityView = nil;
+    self.goalBar = nil;
+    self.goalBarView = nil;
 }
 
 
@@ -218,32 +238,385 @@ static NSString *iconKey = @"iconfile";
     [menuList release];
 	[userfield release];
 	[pwdfield release];
+    [activityIndicator release];
+    [activityView release];
+    [goalBar release];
+    [goalBarView release];
 	[super dealloc];
 }
 
 #pragma mark -
 #pragma mark UIAlertViewDelegate
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-	if (buttonIndex == 1) {
-		NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-		if (userfield.text !=nil && ![@"" isEqualToString:userfield.text]) {
-			[defaults setValue: userfield.text forKey:@"username_preference"];
-		}
-		if (pwdfield.text !=nil && ![@"" isEqualToString:pwdfield.text]) {
-			[defaults setValue: pwdfield.text forKey:@"password_preference"];
-		}
-        [defaults setBool: YES forKey:@"enabled_preference"];
-	}
-	else {
-		[self confirmUser];
-	}
+     
+    if ([alertView tag] == UserAlert) {
+        if (buttonIndex == 1) {
+            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+            if (userfield.text !=nil && ![@"" isEqualToString:userfield.text]) {
+                [defaults setValue: userfield.text forKey:@"username_preference"];
+            }
+            if (pwdfield.text !=nil && ![@"" isEqualToString:pwdfield.text]) {
+                [defaults setValue: pwdfield.text forKey:@"password_preference"];
+            }
+            [defaults setBool: YES forKey:@"enabled_preference"];
+        }
+        else {
+            [self confirmUser];
+        }
+    }
+	else if ([alertView tag] == SyncAlert) {
+        switch (buttonIndex) {
+            case 1:
+                [self getAllRg];
+                break;
+            case 2:
+                syncflag = NO;
+                [self.navigationItem.rightBarButtonItem setTitle:@"0"];
+                break;
+            case 3:
+                [self confirmRg];
+                break;
+            default:
+                ;
+        }
+    }
 
 }
 
-- (void)alertViewCancel:(UIAlertView *)alertView {
-	NSLog(@"cancel");
+//- (void)alertViewCancel:(UIAlertView *)alertView {
+//	NSLog(@"cancel");
+//}
+
+
+
+
+//显示等待进度条
+- (void) displayActiveIndicatorView
+{
+    //    self.navigationItem.rightBarButtonItem = nil;
+    if (activityView==nil){
+        activityView = [[UIAlertView alloc] initWithTitle:nil
+                                                  message: NSLocalizedString(@"Loading...",@"Loading...")
+                                                 delegate: self
+                                        cancelButtonTitle: nil
+                                        otherButtonTitles: nil];
+        
+        activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+        activityIndicator.frame = CGRectMake(120.f, 48.0f, 38.0f, 38.0f);
+        [activityView addSubview:activityIndicator];
+    }
+    [activityIndicator startAnimating];
+    [activityView show];
+    
 }
 
+//取消等待进度条
+- (void) dismissActiveIndicatorView
+{
+    if (activityView)
+    {
+        [activityIndicator stopAnimating];
+        [activityView dismissWithClickedButtonIndex:0 animated:YES];
+    }
+}
+
+- (void) alert:(NSString*)title msg:(NSString*)msg {
+    // open an alert with just an OK button
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:msg
+                                                   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+    [alert show];
+    [alert release];
+}
+
+- (IBAction)syncAction:(id)sender {
+    NSString *msg;
+    
+    if ([RootViewController isSync]) {
+        msg = [NSString stringWithFormat:@"当前已同步 %@ 条收货数据",
+              [self.navigationItem.rightBarButtonItem title] ];
+    }
+    else {
+        msg = @"尚未进行同步";
+    }
+    
+    UIAlertView *alert = [[UIAlertView alloc]
+                          initWithTitle:@"请选择操作"
+                          message:msg
+                          delegate:self
+                          cancelButtonTitle:NSLocalizedString(@"Cancel", @"Cancel")
+                          otherButtonTitles:@"同步",@"撤销同步",@"回传收货信息",
+                          nil];
+    [alert setTag:SyncAlert];
+    [alert show];
+    [alert release];
+}
+
+- (void) getAllRg{
+    
+    [self displayActiveIndicatorView];
+    
+    iRfRgService* service = [iRfRgService service];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *username = [defaults stringForKey:@"username_preference"];
+    NSString *password = [defaults stringForKey:@"password_preference"];
+    
+    [service getAllRg:self action:@selector(getAllRgHandler:)
+             username: username
+             password: password
+            queryjson:nil
+     ];
+    
+}
+
+// Handle the response from getRg.
+
+- (void) getAllRgHandler: (id) value {
+    
+	// Handle errors
+	if([value isKindOfClass:[NSError class]]) {
+		NSLog(@"%@", value);
+        NSError* result = (NSError*)value;
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"连接失败"
+                                                        message: [result localizedFailureReason]
+													   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+		[alert show];
+		[alert release];
+	}
+    
+	// Handle faults
+	else if([value isKindOfClass:[SoapFault class]]) {
+		NSLog(@"%@", value);
+        SoapFault * result = (SoapFault*)value;
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"soap连接失败"
+                                                        message: [result faultString]
+													   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+		[alert show];
+		[alert release];
+	}
+    
+    
+	// Do something with the NSString* result
+    else{
+        NSString* result = (NSString*)value;
+        //	resultText.text = [@"getRg returned the value: " stringByAppendingString:result] ;
+        NSLog(@"%@", result);
+        
+        
+        
+        SBJsonParser *parser = [[SBJsonParser alloc] init];
+        id json = [parser objectWithString:result];
+        
+        [parser release];
+        
+        if (json != nil) {
+            NSDictionary *ret = (NSDictionary*)json;
+            NSString *retflag = (NSString*) [ret objectForKey:retFlagKey];
+            
+            if ([retflag boolValue]) {
+                
+                NSArray *rows = (NSArray*) [ret objectForKey:msgKey];
+                
+                if (rows != nil) {
+                    
+                    FMDatabase *db = [DbUtil rebuildForResource:@"iRf" ofType:@"rdb"];
+                    if (db != nil) {
+                        
+                        [db beginTransaction];
+                        
+                        [db executeUpdate:@"delete from SCM_RG"];
+                        
+                        for (int i=0; i<[rows count]; i++) {
+                            NSDictionary *row = [rows objectAtIndex:i];
+                            [db executeUpdate:@"insert into SCM_RG (spdid, labelno, labeltype, said, orgsoid, socompanyid, socompanyname, lotno, ugoodsid, cusgdsid, goodsname, goodstype, factno, goodsunit, goodsqty,  invno, invprice, proddate, prodarea, validto,  locno, tcsoid, packsize, uvenderid, uvender, orgrow, stageid, rgmanid, rgdate, rgqty, rgflag, credate) values ( :spdid, :labelno, :labeltype, :said, :orgsoid, :socompanyid, :socompanyname, :lotno, :ugoodsid, :cusgdsid, :goodsname, :goodstype, :factno, :goodsunit, :goodsqty,  :invno, :invprice, date(:proddate), :prodarea, :validto,  :locno, :tcsoid, :packsize, :uvenderid, :uvender, :orgrow,   :stageid, :rgmanid, :rgdate, :rgqty, :rgflag, datetime(:credate) )" withParameterDictionary:row];
+                        
+                        }
+                        FMResultSet *rs = [db executeQuery:@"select count(*) from SCM_RG"];
+                        if ([rs next]) {
+                            int count = [rs intForColumnIndex:0];
+                            NSLog(@"%d",count);
+                            [self.navigationItem.rightBarButtonItem
+                                            setTitle:[rs stringForColumnIndex:0]];
+                            [CommonUtil alert:@"提示"
+                                          msg:[NSString stringWithFormat:@"已成功接受%d条收货信息",count]];
+                        }
+                        
+                        [db commit];
+                        
+                        [db close];
+                    }
+                }
+                
+                syncflag = YES;
+            }
+            else{
+                NSString *msg = (NSString*) [ret objectForKey:msgKey];
+                [self alert:@"错误" msg:msg];
+            }
+            
+        }
+    }
+    [self dismissActiveIndicatorView];
+    
+}
+
+
+//显示等待进度条
+- (void) displayGoalBarView {
+    if (goalBarView==nil){
+        goalBarView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Loading...",@"Loading...")
+                                                 message: @"\n\n\n\n\n\n\n"  //放大进度条显示区域
+                                                delegate: self
+                                       cancelButtonTitle: nil
+                                       otherButtonTitles: nil];
+        
+        goalBar = [[KDGoalBar alloc] initWithFrame:CGRectMake(60.f, 55.0f, 177.0f, 177.0f)];
+        [goalBar setAllowDragging:NO];
+        [goalBar setAllowSwitching:NO];
+        [goalBar setPercent:0 animated:NO];
+        [goalBar setAllowTap:NO];
+        [goalBarView addSubview:goalBar];
+    }
+    [goalBar setPercent:0 animated:NO];
+    [goalBarView show];
+}
+
+//取消等待进度条
+- (void) dismissGoalBarView
+{
+    if (goalBarView)
+    {
+        if (doneDoRgCoount  == notDoRgCount){
+            [goalBarView dismissWithClickedButtonIndex:0 animated:YES];
+        }
+        else {
+            doneDoRgCoount = doneDoRgCoount + 2;
+            [goalBar setPercent:doneDoRgCoount animated:YES];
+        }
+    }
+}
+
+- (void)confirmRg {
+    if ([RootViewController isSync]) {
+        FMDatabase *db = [DbUtil retConnectionForResource:@"iRf" ofType:@"rdb"];
+        if(db!=Nil){
+            notDoRgCount = 0;
+            doneDoRgCoount = 0;
+            FMResultSet *rs = [db executeQuery:@"select count(*) from SCM_RG where rgflag = 1 and rgdate in ('')"];
+            if ([rs next]) {
+                notDoRgCount = [rs intForColumnIndex:0];
+            }
+            if (notDoRgCount>0) {
+                [self displayGoalBarView];
+            }
+            iRfRgService* service = [iRfRgService service];
+            //    service.logging = YES;
+            
+            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+            NSString *username = [defaults stringForKey:@"username_preference"];
+            NSString *password = [defaults stringForKey:@"password_preference"];
+                
+            rs = [db executeQuery:@"select spdid,rgqty,locno from SCM_RG where rgflag = 1 and rgdate in ('')"];
+            while ([rs next]) {
+                NSString *spdid = [rs stringForColumnIndex:0];
+                NSString *rgqty = [rs stringForColumnIndex:1];
+                NSString *locno = [rs stringForColumnIndex:2];
+                
+                [service doRg:self
+                       action:@selector(doRgHandler:)
+                     username: username
+                     password: password
+                        splid: spdid
+                        rgqty: rgqty
+                        locno: locno];
+//                [self doRgHandler:nil];
+            }
+            
+            [db close];
+        }
+        
+    }
+    
+    
+}
+
+- (void)doRgHandler:(id)value {
+    // Handle errors
+	if([value isKindOfClass:[NSError class]]) {
+		NSLog(@"%@", value);
+        NSError* result = (NSError*)value;
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"连接失败"
+                                                        message: [result localizedFailureReason]
+													   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+		[alert show];
+		[alert release];
+		return;
+	}
+    
+	// Handle faults
+	if([value isKindOfClass:[SoapFault class]]) {
+		NSLog(@"%@", value);
+        SoapFault * result = (SoapFault*)value;
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"soap连接失败"
+                                                        message: [result faultString]
+													   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+		[alert show];
+		[alert release];
+		return;
+	}
+    
+    
+	// Do something with the NSString* result
+    NSString* result = (NSString*)value;
+	NSLog(@"doRg returned the value: %@", result);
+    
+    SBJsonParser *parser = [[SBJsonParser alloc] init];
+    id retObj = [parser objectWithString:result];
+    NSLog(@"%@",retObj);
+    [parser release];
+    
+    if (retObj != nil) {
+        NSDictionary *ret = (NSDictionary*)retObj;
+        NSString *retflag = (NSString*) [ret objectForKey:retFlagKey];
+        
+        if ([retflag boolValue]==YES) {
+            NSDictionary *msg = (NSDictionary*) [ret objectForKey:msgKey];
+            NSString *spdid = (NSString*) [msg objectForKey:@"spdid"];
+            if ([RootViewController isSync]) {
+                FMDatabase *db = [DbUtil retConnectionForResource:@"iRf" ofType:@"rdb"];
+                if(db != nil) {
+                    [db executeUpdate:@"update scm_rg set rgdate = datetime('now') where spdid = ?",spdid];
+                    [db close];
+                    doneDoRgCoount ++;
+                    if (doneDoRgCoount == notDoRgCount) {
+                        [self dismissGoalBarView];
+                    }
+                    else {
+                        [goalBar setPercent:doneDoRgCoount / notDoRgCount * 100 animated:YES];                        
+                    }
+
+                }
+            }
+            
+            //            if (self.scanViewDelegate!=nil) {
+            //                //调用回调函数
+            //                [self.scanViewDelegate confirmCallBack:YES values:values];
+            //            }
+            //            [self.navigationController popViewControllerAnimated:YES];
+        }
+        else{
+            NSString *msg = (NSString*) [ret objectForKey:msgKey];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"错误"
+                                                            message: msg
+                                                           delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+            [alert show];
+            [alert release];
+        }
+        
+    }
+    else{
+        
+    }
+}
 
 @end
 
