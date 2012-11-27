@@ -8,10 +8,11 @@
 
 #import "RgListSearchView.h"
 
+
 @implementation RgListSearchView
 
 @synthesize scrollView,goodsname,prodarea,lotno,invno,startdate,enddate;
-@synthesize pickerView,doneButton,finButton,tmp;
+@synthesize finButton,tmp;
 @synthesize rgListSearchViewDelegate;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -72,8 +73,6 @@
     self.invno = nil;
     self.startdate = nil;
     self.enddate = nil;
-    self.pickerView = nil;
-    self.doneButton = nil;
     self.finButton = nil;
     self.tmp = nil;
 }
@@ -87,8 +86,6 @@
     [invno release];
     [startdate release];
     [enddate release];
-    [pickerView release];
-    [doneButton release];
     [finButton release];
     [tmp release];
     [super dealloc];
@@ -100,12 +97,6 @@
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
-//- (BOOL)textFieldShouldClear:(UITextField *)textField
-//{
-//    [self closeDatePicker:nil];
-//    [textField resignFirstResponder];
-//	return YES;
-//}
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
@@ -114,87 +105,61 @@
 	return YES;
 }
 
-
-- (IBAction) showDatePicker:(id)sender{
-    [self.scrollView setContentOffset:CGPointMake(0, 100) animated:YES];
-    self.tmp = (UITextField*)sender;
-    [sender resignFirstResponder];
-    // check if our date picker is already on screen
-	if (self.pickerView.superview == nil)
-	{
-		[self.view.window addSubview: self.pickerView];
-		
-		// size up the picker view to our screen and compute the start/end frame origin for our slide up animation
-		//
-		// compute the start frame
-		CGRect screenRect = [[UIScreen mainScreen] applicationFrame];
-		CGSize pickerSize = [self.pickerView sizeThatFits:CGSizeZero];
-		CGRect startRect = CGRectMake(0.0,
-									  screenRect.origin.y + screenRect.size.height,
-									  screenRect.size.width, pickerSize.height);
-		self.pickerView.frame = startRect;
-		
-		// compute the end frame
-		CGRect pickerRect = CGRectMake(0.0,
-									   screenRect.origin.y + screenRect.size.height - pickerSize.height,
-									   screenRect.size.width,
-									   pickerSize.height);
-		// start the slide up animation
-		[UIView beginAnimations:nil context:NULL];
-        [UIView setAnimationDuration:0.3];
-		
-        // we need to perform some post operations after the animation is complete
-        [UIView setAnimationDelegate:self];
-		
-        self.pickerView.frame = pickerRect;
-		
-        // shrink the table vertical size to make room for the date picker
-        CGRect newFrame = self.view.frame;
-        newFrame.size.height -= self.pickerView.frame.size.height;
-        self.view.frame = newFrame;
-		[UIView commitAnimations];
-		
-		// add the "Done" button to the nav bar
-		self.navigationItem.rightBarButtonItem = self.doneButton;
-	}
-}
-
-- (void)slideDownDidStop
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
 {
-	// the date picker has finished sliding downwards, so remove it
-	[self.pickerView removeFromSuperview];
-}
-
-- (IBAction) closeDatePicker:(id)sender
-{
-    if (self.pickerView.superview != nil)
-	{
-        CGRect screenRect = [[UIScreen mainScreen] applicationFrame];
-        CGRect endFrame = self.pickerView.frame;
-        endFrame.origin.y = screenRect.origin.y + screenRect.size.height;
+    if (textField == self.startdate || textField == self.enddate) {
+        UIDatePicker *datePicker = [[UIDatePicker alloc] init];
         
-        // start the slide down animation
-        [UIView beginAnimations:nil context:NULL];
-        [UIView setAnimationDuration:0.3];
+        self.tmp = textField;
         
-        // we need to perform some post operations after the animation is complete
-        [UIView setAnimationDelegate:self];
-        [UIView setAnimationDidStopSelector:@selector(slideDownDidStop)];
+        NSDate *date = [NSDate date];
         
-        self.pickerView.frame = endFrame;
-        [UIView commitAnimations];
+        if (!([textField.text isEqualToString:@""] || textField.text == nil )) {
+            NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+            [formatter setDateFormat:@"yyyy-MM-dd"];
+            date = [formatter dateFromString:textField.text];
+        }
         
-        // grow the table back again in vertical size to make room for the date picker
-        CGRect newFrame = self.view.frame;
-        newFrame.size.height += self.pickerView.frame.size.height;
-        self.view.frame = newFrame;
+        [datePicker setDate:date animated:YES];
         
-        // remove the "Done" button in the nav bar
-        self.navigationItem.rightBarButtonItem = self.finButton;
-    //    [self dateAction:sender];
-        self.tmp = nil;
+        datePicker.datePickerMode = UIDatePickerModeDate;
+        
+        [datePicker addTarget:self action:@selector(dateAction:) forControlEvents:UIControlEventValueChanged];
+        //UITextField的inputView属性代替标准的系统键盘
+        
+        textField.inputView = datePicker;//inputView相当于给弹出datePicker控件的动画的功能;定制键盘来使用datePicker,弹出datePicker与弹出键盘方式一样
+        // Configure the view for the selected state
+        if (textField.inputAccessoryView == nil) {
+            UIToolbar* numberToolbar = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 0, 320, 50)];
+            numberToolbar.barStyle = UIBarStyleBlackTranslucent;
+            numberToolbar.items = [NSArray arrayWithObjects:
+                                   [[UIBarButtonItem alloc]initWithTitle:NSLocalizedString(@"Cancel",@"Cancel") style:UIBarButtonItemStyleBordered target:self action:@selector(canceldate)],
+                                   [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil],
+                                   [[UIBarButtonItem alloc]initWithTitle:NSLocalizedString(@"Apply",@"Apply") style:UIBarButtonItemStyleDone target:self action:@selector(applydate )],
+                                   nil];
+            [numberToolbar sizeToFit];
+            textField.inputAccessoryView = numberToolbar;
+            [numberToolbar release];
+        }
+        
+        [datePicker release];
     }
+    
+	return YES;
 }
+
+- (void) canceldate
+{
+    self.tmp.text = @"";
+    [self applydate];
+}
+
+- (void) applydate
+{
+    [self.tmp resignFirstResponder];
+}
+
+
 
 - (IBAction) finSearch:(id)sender{
 //    if (self.goodsname.text != nil) {
@@ -255,10 +220,10 @@
     } 
 }
 
-- (IBAction)dateAction:(id)sender
+- (void)dateAction:(UIDatePicker *)sender
 {
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateFormat:@"yyyy-MM-dd"];
-    self.tmp.text = [formatter stringFromDate:self.pickerView.date];
+    self.tmp.text = [formatter stringFromDate:sender.date];
 }
 @end

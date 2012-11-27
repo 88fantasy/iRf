@@ -25,8 +25,6 @@
     UITextField *startdate;
     UITextField *enddate;
     
-    UIDatePicker *pickerView;
-	UIBarButtonItem *doneButton;
     UIBarButtonItem *finButton;
     UITextField *tmp;
     NSMutableDictionary *searchFields;
@@ -41,15 +39,10 @@
 @property (nonatomic, retain) IBOutlet UITextField *startdate;
 @property (nonatomic, retain) IBOutlet UITextField *enddate;
 
-@property (nonatomic, retain) IBOutlet UIDatePicker *pickerView; 
-@property (nonatomic, retain) IBOutlet UIBarButtonItem *doneButton;
 @property (nonatomic, retain) IBOutlet UIBarButtonItem *finButton;
 @property (nonatomic, retain) IBOutlet UITextField *tmp;
 @property (nonatomic,retain) id<RgListSearchViewDelegate>  rgListSearchViewDelegate;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil value:(NSMutableDictionary*)obj;
-- (IBAction) showDatePicker:(id)sender;
-- (IBAction) closeDatePicker:(id)sender;
 - (IBAction) finSearch:(id)sender;
-- (IBAction)dateAction:(id)sender;
 @end
