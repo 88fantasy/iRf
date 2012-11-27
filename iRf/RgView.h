@@ -30,7 +30,8 @@
     UITextField *goodsqty;
     UITextField *rgqty;
     UITextField *locno;
-    UITextField *companyname;
+    UITextField *socompanyname;
+    UITextField *vendername;
     NSString *spdid;
     NSDictionary *values;
     BOOL readOnlyFlag;
@@ -51,7 +52,8 @@
 @property (nonatomic, retain) IBOutlet UITextField *goodsqty;
 @property (nonatomic, retain) IBOutlet UITextField *rgqty;
 @property (nonatomic, retain) IBOutlet UITextField *locno;
-@property (nonatomic, retain) IBOutlet UITextField *companyname;
+@property (nonatomic, retain) IBOutlet UITextField *socompanyname;
+@property (nonatomic, retain) IBOutlet UITextField *vendername;
 @property (nonatomic, retain) IBOutlet NSString *spdid;
 @property (nonatomic, retain) IBOutlet NSDictionary *values;
 //@property (nonatomic,retain) id<ScanViewDelegate>  scanViewDelegate; 

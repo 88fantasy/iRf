@@ -17,7 +17,7 @@ static NSString *msgKey = @"msg";
 @implementation RgView
 
 @synthesize scrollView,invno,goodsname,goodstype,factoryname,goodsprice,goodsunit,lotno
-,packsize,validto,orgrow,goodsqty,rgqty,locno,companyname;
+,packsize,validto,orgrow,goodsqty,rgqty,locno,socompanyname,vendername;
 
 @synthesize spdid,values;
 
@@ -74,6 +74,8 @@ static NSString *msgKey = @"msg";
     [goodsqty release];
     [rgqty release];
     [locno release];
+    [socompanyname release];
+    [vendername release];
     [spdid release];
     [values release];
 }
@@ -110,7 +112,8 @@ static NSString *msgKey = @"msg";
     
     self.rgqty.text = (NSString*) [values objectForKey:@"goodsqty"];
     self.locno.text = (NSString*) [values objectForKey:@"locno"];
-    self.companyname.text = (NSString*) [values objectForKey:@"uvender"];
+    self.socompanyname.text = (NSString*) [values objectForKey:@"socompanyname"];
+    self.vendername.text = (NSString*) [values objectForKey:@"uvender"];
     
     self.spdid = (NSString*) [values objectForKey:@"spdid"];
     
@@ -142,6 +145,8 @@ static NSString *msgKey = @"msg";
     self.rgqty = nil ;
     self.locno = nil ;
     self.spdid = nil;
+    self.socompanyname = nil;
+    self.vendername = nil;
     self.values = nil;
 }
 
@@ -221,13 +226,13 @@ static NSString *msgKey = @"msg";
         
         if ([retflag boolValue]==YES) {
             [values setValue:@"1" forKey:@"rgflag"];
-            NSDictionary *msg = (NSDictionary*) [ret objectForKey:msgKey];
-            NSString *sid = (NSString*) [msg objectForKey:@"spdid"];
+//            NSDictionary *msg = (NSDictionary*) [ret objectForKey:msgKey];
+//            NSString *sid = (NSString*) [msg objectForKey:@"spdid"];
             
             if ([RootViewController isSync]) {
                 FMDatabase *db = [DbUtil retConnectionForResource:@"iRf" ofType:@"rdb"];
                 if(db != nil) {
-                    [db executeUpdate:@"update scm_rg set rgdate = datetime('now') where spdid = ?",sid];
+                    [db executeUpdate:@"update scm_rg set rgdate = datetime('now') where spdid = ?",self.spdid];
                     [db close];
                 }
             }
