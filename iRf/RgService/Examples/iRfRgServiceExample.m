@@ -29,10 +29,19 @@
 	[service getAllRg:self action:@selector(getAllRgHandler:) username: @"" password: @"" queryjson: @""];
 
 	// Returns NSString*. 
+	[service getAllRgGroupJSON:self action:@selector(getAllRgGroupJSONHandler:) username: @"" password: @"" queryjson: @""];
+
+	// Returns NSString*. 
+	[service getAllRgGroupXML:self action:@selector(getAllRgGroupXMLHandler:) username: @"" password: @"" queryxml: @""];
+
+	// Returns NSString*. 
 	[service getReqInfo:self action:@selector(getReqInfoHandler:) username: @"" password: @""];
 
 	// Returns NSString*. 
 	[service getRg:self action:@selector(getRgHandler:) username: @"" password: @"" labelno: @""];
+
+	// Returns iRfRet*. 
+	[service getRgs:self action:@selector(getRgsHandler:) queryxml: @"" code: @""];
 
 	// Returns NSString*. 
 	[service getStockByLoc:self action:@selector(getStockByLocHandler:) username: @"" password: @"" locno: @""];
@@ -51,6 +60,9 @@
 
 	// Returns iRfRet*. 
 	[service setEdisRg:self action:@selector(setEdisRgHandler:) xml: @""];
+
+	// Returns iRfRet*. 
+	[service setRgSuccess:self action:@selector(setRgSuccessHandler:) ids: [NSMutableArray array] code: @""];
 }
 
 	
@@ -151,6 +163,54 @@
 }
 	
 
+// Handle the response from getAllRgGroupJSON.
+		
+- (void) getAllRgGroupJSONHandler: (id) value {
+
+	// Handle errors
+	if([value isKindOfClass:[NSError class]]) {
+		NSLog(@"%@", value);
+		return;
+	}
+
+	// Handle faults
+	if([value isKindOfClass:[SoapFault class]]) {
+		NSLog(@"%@", value);
+		return;
+	}				
+			
+
+	// Do something with the NSString* result
+		NSString* result = (NSString*)value;
+	NSLog(@"getAllRgGroupJSON returned the value: %@", result);
+			
+}
+	
+
+// Handle the response from getAllRgGroupXML.
+		
+- (void) getAllRgGroupXMLHandler: (id) value {
+
+	// Handle errors
+	if([value isKindOfClass:[NSError class]]) {
+		NSLog(@"%@", value);
+		return;
+	}
+
+	// Handle faults
+	if([value isKindOfClass:[SoapFault class]]) {
+		NSLog(@"%@", value);
+		return;
+	}				
+			
+
+	// Do something with the NSString* result
+		NSString* result = (NSString*)value;
+	NSLog(@"getAllRgGroupXML returned the value: %@", result);
+			
+}
+	
+
 // Handle the response from getReqInfo.
 		
 - (void) getReqInfoHandler: (id) value {
@@ -195,6 +255,30 @@
 	// Do something with the NSString* result
 		NSString* result = (NSString*)value;
 	NSLog(@"getRg returned the value: %@", result);
+			
+}
+	
+
+// Handle the response from getRgs.
+		
+- (void) getRgsHandler: (id) value {
+
+	// Handle errors
+	if([value isKindOfClass:[NSError class]]) {
+		NSLog(@"%@", value);
+		return;
+	}
+
+	// Handle faults
+	if([value isKindOfClass:[SoapFault class]]) {
+		NSLog(@"%@", value);
+		return;
+	}				
+			
+
+	// Do something with the iRfRet* result
+		iRfRet* result = (iRfRet*)value;
+	NSLog(@"getRgs returned the value: %@", result);
 			
 }
 	
@@ -339,6 +423,30 @@
 	// Do something with the iRfRet* result
 		iRfRet* result = (iRfRet*)value;
 	NSLog(@"setEdisRg returned the value: %@", result);
+			
+}
+	
+
+// Handle the response from setRgSuccess.
+		
+- (void) setRgSuccessHandler: (id) value {
+
+	// Handle errors
+	if([value isKindOfClass:[NSError class]]) {
+		NSLog(@"%@", value);
+		return;
+	}
+
+	// Handle faults
+	if([value isKindOfClass:[SoapFault class]]) {
+		NSLog(@"%@", value);
+		return;
+	}				
+			
+
+	// Do something with the iRfRet* result
+		iRfRet* result = (iRfRet*)value;
+	NSLog(@"setRgSuccess returned the value: %@", result);
 			
 }
 	

@@ -17,7 +17,7 @@
 	@property (retain, nonatomic) NSString* msg;
 	@property BOOL ret;
 
-	+ (iRfRet*) newWithNode: (CXMLNode*) node;
+	+ (iRfRet*) createWithNode: (CXMLNode*) node;
 	- (id) initWithNode: (CXMLNode*) node;
 	- (NSMutableString*) serialize;
 	- (NSMutableString*) serialize: (NSString*) nodeName;

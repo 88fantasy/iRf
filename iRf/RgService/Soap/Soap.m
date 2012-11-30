@@ -1,24 +1,10 @@
-//
-//  Soap.m
-//
-//  Created by Jason Kichline on 12/14/10.
-//  Copyright 2010 Jason Kichline
-//
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the License.
-//  You may obtain a copy of the License at
-//
-//  http://www.apache.org/licenses/LICENSE-2.0
-//
-//  Unless required by applicable law or agreed to in writing, software
-//  distributed under the License is distributed on an "AS IS" BASIS,
-//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//  See the License for the specific language governing permissions and
-//  limitations under the License.
-//
-//  Authors:
-//    Jason Kichline, andCulture - Harrisburg, Pennsylvania USA
-//    Karl Schulenburg, UMAI Development - Shoreditch, London UK
+/*
+ Soap.m
+ Provides method for serializing and deserializing values to and from the web service.
+
+ Authors: Jason Kichline, andCulture - Harrisburg, Pennsylvania USA
+          Karl Schulenburg, UMAI Development - Shoreditch, London UK
+*/
 
 #import <Foundation/Foundation.h>
 #import <objc/runtime.h>
@@ -196,7 +182,6 @@
 + (NSMutableData*) callService: (NSString*) urlString data: (NSString*) data action: (NSString*) action delegate: (SEL) handler {
 	NSURL* url = [NSURL URLWithString: urlString];
 	NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL: url];
-	NSMutableData* output;
 
 	if(action != nil) {
 		[request addValue: action forHTTPHeaderField: @"SOAPAction"];
@@ -207,17 +192,10 @@
 		[request addValue: @"text/xml" forHTTPHeaderField: @"Content-Type"];
 	}
 
-	NSURLConnection* conn = [[NSURLConnection alloc] initWithRequest: request delegate: self];
-	if(conn) {
-		output = [[NSMutableData data] retain];
-	}
-	[NSURLConnection connectionWithRequest: request delegate: self];
-	
 	NSError* error;
 	NSURLResponse* response;
 
 	return (NSMutableData*)[NSURLConnection sendSynchronousRequest: request returningResponse: &response error: &error];
-//	return output;
 }
 
 // Gets the node from another node by name.
@@ -338,7 +316,7 @@
 			}
 			Class cls = NSClassFromString([NSString stringWithFormat:@"%@%@", prefix, type]);
 			if(cls != nil ) {
-				return [cls newWithNode:element];
+				return [cls createWithNode:element];
 			} else {
 				return [Soap deserializeAsDictionary:element];
 
@@ -373,7 +351,7 @@
 // Deserializes a node into an object.
 + (id) deserialize: (CXMLNode*) element forObject: (NSObject*) object {
 	NSError* error;
-	NSObject* value;
+	NSObject* value = nil;
 	NSArray* nodes = [element nodesForXPath:@"*" error: &error];
 	for(CXMLNode* node in nodes) {
 		NSObject* property = [object valueForKey: [node name]];
@@ -521,7 +499,7 @@
 
 // Creates dictionary of string values from the XML document.
 +(id)objectFromXMLString:(NSString*)xmlString {
-	CXMLDocument* doc = [[CXMLDocument alloc] initWithXMLString:xmlString options:0 error:nil];
+	CXMLDocument* doc = [[[CXMLDocument alloc] initWithXMLString:xmlString options:0 error:nil] autorelease];
 	return [Soap objectFromNode:doc];
 }
 

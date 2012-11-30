@@ -8,6 +8,7 @@
 	
 /* Add class references */
 				
+#import "iRfArrayOfString.h"
 #import "iRfRet.h"
 
 /* Interface for the service */
@@ -15,36 +16,32 @@
 @interface iRfRgService : SoapService
 		
 	/* Returns NSString*.  */
-	- (SoapRequest*) queryXML: (id <SoapDelegate>) handler sql: (NSString*) sql dbname: (NSString*) dbname;
-	- (SoapRequest*) queryXML: (id) target action: (SEL) action sql: (NSString*) sql dbname: (NSString*) dbname;
-
-	/* Returns NSString*.  */
 	- (SoapRequest*) mvConfirm: (id <SoapDelegate>) handler username: (NSString*) username password: (NSString*) password jsonObject: (NSString*) jsonObject;
 	- (SoapRequest*) mvConfirm: (id) target action: (SEL) action username: (NSString*) username password: (NSString*) password jsonObject: (NSString*) jsonObject;
+
+	/* Returns iRfRet*.  */
+	- (SoapRequest*) setRgSuccess: (id <SoapDelegate>) handler ids: (NSMutableArray*) ids code: (NSString*) code;
+	- (SoapRequest*) setRgSuccess: (id) target action: (SEL) action ids: (NSMutableArray*) ids code: (NSString*) code;
 
 	/* Returns NSString*.  */
 	- (SoapRequest*) getAllRg: (id <SoapDelegate>) handler username: (NSString*) username password: (NSString*) password queryjson: (NSString*) queryjson;
 	- (SoapRequest*) getAllRg: (id) target action: (SEL) action username: (NSString*) username password: (NSString*) password queryjson: (NSString*) queryjson;
 
 	/* Returns NSString*.  */
-	- (SoapRequest*) getTrGds: (id <SoapDelegate>) handler username: (NSString*) username password: (NSString*) password page: (int) page;
-	- (SoapRequest*) getTrGds: (id) target action: (SEL) action username: (NSString*) username password: (NSString*) password page: (int) page;
-
-	/* Returns NSString*.  */
 	- (SoapRequest*) getReqInfo: (id <SoapDelegate>) handler username: (NSString*) username password: (NSString*) password;
 	- (SoapRequest*) getReqInfo: (id) target action: (SEL) action username: (NSString*) username password: (NSString*) password;
 
 	/* Returns NSString*.  */
-	- (SoapRequest*) doTr: (id <SoapDelegate>) handler username: (NSString*) username password: (NSString*) password ugoodsid: (NSString*) ugoodsid goodsname: (NSString*) goodsname goodstype: (NSString*) goodstype tradename: (NSString*) tradename factno: (NSString*) factno goodsunit: (NSString*) goodsunit cusgdsid: (NSString*) cusgdsid multi: (NSString*) multi;
-	- (SoapRequest*) doTr: (id) target action: (SEL) action username: (NSString*) username password: (NSString*) password ugoodsid: (NSString*) ugoodsid goodsname: (NSString*) goodsname goodstype: (NSString*) goodstype tradename: (NSString*) tradename factno: (NSString*) factno goodsunit: (NSString*) goodsunit cusgdsid: (NSString*) cusgdsid multi: (NSString*) multi;
+	- (SoapRequest*) getTrGds: (id <SoapDelegate>) handler username: (NSString*) username password: (NSString*) password page: (int) page;
+	- (SoapRequest*) getTrGds: (id) target action: (SEL) action username: (NSString*) username password: (NSString*) password page: (int) page;
+
+	/* Returns iRfRet*.  */
+	- (SoapRequest*) getRgs: (id <SoapDelegate>) handler queryxml: (NSString*) queryxml code: (NSString*) code;
+	- (SoapRequest*) getRgs: (id) target action: (SEL) action queryxml: (NSString*) queryxml code: (NSString*) code;
 
 	/* Returns NSString*.  */
-	- (SoapRequest*) getRg: (id <SoapDelegate>) handler username: (NSString*) username password: (NSString*) password labelno: (NSString*) labelno;
-	- (SoapRequest*) getRg: (id) target action: (SEL) action username: (NSString*) username password: (NSString*) password labelno: (NSString*) labelno;
-
-	/* Returns NSString*.  */
-	- (SoapRequest*) doRg: (id <SoapDelegate>) handler username: (NSString*) username password: (NSString*) password splid: (NSString*) splid rgqty: (NSString*) rgqty locno: (NSString*) locno;
-	- (SoapRequest*) doRg: (id) target action: (SEL) action username: (NSString*) username password: (NSString*) password splid: (NSString*) splid rgqty: (NSString*) rgqty locno: (NSString*) locno;
+	- (SoapRequest*) getAllRgGroupJSON: (id <SoapDelegate>) handler username: (NSString*) username password: (NSString*) password queryjson: (NSString*) queryjson;
+	- (SoapRequest*) getAllRgGroupJSON: (id) target action: (SEL) action username: (NSString*) username password: (NSString*) password queryjson: (NSString*) queryjson;
 
 	/* Returns iRfRet*.  */
 	- (SoapRequest*) setEdisRg: (id <SoapDelegate>) handler xml: (NSString*) xml;
@@ -55,12 +52,32 @@
 	- (SoapRequest*) doReqComfirm: (id) target action: (SEL) action username: (NSString*) username password: (NSString*) password jsonArray: (NSString*) jsonArray;
 
 	/* Returns NSString*.  */
-	- (SoapRequest*) queryJSON: (id <SoapDelegate>) handler sql: (NSString*) sql dbname: (NSString*) dbname;
-	- (SoapRequest*) queryJSON: (id) target action: (SEL) action sql: (NSString*) sql dbname: (NSString*) dbname;
-
-	/* Returns NSString*.  */
 	- (SoapRequest*) getStockByLoc: (id <SoapDelegate>) handler username: (NSString*) username password: (NSString*) password locno: (NSString*) locno;
 	- (SoapRequest*) getStockByLoc: (id) target action: (SEL) action username: (NSString*) username password: (NSString*) password locno: (NSString*) locno;
+
+	/* Returns NSString*.  */
+	- (SoapRequest*) queryXML: (id <SoapDelegate>) handler sql: (NSString*) sql dbname: (NSString*) dbname;
+	- (SoapRequest*) queryXML: (id) target action: (SEL) action sql: (NSString*) sql dbname: (NSString*) dbname;
+
+	/* Returns NSString*.  */
+	- (SoapRequest*) doTr: (id <SoapDelegate>) handler username: (NSString*) username password: (NSString*) password ugoodsid: (NSString*) ugoodsid goodsname: (NSString*) goodsname goodstype: (NSString*) goodstype tradename: (NSString*) tradename factno: (NSString*) factno goodsunit: (NSString*) goodsunit cusgdsid: (NSString*) cusgdsid multi: (NSString*) multi;
+	- (SoapRequest*) doTr: (id) target action: (SEL) action username: (NSString*) username password: (NSString*) password ugoodsid: (NSString*) ugoodsid goodsname: (NSString*) goodsname goodstype: (NSString*) goodstype tradename: (NSString*) tradename factno: (NSString*) factno goodsunit: (NSString*) goodsunit cusgdsid: (NSString*) cusgdsid multi: (NSString*) multi;
+
+	/* Returns NSString*.  */
+	- (SoapRequest*) doRg: (id <SoapDelegate>) handler username: (NSString*) username password: (NSString*) password splid: (NSString*) splid rgqty: (NSString*) rgqty locno: (NSString*) locno;
+	- (SoapRequest*) doRg: (id) target action: (SEL) action username: (NSString*) username password: (NSString*) password splid: (NSString*) splid rgqty: (NSString*) rgqty locno: (NSString*) locno;
+
+	/* Returns NSString*.  */
+	- (SoapRequest*) getRg: (id <SoapDelegate>) handler username: (NSString*) username password: (NSString*) password labelno: (NSString*) labelno;
+	- (SoapRequest*) getRg: (id) target action: (SEL) action username: (NSString*) username password: (NSString*) password labelno: (NSString*) labelno;
+
+	/* Returns NSString*.  */
+	- (SoapRequest*) getAllRgGroupXML: (id <SoapDelegate>) handler username: (NSString*) username password: (NSString*) password queryxml: (NSString*) queryxml;
+	- (SoapRequest*) getAllRgGroupXML: (id) target action: (SEL) action username: (NSString*) username password: (NSString*) password queryxml: (NSString*) queryxml;
+
+	/* Returns NSString*.  */
+	- (SoapRequest*) queryJSON: (id <SoapDelegate>) handler sql: (NSString*) sql dbname: (NSString*) dbname;
+	- (SoapRequest*) queryJSON: (id) target action: (SEL) action sql: (NSString*) sql dbname: (NSString*) dbname;
 
 		
 	+ (iRfRgService*) service;

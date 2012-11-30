@@ -19,7 +19,7 @@
 		return self;
 	}
 
-	+ (iRfRet*) newWithNode: (CXMLNode*) node
+	+ (iRfRet*) createWithNode: (CXMLNode*) node
 	{
 		if(node == nil) { return nil; }
 		return (iRfRet*)[[[iRfRet alloc] initWithNode: node] autorelease];
@@ -80,7 +80,7 @@
 	
 	- (void) dealloc
 	{
-		if(self.msg != nil) { [self.msg release]; }
+		self.msg = nil;
 		[super dealloc];
 	}
 
