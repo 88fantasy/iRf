@@ -18,12 +18,17 @@ static NSString *retFlagKey = @"ret";
 static NSString *msgKey = @"msg";
 
 
+typedef NS_ENUM(NSInteger, StockAdjustViewAlertStyle) {
+    HouseLocnoStyle =  40000,  //药房默认货位提示
+    NoHouseStyle = 400001, //不从药房发药提示
+};
+
 @implementation StockAdjustView
 
 @synthesize orglocno,tolocno,goodsqty,orgswitch,toswitch,stocktableview;
 @synthesize activityView,activityIndicator,scrollView,stockList,baseCodeList;
 @synthesize venders,venderPickerView,vender;
-@synthesize defaultflag;
+@synthesize defaultflag,nohouseflag;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -326,6 +331,7 @@ static NSString *msgKey = @"msg";
         NSString *goodsname = [obj objectForKey:@"goodsname"];
         NSString *houselocno = [obj objectForKey:@"houselocno"];
         NSString *basecode = [obj objectForKey:@"basecode"];
+        NSString *nohouse = [obj objectForKey:@"nohouse"];
         if (![@"" isEqualToString:basecode]
             &&[[totext substringToIndex:1] isEqualToString:@"C"]
             &&[self.baseCodeList count]!=[self.goodsqty.text intValue]) {
@@ -342,6 +348,7 @@ static NSString *msgKey = @"msg";
                                   cancelButtonTitle:NSLocalizedString(@"Cancel", @"Cancel") 
                                   otherButtonTitles:NSLocalizedString(@"Apply", @"Apply"),
                                   nil];
+            alert.tag = HouseLocnoStyle;
             [alert show];	
             [alert release];
         }
@@ -355,6 +362,19 @@ static NSString *msgKey = @"msg";
             
         }
         else if ([totext isEqualToString:@"KSLY"]&&vender == nil) {
+            
+            if ([nohouse isEqualToString:@""]&&nohouseflag == nil) {
+                UIAlertView *alert = [[UIAlertView alloc]
+                                      initWithTitle:@"不从药房发药提示"
+                                      message:[NSString stringWithFormat:@"是否将 %@ 设未不从药房发药 ??",goodsname]
+                                      delegate:self
+                                      cancelButtonTitle:NSLocalizedString(@"Cancel", @"Cancel")
+                                      otherButtonTitles:NSLocalizedString(@"Apply", @"Apply"),
+                                      nil];
+                alert.tag = NoHouseStyle;
+                [alert show];
+                [alert release];
+            }
             
             iRfRgService* service = [iRfRgService service];
             
@@ -382,6 +402,9 @@ static NSString *msgKey = @"msg";
             }
             if (self.defaultflag!=nil) {
                 [params setObject:self.defaultflag forKey:@"defaultflag"];
+            }
+            if (self.nohouseflag!=nil) {
+                [params setObject:self.nohouseflag forKey:@"nohouseflag"];
             }
             
             NSDictionary *jsonobj =[NSDictionary dictionaryWithObjectsAndKeys:
@@ -414,12 +437,21 @@ static NSString *msgKey = @"msg";
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    if ([alertView.title isEqualToString:@"药房默认货位提示"]) {
+    if (alertView.tag==HouseLocnoStyle) {
         if (buttonIndex==1) {
             self.defaultflag = @"1";
         }
         else {
             self.defaultflag = @"0";
+        }
+        [self confirmAdjust];
+    }
+    else if (alertView.tag == NoHouseStyle){
+        if (buttonIndex==1) {
+            self.nohouseflag = @"1";
+        }
+        else {
+            self.nohouseflag = @"0";
         }
         [self confirmAdjust];
     }
@@ -487,6 +519,7 @@ static NSString *msgKey = @"msg";
         }
         self.vender = nil;
         self.defaultflag = nil;
+        self.nohouseflag = nil;
     }
     
 }
@@ -555,9 +588,25 @@ static NSString *msgKey = @"msg";
     [self.goodsqty resignFirstResponder];
 }
 
+#pragma mark 纵向旋转控制
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
+    // Return YES for supported orientations
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+#pragma mark ios6+纵向旋转控制需要以下3个 覆盖viewcontroller的方法
+- (BOOL)shouldAutorotate
+{
+    return YES;
+}
+- (NSUInteger)supportedInterfaceOrientations
+{
+    return UIInterfaceOrientationMaskPortrait;
+}
+- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
+{
+    return UIInterfaceOrientationPortrait;
 }
 
 

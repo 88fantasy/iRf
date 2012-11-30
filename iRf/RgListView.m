@@ -24,6 +24,7 @@ static NSString *msgKey = @"msg";
 @implementation RgListView
 
 @synthesize menuList,objs,refreshButtonItem,activityView,activityIndicator,searchObj;
+@synthesize goalBar,goalBarView;
 
 
 - (id)initWithStyle:(UITableViewStyle)style
@@ -202,6 +203,24 @@ static NSString *msgKey = @"msg";
     }
 }
 
+- (void) resetBarbutton
+{
+    if (self.editing) {
+        [self setEditing:NO animated:YES];
+    }
+    if (canReload) {
+        
+        UIBarButtonItem *searchbtn = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch                                                                          target:self action:@selector(setSearchJson:)];
+        
+        UIBarButtonItem *batchbtn = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemOrganize                                                                          target:self action:@selector(batchMode)];
+        
+        [self.navigationItem setRightBarButtonItems:[NSArray arrayWithObjects: searchbtn,batchbtn,nil] animated:YES];
+        
+        [searchbtn release];
+        [batchbtn release];
+    }
+}
+
 #pragma mark - View lifecycle
 
 - (void)viewDidLoad
@@ -213,17 +232,16 @@ static NSString *msgKey = @"msg";
     // self.clearsSelectionOnViewWillAppear = NO;
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    if (canReload) {
-        if (self.refreshButtonItem == nil) {
-            self.refreshButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch                                                                          target:self action:@selector(setSearchJson:)];
-            
-        }
-        
-        self.navigationItem.rightBarButtonItem = self.refreshButtonItem;
-    }
     
+    [self resetBarbutton];
+    
+    NSDateFormatter *df = [[NSDateFormatter alloc] init];
+    [df setDateFormat:@"yyyy-MM-dd"];
+    NSString *yesterday = [df stringFromDate:[NSDate dateWithTimeIntervalSinceNow:- 24 * 60 * 60 * 1]]  ;
+    [df release];
     self.searchObj = [NSDictionary dictionaryWithObjectsAndKeys:
                       @"0",@"rgflag",
+                      yesterday,@"startdate",
                       nil];
     [self reload];
 }
@@ -241,10 +259,9 @@ static NSString *msgKey = @"msg";
     self.activityIndicator = nil;
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+    //填写你需要锁定的方向参数
+    return UIInterfaceOrientationIsLandscape( interfaceOrientation ) || (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
 #pragma mark - Table view data source
@@ -349,11 +366,14 @@ static NSString *msgKey = @"msg";
 {
     // Navigation logic may go here. Create and push another view controller.
     
-    //    UIViewController *targetViewController = [[self.menuList objectAtIndex: indexPath.row] objectForKey:kViewControllerKey];
-    NSDictionary *obj = [[self.menuList objectAtIndex: indexPath.row] objectForKey:kObjKey];
-    RgView* targetViewController = [[RgView alloc] initWithNibName:@"RgView" bundle:nil values:obj];
-    //    targetViewController.scanViewDelegate = self;
-	[[self navigationController] pushViewController:targetViewController animated:YES];
+    
+    if (![self isEditing]) { //非多选状态
+        NSDictionary *obj = [[self.menuList objectAtIndex: indexPath.row] objectForKey:kObjKey];
+        RgView* targetViewController = [[RgView alloc] initWithNibName:@"RgView" bundle:nil values:obj];
+        //    targetViewController.scanViewDelegate = self;
+        [[self navigationController] pushViewController:targetViewController animated:YES];
+    }
+   
     
 }
 
@@ -441,6 +461,8 @@ static NSString *msgKey = @"msg";
 }
 
 - (void) reload {
+    [self resetBarbutton];
+    
     self.menuList = [NSMutableArray array];
     if (objs != nil) {
         
@@ -450,6 +472,7 @@ static NSString *msgKey = @"msg";
             NSString *labeltype = [obj objectForKey:@"labeltype"];
             NSString *goodstype = [obj objectForKey:@"goodstype"];
             NSString *goodsqty = [obj objectForKey:@"goodsqty"];
+            NSString *goodsunit = [obj objectForKey:@"goodsunit"];
             NSString *prodarea = [obj objectForKey:@"prodarea"];
             NSString *companyname = [obj objectForKey:@"socompanyname"];
             
@@ -468,6 +491,9 @@ static NSString *msgKey = @"msg";
             if (goodsqty != nil) {
                 detailText = [detailText stringByAppendingString:@"     "];
                 detailText = [detailText stringByAppendingString:goodsqty];
+            }
+            if (goodsunit != nil) {
+                detailText = [detailText stringByAppendingString:goodsunit];
             }
             if (prodarea != nil) {
                 detailText = [detailText stringByAppendingString:@"     "];
@@ -571,5 +597,201 @@ static NSString *msgKey = @"msg";
 -(void)searchCallBack:(NSDictionary *)_fields{
     self.searchObj = _fields;
     [self getAllRg];
+}
+
+
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return UITableViewCellEditingStyleDelete | UITableViewCellEditingStyleInsert;
+}
+
+- (void) batchMode
+{
+    UIBarButtonItem *cancelbtn = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel                                                                          target:self action:@selector(resetBarbutton)];
+    
+    UIBarButtonItem *confirmbtn = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone                                                                          target:self action:@selector(batchConfirm:)];
+    
+    [self.navigationItem setRightBarButtonItems:[NSArray arrayWithObjects: confirmbtn,cancelbtn,nil] animated:YES];
+    
+    [cancelbtn release];
+    [confirmbtn release];
+    if (!self.editing) {
+        [self setEditing:YES animated:YES];
+    }
+
+}
+
+- (void) batchConfirm:(UIBarButtonItem *)sender
+{
+    NSArray *rows = [self.tableView indexPathsForSelectedRows];
+    if (rows.count>0) {
+        UIActionSheet *as = [[UIActionSheet alloc] initWithTitle:[NSString stringWithFormat:@"请选择对这%d条记录进行的操作",rows.count]
+                                                        delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", @"Cancel")
+                                          destructiveButtonTitle:@"批量收货"
+                                               otherButtonTitles:nil, nil];
+        [as showFromBarButtonItem:sender animated:YES];
+        [as release];
+    }
+    
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex != actionSheet.cancelButtonIndex) {
+        NSArray *rows = [self.tableView indexPathsForSelectedRows];
+        notDoRgCount = rows.count;
+        doneDoRgCoount = 0;
+        
+        [self displayGoalBarView:0];
+        iRfRgService* service = [iRfRgService service];
+        //    service.logging = YES;
+        
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        NSString *username = [defaults stringForKey:@"username_preference"];
+        NSString *password = [defaults stringForKey:@"password_preference"];
+        
+        for (int i=0; i<notDoRgCount; i++) {
+            NSIndexPath *indexPath = [rows objectAtIndex:i];
+            NSLog(@"%d",indexPath.row);
+            
+            if (objs!=nil) {
+                NSDictionary *obj =  [objs objectAtIndex:indexPath.row];
+                NSString *spdid = [obj objectForKey:@"spdid"];
+                NSString *rgqty = [obj objectForKey:@"rgqty"];
+                NSString *locno = [obj objectForKey:@"locno"];
+                
+                [service doRg:self
+                       action:@selector(doRgHandler:)
+                     username: username
+                     password: password
+                        splid: spdid
+                        rgqty: rgqty
+                        locno: locno];
+                
+                if ([RootViewController isSync]) {
+                    FMDatabase *db = [DbUtil retConnectionForResource:@"iRf" ofType:@"rdb"];
+                    if(db != nil) {
+                        [db executeUpdate:@"update scm_rg set rgqty = ?,locno = ?,rgflag = 1 where spdid = ?", rgqty, locno, spdid];
+                        [db close];
+                    }
+                }
+            }
+            
+            
+            [goalBar setPercent:doneDoRgCoount/notDoRgCount * 100 animated:YES];
+        }
+        
+    }
+    
+    [self resetBarbutton];
+}
+
+- (void)doRgHandler:(id)value {
+    // Handle errors
+	if([value isKindOfClass:[NSError class]]) {
+		NSLog(@"%@", value);
+        NSError* result = (NSError*)value;
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"连接失败"
+                                                        message: [result localizedFailureReason]
+													   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+		[alert show];
+		[alert release];
+	}
+    
+	// Handle faults
+	if([value isKindOfClass:[SoapFault class]]) {
+		NSLog(@"%@", value);
+        SoapFault * result = (SoapFault*)value;
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"soap连接失败"
+                                                        message: [result faultString]
+													   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+		[alert show];
+		[alert release];
+	}
+    
+    
+	// Do something with the NSString* result
+    NSString* result = (NSString*)value;
+	NSLog(@"doRg returned the value: %@", result);
+    
+    SBJsonParser *parser = [[SBJsonParser alloc] init];
+    id retObj = [parser objectWithString:result];
+    NSLog(@"%@",retObj);
+    [parser release];
+    
+    doneDoRgCoount ++;
+    if (doneDoRgCoount >= notDoRgCount) {
+        [self dismissGoalBarView];
+        [self reloadTableViewDataSource];
+    }
+    else {
+        int percent = doneDoRgCoount * 100 / notDoRgCount ;
+        [self displayGoalBarView:percent];
+    }
+    
+    if (retObj != nil) {
+        NSDictionary *ret = (NSDictionary*)retObj;
+        NSString *retflag = (NSString*) [ret objectForKey:retFlagKey];
+        
+        if ([retflag boolValue]==YES) {
+            NSDictionary *msg = (NSDictionary*) [ret objectForKey:msgKey];
+            NSString *spdid = (NSString*) [msg objectForKey:@"spdid"];
+            if ([RootViewController isSync]) {
+                FMDatabase *db = [DbUtil retConnectionForResource:@"iRf" ofType:@"rdb"];
+                if(db != nil) {
+                    [db executeUpdate:@"update scm_rg set rgdate = datetime('now') where spdid = ?",spdid];
+                    [db close];
+                }
+            }
+            
+        }
+        else{
+            NSString *msg = (NSString*) [ret objectForKey:msgKey];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"错误"
+                                                            message: msg
+                                                           delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+            [alert show];
+            [alert release];
+        }
+        
+    }
+    else{
+        
+    }
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
+    NSLog(@"commit");
+}
+
+//显示等待进度条
+- (void) displayGoalBarView:(int)percent {
+    if (goalBarView==nil){
+        goalBarView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Loading...",@"Loading...")
+                                                 message: @"\n\n\n\n\n\n\n"  //放大进度条显示区域
+                                                delegate: self
+                                       cancelButtonTitle: nil
+                                       otherButtonTitles: nil];
+        
+        goalBar = [[KDGoalBar alloc] initWithFrame:CGRectMake(60.f, 55.0f, 177.0f, 177.0f)];
+        [goalBar setAllowDragging:NO];
+        [goalBar setAllowSwitching:NO];
+        [goalBar setPercent:0 animated:NO];
+        [goalBar setAllowTap:NO];
+        [goalBarView addSubview:goalBar];
+    }
+    if (!goalBarView.isVisible) {
+        [goalBarView show];
+    }
+    [goalBar setPercent:percent animated:YES];
+    
+}
+
+//取消等待进度条
+- (void) dismissGoalBarView
+{
+    if (goalBarView)
+    {
+        [goalBarView dismissWithClickedButtonIndex:0 animated:YES];
+    }
 }
 @end

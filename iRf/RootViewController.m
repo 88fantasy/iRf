@@ -45,6 +45,12 @@ enum {
     return syncflag && IsInternet;
 }
 
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+    //填写你需要锁定的方向参数
+    return UIInterfaceOrientationIsLandscape( interfaceOrientation ) || (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
 - (void)confirmUser{
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSString *username = [defaults stringForKey:@"username_preference"];
@@ -461,7 +467,7 @@ enum {
 
 
 //显示等待进度条
-- (void) displayGoalBarView {
+- (void) displayGoalBarView:(int) percent {
     if (goalBarView==nil){
         goalBarView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Loading...",@"Loading...")
                                                  message: @"\n\n\n\n\n\n\n"  //放大进度条显示区域
@@ -476,7 +482,7 @@ enum {
         [goalBar setAllowTap:NO];
         [goalBarView addSubview:goalBar];
     }
-    [goalBar setPercent:0 animated:NO];
+    [goalBar setPercent:percent animated:YES];
     [goalBarView show];
 }
 
@@ -485,13 +491,7 @@ enum {
 {
     if (goalBarView)
     {
-        if (doneDoRgCoount  == notDoRgCount){
-            [goalBarView dismissWithClickedButtonIndex:0 animated:YES];
-        }
-        else {
-            doneDoRgCoount = doneDoRgCoount + 2;
-            [goalBar setPercent:doneDoRgCoount animated:YES];
-        }
+        [goalBarView dismissWithClickedButtonIndex:0 animated:YES];
     }
 }
 
@@ -506,7 +506,7 @@ enum {
                 notDoRgCount = [rs intForColumnIndex:0];
             }
             if (notDoRgCount>0) {
-                [self displayGoalBarView];
+                [self displayGoalBarView:0];
             }
             iRfRgService* service = [iRfRgService service];
             //    service.logging = YES;
@@ -548,9 +548,7 @@ enum {
                                                         message: [result localizedFailureReason]
 													   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
 		[alert show];
-		[alert release];
-		return;
-	}
+		[alert release];	}
     
 	// Handle faults
 	if([value isKindOfClass:[SoapFault class]]) {
@@ -561,7 +559,6 @@ enum {
 													   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
 		[alert show];
 		[alert release];
-		return;
 	}
     
     
@@ -573,6 +570,14 @@ enum {
     id retObj = [parser objectWithString:result];
     NSLog(@"%@",retObj);
     [parser release];
+    
+    doneDoRgCoount ++;
+    if (doneDoRgCoount >= notDoRgCount) {
+        [self dismissGoalBarView];
+    }
+    else {
+        [self displayGoalBarView: doneDoRgCoount * 100 / notDoRgCount ];
+    }
     
     if (retObj != nil) {
         NSDictionary *ret = (NSDictionary*)retObj;
@@ -586,14 +591,6 @@ enum {
                 if(db != nil) {
                     [db executeUpdate:@"update scm_rg set rgdate = datetime('now') where spdid = ?",spdid];
                     [db close];
-                    doneDoRgCoount ++;
-                    if (doneDoRgCoount == notDoRgCount) {
-                        [self dismissGoalBarView];
-                    }
-                    else {
-                        [goalBar setPercent:doneDoRgCoount / notDoRgCount * 100 animated:YES];                        
-                    }
-
                 }
             }
             

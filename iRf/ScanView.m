@@ -92,11 +92,36 @@ static NSString *msgKey = @"msg";
     self.activityIndicator = nil;
 }
 
+#pragma mark 纵向旋转控制
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     // Return YES for supported orientations
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
+
+#pragma mark ios6+纵向旋转控制需要以下3个 覆盖viewcontroller的方法
+- (BOOL)shouldAutorotate
+{
+    return YES;
+}
+- (NSUInteger)supportedInterfaceOrientations
+{
+    return UIInterfaceOrientationMaskPortrait;
+}
+- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
+{
+    return UIInterfaceOrientationPortrait;
+}
+
+
+//- (void) viewDidAppear:(BOOL)animated
+//{
+//    //获取当前电池条的方向
+//    UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
+//    if (UIInterfaceOrientationIsLandscape(orientation)) {
+//        
+//    }
+//}
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {

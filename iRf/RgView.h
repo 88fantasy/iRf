@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "KDGoalBar.h"
 
 //@protocol ScanViewDelegate 
 ////回调函数 
@@ -14,7 +15,7 @@
 //@end
 
 @interface RgView : UIViewController
-<ZBarReaderDelegate,UITextFieldDelegate>
+<ZBarReaderDelegate,UITextFieldDelegate,UIActionSheetDelegate>
 {
     UIScrollView *scrollView;
     UITextField *invno;
@@ -34,8 +35,15 @@
     UITextField *vendername;
     NSString *spdid;
     NSDictionary *values;
+    
     BOOL readOnlyFlag;
-//    id<ScanViewDelegate> scanViewDelegate; 
+//    id<ScanViewDelegate> scanViewDelegate;
+    
+    UIAlertView *goalBarView;
+    KDGoalBar *goalBar;
+    
+    int notDoRgCount;
+    int doneDoRgCoount;
 }
 
 @property (nonatomic, retain) IBOutlet UIScrollView *scrollView;
@@ -56,7 +64,10 @@
 @property (nonatomic, retain) IBOutlet UITextField *vendername;
 @property (nonatomic, retain) IBOutlet NSString *spdid;
 @property (nonatomic, retain) IBOutlet NSDictionary *values;
-//@property (nonatomic,retain) id<ScanViewDelegate>  scanViewDelegate; 
+//@property (nonatomic,retain) id<ScanViewDelegate>  scanViewDelegate;
+
+@property (nonatomic, retain) UIAlertView *goalBarView;
+@property (nonatomic, retain) KDGoalBar *goalBar;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil values:(NSDictionary*)obj ;
 

@@ -29,6 +29,7 @@
     UIPickerView *venderPickerView;
     NSDictionary *vender;
     NSString *defaultflag;
+    NSString *nohouseflag;
 }
 
 @property (nonatomic, retain) IBOutlet UITextField *orglocno;
@@ -46,6 +47,7 @@
 @property (nonatomic, retain) UIPickerView *venderPickerView;
 @property (nonatomic, retain) NSDictionary *vender;
 @property (nonatomic, retain) NSString *defaultflag;
+@property (nonatomic, retain) NSString *nohouseflag;
 
 - (IBAction) orgButtonTapped;
 - (IBAction) toButtonTapped;

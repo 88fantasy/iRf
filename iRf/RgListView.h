@@ -9,9 +9,11 @@
 #import <UIKit/UIKit.h>
 #import "EGORefreshTableHeaderView.h"
 #import "RgListSearchView.h"
+#import "KDGoalBar.h"
 
 @interface RgListView : UITableViewController
-<UITableViewDelegate,UITableViewDataSource,EGORefreshTableHeaderDelegate,RgListSearchViewDelegate>
+<UITableViewDelegate,UITableViewDataSource,EGORefreshTableHeaderDelegate,RgListSearchViewDelegate,
+UIActionSheetDelegate>
 {
     NSMutableArray *menuList;
     NSArray *objs;
@@ -25,6 +27,12 @@
     UIActivityIndicatorView *activityIndicator;
     
     NSDictionary *searchObj;
+    
+    UIAlertView *goalBarView;
+    KDGoalBar *goalBar;
+    
+    int notDoRgCount;
+    int doneDoRgCoount;
 }
 
 @property (nonatomic, retain) NSMutableArray *menuList;
@@ -33,6 +41,10 @@
 @property (nonatomic, retain) UIAlertView *activityView;
 @property (nonatomic, retain) UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, retain) NSDictionary *searchObj;
+
+@property (nonatomic, retain) UIAlertView *goalBarView;
+@property (nonatomic, retain) KDGoalBar *goalBar;
+
 
 - (id)initWithStyle:(UITableViewStyle)style objs:(NSArray*)_arrays;
 - (IBAction) setSearchJson:(id)sender;

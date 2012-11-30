@@ -225,5 +225,6 @@
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateFormat:@"yyyy-MM-dd"];
     self.tmp.text = [formatter stringFromDate:sender.date];
+    [formatter release];
 }
 @end
