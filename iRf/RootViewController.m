@@ -15,6 +15,7 @@
 #import "TrListView.h"
 #import "StockAdjustView.h"
 #import "MedicineReqListView.h"
+#import "RgGroupListView.h"
 
 
 static NSString *kCellIdentifier = @"MyIdentifier";
@@ -129,10 +130,19 @@ enum {
                               @"基础数据.png",iconKey,
 							  nil]];
     
+    RgGroupListView *rgGroupListView = [[RgGroupListView alloc]initWithNibName:@"RgGroupListView" bundle:nil];
+    
+    [self.menuList addObject:[NSDictionary dictionaryWithObjectsAndKeys:
+                              @"品种收货汇总查询", kTitleKey,
+                              @"查询一个月内收货信息的汇总情况", kExplainKey,
+                              rgGroupListView, kViewControllerKey,
+                              @"库存查询.png",iconKey,
+							  nil]];
     
     [scanview release];
     [rglistView release];
     [trListView release];
+    [rgGroupListView release];
     
     if (!IsInternet) {
         
