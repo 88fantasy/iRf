@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		8F04E7E11667428A003EBE36 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F04E7E01667428A003EBE36 /* ViewController.m */; };
+		8F0CA5C416689E9300A56971 /* RgGroupListView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F0CA5C216689E9300A56971 /* RgGroupListView.m */; };
+		8F0CA5C516689E9300A56971 /* RgGroupListView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8F0CA5C316689E9300A56971 /* RgGroupListView.xib */; };
 		8F0CB2BC1592B33D00195B49 /* ScanViewHD.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8F0CB2BB1592B33D00195B49 /* ScanViewHD.xib */; };
 		8F0CB2BE1592D87C00195B49 /* RgViewHD.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8F0CB2BD1592D87C00195B49 /* RgViewHD.xib */; };
 		8F2452F716606CF400788180 /* CommonUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F2452F616606CF400788180 /* CommonUtil.m */; };
@@ -55,13 +57,6 @@
 		8F93E2EC13D41B6F006BF26D /* iRfAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F93E2EB13D41B6F006BF26D /* iRfAppDelegate.m */; };
 		8F93E2EF13D41B6F006BF26D /* iRf.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 8F93E2ED13D41B6F006BF26D /* iRf.xcdatamodeld */; };
 		8F93E2F513D41B6F006BF26D /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F93E2F413D41B6F006BF26D /* RootViewController.m */; };
-		8F93E2FF13D41B6F006BF26D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8F93E2D913D41B6E006BF26D /* UIKit.framework */; };
-		8F93E30013D41B6F006BF26D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8F93E2DB13D41B6E006BF26D /* Foundation.framework */; };
-		8F93E30113D41B6F006BF26D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8F93E2DD13D41B6E006BF26D /* CoreGraphics.framework */; };
-		8F93E30213D41B6F006BF26D /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8F93E2DF13D41B6F006BF26D /* CoreData.framework */; };
-		8F93E30A13D41B6F006BF26D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8F93E30813D41B6F006BF26D /* InfoPlist.strings */; };
-		8F93E30D13D41B6F006BF26D /* iRfTests.h in Resources */ = {isa = PBXBuildFile; fileRef = 8F93E30C13D41B6F006BF26D /* iRfTests.h */; };
-		8F93E30F13D41B6F006BF26D /* iRfTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F93E30E13D41B6F006BF26D /* iRfTests.m */; };
 		8F93E31C13D41BCB006BF26D /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F93E31A13D41BCB006BF26D /* Reachability.m */; };
 		8F93E39E13D41D3B006BF26D /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8F93E39D13D41D3B006BF26D /* SystemConfiguration.framework */; };
 		8F93E3F713D420F3006BF26D /* ScanView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F93E3F513D420F3006BF26D /* ScanView.m */; };
@@ -123,7 +118,6 @@
 		8FE1DA9215AD164700EA5331 /* StockAdjustView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8FE1DA9015AD164700EA5331 /* StockAdjustView.xib */; };
 		8FE4844215B3C1A300A9FB32 /* BaseCodeTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FE4844015B3C1A200A9FB32 /* BaseCodeTableView.m */; };
 		8FE4844315B3C1A300A9FB32 /* BaseCodeTableView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8FE4844115B3C1A300A9FB32 /* BaseCodeTableView.xib */; };
-		8FE4EB93159966B6000D1B2B /* RgListView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F8E857913D7B1D2000AC9C8 /* RgListView.m */; };
 		8FF0B4961599A06600846BEC /* libzbar.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8FF0B4901599A06600846BEC /* libzbar.a */; };
 		8FF0B4971599A06600846BEC /* zbar-back.png in Resources */ = {isa = PBXBuildFile; fileRef = 8FF0B4921599A06600846BEC /* zbar-back.png */; };
 		8FF0B4981599A06600846BEC /* zbar-help.html in Resources */ = {isa = PBXBuildFile; fileRef = 8FF0B4931599A06600846BEC /* zbar-help.html */; };
@@ -175,19 +169,12 @@
 		CEE6F1321410847700D766DC /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = CEE6F1331410847700D766DC /* InfoPlist.strings */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		8F93E30313D41B6F006BF26D /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 8F93E2CC13D41B6E006BF26D /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 8F93E2D413D41B6E006BF26D;
-			remoteInfo = iRf;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
 		8F04E7DF1667428A003EBE36 /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		8F04E7E01667428A003EBE36 /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		8F0CA5C116689E9300A56971 /* RgGroupListView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RgGroupListView.h; sourceTree = "<group>"; };
+		8F0CA5C216689E9300A56971 /* RgGroupListView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RgGroupListView.m; sourceTree = "<group>"; };
+		8F0CA5C316689E9300A56971 /* RgGroupListView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RgGroupListView.xib; sourceTree = "<group>"; };
 		8F0CB2BB1592B33D00195B49 /* ScanViewHD.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ScanViewHD.xib; sourceTree = "<group>"; };
 		8F0CB2BD1592D87C00195B49 /* RgViewHD.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RgViewHD.xib; sourceTree = "<group>"; };
 		8F2452F516606CF400788180 /* CommonUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommonUtil.h; sourceTree = "<group>"; };
@@ -270,7 +257,6 @@
 		8F93E2EE13D41B6F006BF26D /* iRf.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = iRf.xcdatamodel; sourceTree = "<group>"; };
 		8F93E2F313D41B6F006BF26D /* RootViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RootViewController.h; sourceTree = "<group>"; };
 		8F93E2F413D41B6F006BF26D /* RootViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RootViewController.m; sourceTree = "<group>"; };
-		8F93E2FE13D41B6F006BF26D /* iRfTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iRfTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8F93E30713D41B6F006BF26D /* iRfTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "iRfTests-Info.plist"; sourceTree = "<group>"; };
 		8F93E30913D41B6F006BF26D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		8F93E30B13D41B6F006BF26D /* iRfTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "iRfTests-Prefix.pch"; sourceTree = "<group>"; };
@@ -463,17 +449,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		8F93E2FA13D41B6F006BF26D /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				8F93E2FF13D41B6F006BF26D /* UIKit.framework in Frameworks */,
-				8F93E30013D41B6F006BF26D /* Foundation.framework in Frameworks */,
-				8F93E30113D41B6F006BF26D /* CoreGraphics.framework in Frameworks */,
-				8F93E30213D41B6F006BF26D /* CoreData.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -579,7 +554,6 @@
 			isa = PBXGroup;
 			children = (
 				8F93E2D513D41B6E006BF26D /* iRf.app */,
-				8F93E2FE13D41B6F006BF26D /* iRfTests.octest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -637,6 +611,9 @@
 				8F8E857B13D7B1D2000AC9C8 /* RgListView.h */,
 				8F8E857913D7B1D2000AC9C8 /* RgListView.m */,
 				8F8E857C13D7B1D2000AC9C8 /* RgListView.xib */,
+				8F0CA5C116689E9300A56971 /* RgGroupListView.h */,
+				8F0CA5C216689E9300A56971 /* RgGroupListView.m */,
+				8F0CA5C316689E9300A56971 /* RgGroupListView.xib */,
 				CECB5016140E1B8D00DD8568 /* TrView.h */,
 				CECB5017140E1B8D00DD8568 /* TrView.m */,
 				CECB5018140E1B8D00DD8568 /* TrView.xib */,
@@ -973,25 +950,6 @@
 			productReference = 8F93E2D513D41B6E006BF26D /* iRf.app */;
 			productType = "com.apple.product-type.application";
 		};
-		8F93E2FD13D41B6F006BF26D /* iRfTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 8F93E31513D41B6F006BF26D /* Build configuration list for PBXNativeTarget "iRfTests" */;
-			buildPhases = (
-				8F93E2F913D41B6F006BF26D /* Sources */,
-				8F93E2FA13D41B6F006BF26D /* Frameworks */,
-				8F93E2FB13D41B6F006BF26D /* Resources */,
-				8F93E2FC13D41B6F006BF26D /* ShellScript */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				8F93E30413D41B6F006BF26D /* PBXTargetDependency */,
-			);
-			name = iRfTests;
-			productName = iRfTests;
-			productReference = 8F93E2FE13D41B6F006BF26D /* iRfTests.octest */;
-			productType = "com.apple.product-type.bundle";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -1014,7 +972,6 @@
 			projectRoot = "";
 			targets = (
 				8F93E2D413D41B6E006BF26D /* iRf */,
-				8F93E2FD13D41B6F006BF26D /* iRfTests */,
 			);
 		};
 /* End PBXProject section */
@@ -1106,35 +1063,11 @@
 				8F98EA91166352CA0088CB89 /* graph_year@2x.png in Resources */,
 				8F3E22011665BDEC0056268A /* Default.png in Resources */,
 				8F3E22021665BDFF0056268A /* Default@2x.png in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		8F93E2FB13D41B6F006BF26D /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				8F93E30A13D41B6F006BF26D /* InfoPlist.strings in Resources */,
-				8F93E30D13D41B6F006BF26D /* iRfTests.h in Resources */,
+				8F0CA5C516689E9300A56971 /* RgGroupListView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		8F93E2FC13D41B6F006BF26D /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		8F93E2D113D41B6E006BF26D /* Sources */ = {
@@ -1205,27 +1138,11 @@
 				8F3E21FF1665AD5F0056268A /* CXMLNode_PrivateExtensions.m in Sources */,
 				8F3E22001665AD5F0056268A /* CXMLNode_XPathExtensions.m in Sources */,
 				8F04E7E11667428A003EBE36 /* ViewController.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		8F93E2F913D41B6F006BF26D /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				8F93E30F13D41B6F006BF26D /* iRfTests.m in Sources */,
-				8FE4EB93159966B6000D1B2B /* RgListView.m in Sources */,
+				8F0CA5C416689E9300A56971 /* RgGroupListView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		8F93E30413D41B6F006BF26D /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 8F93E2D413D41B6E006BF26D /* iRf */;
-			targetProxy = 8F93E30313D41B6F006BF26D /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		8F93E30813D41B6F006BF26D /* InfoPlist.strings */ = {
@@ -1348,56 +1265,6 @@
 			};
 			name = Release;
 		};
-		8F93E31613D41B6F006BF26D /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/iRf.app/iRf";
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "iRfTests/iRfTests-Prefix.pch";
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				INFOPLIST_FILE = "iRfTests/iRfTests-Info.plist";
-				OTHER_LDFLAGS = (
-					"-framework",
-					SenTestingKit,
-				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = octest;
-			};
-			name = Debug;
-		};
-		8F93E31713D41B6F006BF26D /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/iRf.app/iRf";
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "iRfTests/iRfTests-Prefix.pch";
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				INFOPLIST_FILE = "iRfTests/iRfTests-Info.plist";
-				OTHER_LDFLAGS = (
-					"-framework",
-					SenTestingKit,
-				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = octest;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1415,15 +1282,6 @@
 			buildConfigurations = (
 				8F93E31313D41B6F006BF26D /* Debug */,
 				8F93E31413D41B6F006BF26D /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		8F93E31513D41B6F006BF26D /* Build configuration list for PBXNativeTarget "iRfTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				8F93E31613D41B6F006BF26D /* Debug */,
-				8F93E31713D41B6F006BF26D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

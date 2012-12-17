@@ -220,6 +220,15 @@ NSString const *msgKey = @"msg";
 	return YES;
 }
 
+- (void)textFieldDidBeginEditing:(UITextField *)textField
+{
+    [self.scrollView setContentOffset:CGPointMake(0, textField.frame.origin.y) animated:YES];
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField
+{
+    [self.scrollView setContentOffset:CGPointMake(0, 0) animated:YES];
+}
 //- (IBAction) scrollToBottom:(id)sender{
 //    [self.scrollView setContentOffset:CGPointMake(0, 250) animated:YES];
 //}
