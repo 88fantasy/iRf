@@ -38,7 +38,7 @@
 //为兼容ios6的旋转控制,需要子类化以下2个方法,供实际view覆盖
 - (BOOL) shouldAutorotate
 {
-    return self.topViewController.shouldAutorotate;
+    return self.topViewController.shouldAutorotate; 
 }
 
 - (NSUInteger)supportedInterfaceOrientations
