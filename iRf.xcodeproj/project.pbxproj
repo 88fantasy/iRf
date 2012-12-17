@@ -100,20 +100,20 @@
 		8F98EA93166352CA0088CB89 /* KDGoalBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F98EA85166352CA0088CB89 /* KDGoalBar.m */; };
 		8F98EA94166352CA0088CB89 /* KDGoalBarPercentLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F98EA87166352CA0088CB89 /* KDGoalBarPercentLayer.m */; };
 		8FA6637A15AC20570043009C /* 144.png in Resources */ = {isa = PBXBuildFile; fileRef = 8FA6637915AC20570043009C /* 144.png */; };
-		8FCC925415A3ED9000B444F9 /* 借药登记@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8FCC924615A3ED9000B444F9 /* 借药登记@2x.png */; };
-		8FCC925515A3ED9000B444F9 /* 基础数据@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8FCC924715A3ED9000B444F9 /* 基础数据@2x.png */; };
-		8FCC925615A3ED9000B444F9 /* 库存查询@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8FCC924815A3ED9000B444F9 /* 库存查询@2x.png */; };
-		8FCC925715A3ED9000B444F9 /* 库存调整@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8FCC924915A3ED9000B444F9 /* 库存调整@2x.png */; };
-		8FCC925815A3ED9000B444F9 /* 收货管理@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8FCC924A15A3ED9000B444F9 /* 收货管理@2x.png */; };
-		8FCC925915A3ED9000B444F9 /* 药房领药@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8FCC924B15A3ED9000B444F9 /* 药房领药@2x.png */; };
-		8FCC925A15A3ED9000B444F9 /* 还药登记@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8FCC924C15A3ED9000B444F9 /* 还药登记@2x.png */; };
-		8FCC926315A3EDB400B444F9 /* 借药登记.png in Resources */ = {isa = PBXBuildFile; fileRef = 8FCC925C15A3EDB400B444F9 /* 借药登记.png */; };
-		8FCC926415A3EDB400B444F9 /* 基础数据.png in Resources */ = {isa = PBXBuildFile; fileRef = 8FCC925D15A3EDB400B444F9 /* 基础数据.png */; };
-		8FCC926515A3EDB400B444F9 /* 库存查询.png in Resources */ = {isa = PBXBuildFile; fileRef = 8FCC925E15A3EDB400B444F9 /* 库存查询.png */; };
-		8FCC926615A3EDB400B444F9 /* 库存调整.png in Resources */ = {isa = PBXBuildFile; fileRef = 8FCC925F15A3EDB400B444F9 /* 库存调整.png */; };
-		8FCC926715A3EDB400B444F9 /* 收货管理.png in Resources */ = {isa = PBXBuildFile; fileRef = 8FCC926015A3EDB400B444F9 /* 收货管理.png */; };
-		8FCC926815A3EDB400B444F9 /* 药房领药.png in Resources */ = {isa = PBXBuildFile; fileRef = 8FCC926115A3EDB400B444F9 /* 药房领药.png */; };
-		8FCC926915A3EDB400B444F9 /* 还药登记.png in Resources */ = {isa = PBXBuildFile; fileRef = 8FCC926215A3EDB400B444F9 /* 还药登记.png */; };
+		8FCBC888167F00C800EEAC21 /* yfly.png in Resources */ = {isa = PBXBuildFile; fileRef = 8FCBC881167F00C800EEAC21 /* yfly.png */; };
+		8FCBC889167F00C800EEAC21 /* kctz.png in Resources */ = {isa = PBXBuildFile; fileRef = 8FCBC882167F00C800EEAC21 /* kctz.png */; };
+		8FCBC88A167F00C800EEAC21 /* kccx.png in Resources */ = {isa = PBXBuildFile; fileRef = 8FCBC883167F00C800EEAC21 /* kccx.png */; };
+		8FCBC88B167F00C800EEAC21 /* jydj.png in Resources */ = {isa = PBXBuildFile; fileRef = 8FCBC884167F00C800EEAC21 /* jydj.png */; };
+		8FCBC88C167F00C800EEAC21 /* jcsj.png in Resources */ = {isa = PBXBuildFile; fileRef = 8FCBC885167F00C800EEAC21 /* jcsj.png */; };
+		8FCBC88D167F00C800EEAC21 /* hydj.png in Resources */ = {isa = PBXBuildFile; fileRef = 8FCBC886167F00C800EEAC21 /* hydj.png */; };
+		8FCBC88E167F00C800EEAC21 /* shgl.png in Resources */ = {isa = PBXBuildFile; fileRef = 8FCBC887167F00C800EEAC21 /* shgl.png */; };
+		8FCBC896167F011F00EEAC21 /* yfly@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8FCBC88F167F011F00EEAC21 /* yfly@2x.png */; };
+		8FCBC897167F011F00EEAC21 /* shgl@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8FCBC890167F011F00EEAC21 /* shgl@2x.png */; };
+		8FCBC898167F011F00EEAC21 /* kctz@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8FCBC891167F011F00EEAC21 /* kctz@2x.png */; };
+		8FCBC899167F011F00EEAC21 /* kccx.png in Resources */ = {isa = PBXBuildFile; fileRef = 8FCBC892167F011F00EEAC21 /* kccx.png */; };
+		8FCBC89A167F011F00EEAC21 /* jydj@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8FCBC893167F011F00EEAC21 /* jydj@2x.png */; };
+		8FCBC89B167F011F00EEAC21 /* jcsj@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8FCBC894167F011F00EEAC21 /* jcsj@2x.png */; };
+		8FCBC89C167F011F00EEAC21 /* hydj@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8FCBC895167F011F00EEAC21 /* hydj@2x.png */; };
 		8FE1DA9115AD164700EA5331 /* StockAdjustView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FE1DA8F15AD164700EA5331 /* StockAdjustView.m */; };
 		8FE1DA9215AD164700EA5331 /* StockAdjustView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8FE1DA9015AD164700EA5331 /* StockAdjustView.xib */; };
 		8FE4844215B3C1A300A9FB32 /* BaseCodeTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FE4844015B3C1A200A9FB32 /* BaseCodeTableView.m */; };
@@ -325,20 +325,20 @@
 		8F98EA86166352CA0088CB89 /* KDGoalBarPercentLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KDGoalBarPercentLayer.h; sourceTree = "<group>"; };
 		8F98EA87166352CA0088CB89 /* KDGoalBarPercentLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KDGoalBarPercentLayer.m; sourceTree = "<group>"; };
 		8FA6637915AC20570043009C /* 144.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 144.png; sourceTree = "<group>"; };
-		8FCC924615A3ED9000B444F9 /* 借药登记@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "借药登记@2x.png"; sourceTree = "<group>"; };
-		8FCC924715A3ED9000B444F9 /* 基础数据@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "基础数据@2x.png"; sourceTree = "<group>"; };
-		8FCC924815A3ED9000B444F9 /* 库存查询@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "库存查询@2x.png"; sourceTree = "<group>"; };
-		8FCC924915A3ED9000B444F9 /* 库存调整@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "库存调整@2x.png"; sourceTree = "<group>"; };
-		8FCC924A15A3ED9000B444F9 /* 收货管理@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "收货管理@2x.png"; sourceTree = "<group>"; };
-		8FCC924B15A3ED9000B444F9 /* 药房领药@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "药房领药@2x.png"; sourceTree = "<group>"; };
-		8FCC924C15A3ED9000B444F9 /* 还药登记@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "还药登记@2x.png"; sourceTree = "<group>"; };
-		8FCC925C15A3EDB400B444F9 /* 借药登记.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "借药登记.png"; sourceTree = "<group>"; };
-		8FCC925D15A3EDB400B444F9 /* 基础数据.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "基础数据.png"; sourceTree = "<group>"; };
-		8FCC925E15A3EDB400B444F9 /* 库存查询.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "库存查询.png"; sourceTree = "<group>"; };
-		8FCC925F15A3EDB400B444F9 /* 库存调整.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "库存调整.png"; sourceTree = "<group>"; };
-		8FCC926015A3EDB400B444F9 /* 收货管理.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "收货管理.png"; sourceTree = "<group>"; };
-		8FCC926115A3EDB400B444F9 /* 药房领药.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "药房领药.png"; sourceTree = "<group>"; };
-		8FCC926215A3EDB400B444F9 /* 还药登记.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "还药登记.png"; sourceTree = "<group>"; };
+		8FCBC881167F00C800EEAC21 /* yfly.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = yfly.png; sourceTree = "<group>"; };
+		8FCBC882167F00C800EEAC21 /* kctz.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = kctz.png; sourceTree = "<group>"; };
+		8FCBC883167F00C800EEAC21 /* kccx.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = kccx.png; sourceTree = "<group>"; };
+		8FCBC884167F00C800EEAC21 /* jydj.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = jydj.png; sourceTree = "<group>"; };
+		8FCBC885167F00C800EEAC21 /* jcsj.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = jcsj.png; sourceTree = "<group>"; };
+		8FCBC886167F00C800EEAC21 /* hydj.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = hydj.png; sourceTree = "<group>"; };
+		8FCBC887167F00C800EEAC21 /* shgl.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shgl.png; sourceTree = "<group>"; };
+		8FCBC88F167F011F00EEAC21 /* yfly@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "yfly@2x.png"; sourceTree = "<group>"; };
+		8FCBC890167F011F00EEAC21 /* shgl@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shgl@2x.png"; sourceTree = "<group>"; };
+		8FCBC891167F011F00EEAC21 /* kctz@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "kctz@2x.png"; sourceTree = "<group>"; };
+		8FCBC892167F011F00EEAC21 /* kccx.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = kccx.png; sourceTree = "<group>"; };
+		8FCBC893167F011F00EEAC21 /* jydj@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "jydj@2x.png"; sourceTree = "<group>"; };
+		8FCBC894167F011F00EEAC21 /* jcsj@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "jcsj@2x.png"; sourceTree = "<group>"; };
+		8FCBC895167F011F00EEAC21 /* hydj@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "hydj@2x.png"; sourceTree = "<group>"; };
 		8FE1DA8E15AD164700EA5331 /* StockAdjustView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StockAdjustView.h; sourceTree = "<group>"; };
 		8FE1DA8F15AD164700EA5331 /* StockAdjustView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StockAdjustView.m; sourceTree = "<group>"; };
 		8FE1DA9015AD164700EA5331 /* StockAdjustView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StockAdjustView.xib; sourceTree = "<group>"; };
@@ -778,13 +778,13 @@
 		8FCC924515A3ED9000B444F9 /* 88X88 */ = {
 			isa = PBXGroup;
 			children = (
-				8FCC924615A3ED9000B444F9 /* 借药登记@2x.png */,
-				8FCC924715A3ED9000B444F9 /* 基础数据@2x.png */,
-				8FCC924815A3ED9000B444F9 /* 库存查询@2x.png */,
-				8FCC924915A3ED9000B444F9 /* 库存调整@2x.png */,
-				8FCC924A15A3ED9000B444F9 /* 收货管理@2x.png */,
-				8FCC924B15A3ED9000B444F9 /* 药房领药@2x.png */,
-				8FCC924C15A3ED9000B444F9 /* 还药登记@2x.png */,
+				8FCBC88F167F011F00EEAC21 /* yfly@2x.png */,
+				8FCBC890167F011F00EEAC21 /* shgl@2x.png */,
+				8FCBC891167F011F00EEAC21 /* kctz@2x.png */,
+				8FCBC892167F011F00EEAC21 /* kccx.png */,
+				8FCBC893167F011F00EEAC21 /* jydj@2x.png */,
+				8FCBC894167F011F00EEAC21 /* jcsj@2x.png */,
+				8FCBC895167F011F00EEAC21 /* hydj@2x.png */,
 			);
 			path = 88X88;
 			sourceTree = "<group>";
@@ -792,13 +792,13 @@
 		8FCC925B15A3EDB400B444F9 /* 44X44 */ = {
 			isa = PBXGroup;
 			children = (
-				8FCC925C15A3EDB400B444F9 /* 借药登记.png */,
-				8FCC925D15A3EDB400B444F9 /* 基础数据.png */,
-				8FCC925E15A3EDB400B444F9 /* 库存查询.png */,
-				8FCC925F15A3EDB400B444F9 /* 库存调整.png */,
-				8FCC926015A3EDB400B444F9 /* 收货管理.png */,
-				8FCC926115A3EDB400B444F9 /* 药房领药.png */,
-				8FCC926215A3EDB400B444F9 /* 还药登记.png */,
+				8FCBC881167F00C800EEAC21 /* yfly.png */,
+				8FCBC882167F00C800EEAC21 /* kctz.png */,
+				8FCBC883167F00C800EEAC21 /* kccx.png */,
+				8FCBC884167F00C800EEAC21 /* jydj.png */,
+				8FCBC885167F00C800EEAC21 /* jcsj.png */,
+				8FCBC886167F00C800EEAC21 /* hydj.png */,
+				8FCBC887167F00C800EEAC21 /* shgl.png */,
 			);
 			path = 44X44;
 			sourceTree = "<group>";
@@ -1020,20 +1020,6 @@
 				8FF0B4981599A06600846BEC /* zbar-help.html in Resources */,
 				8FF0B4991599A06600846BEC /* zbar-helpicons.png in Resources */,
 				8FF0B49A1599A06600846BEC /* zbar-samples.png in Resources */,
-				8FCC925415A3ED9000B444F9 /* 借药登记@2x.png in Resources */,
-				8FCC925515A3ED9000B444F9 /* 基础数据@2x.png in Resources */,
-				8FCC925615A3ED9000B444F9 /* 库存查询@2x.png in Resources */,
-				8FCC925715A3ED9000B444F9 /* 库存调整@2x.png in Resources */,
-				8FCC925815A3ED9000B444F9 /* 收货管理@2x.png in Resources */,
-				8FCC925915A3ED9000B444F9 /* 药房领药@2x.png in Resources */,
-				8FCC925A15A3ED9000B444F9 /* 还药登记@2x.png in Resources */,
-				8FCC926315A3EDB400B444F9 /* 借药登记.png in Resources */,
-				8FCC926415A3EDB400B444F9 /* 基础数据.png in Resources */,
-				8FCC926515A3EDB400B444F9 /* 库存查询.png in Resources */,
-				8FCC926615A3EDB400B444F9 /* 库存调整.png in Resources */,
-				8FCC926715A3EDB400B444F9 /* 收货管理.png in Resources */,
-				8FCC926815A3EDB400B444F9 /* 药房领药.png in Resources */,
-				8FCC926915A3EDB400B444F9 /* 还药登记.png in Resources */,
 				8FA6637A15AC20570043009C /* 144.png in Resources */,
 				8FE1DA9215AD164700EA5331 /* StockAdjustView.xib in Resources */,
 				8FE4844315B3C1A300A9FB32 /* BaseCodeTableView.xib in Resources */,
@@ -1064,6 +1050,20 @@
 				8F3E22011665BDEC0056268A /* Default.png in Resources */,
 				8F3E22021665BDFF0056268A /* Default@2x.png in Resources */,
 				8F0CA5C516689E9300A56971 /* RgGroupListView.xib in Resources */,
+				8FCBC888167F00C800EEAC21 /* yfly.png in Resources */,
+				8FCBC889167F00C800EEAC21 /* kctz.png in Resources */,
+				8FCBC88A167F00C800EEAC21 /* kccx.png in Resources */,
+				8FCBC88B167F00C800EEAC21 /* jydj.png in Resources */,
+				8FCBC88C167F00C800EEAC21 /* jcsj.png in Resources */,
+				8FCBC88D167F00C800EEAC21 /* hydj.png in Resources */,
+				8FCBC88E167F00C800EEAC21 /* shgl.png in Resources */,
+				8FCBC896167F011F00EEAC21 /* yfly@2x.png in Resources */,
+				8FCBC897167F011F00EEAC21 /* shgl@2x.png in Resources */,
+				8FCBC898167F011F00EEAC21 /* kctz@2x.png in Resources */,
+				8FCBC899167F011F00EEAC21 /* kccx.png in Resources */,
+				8FCBC89A167F011F00EEAC21 /* jydj@2x.png in Resources */,
+				8FCBC89B167F011F00EEAC21 /* jcsj@2x.png in Resources */,
+				8FCBC89C167F011F00EEAC21 /* hydj@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

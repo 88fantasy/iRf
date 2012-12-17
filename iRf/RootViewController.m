@@ -111,7 +111,7 @@ enum {
                               @"收货管理", kTitleKey,
                               @"扫描或手输条码进行收货", kExplainKey,
                               scanview, kViewControllerKey,
-                              @"收货管理.png",iconKey,
+                              @"shgl.png",iconKey,
 							  nil]];
     
     RgListView *rglistView = [[RgListView alloc] initWithStyle:UITableViewStylePlain];
@@ -119,7 +119,7 @@ enum {
                               @"未收货列表", kTitleKey,
                               @"查询一个月内所有未收货的信息", kExplainKey,
                               rglistView, kViewControllerKey,
-                              @"库存查询.png",iconKey,
+                              @"kccx.png",iconKey,
 							  nil]];
     TrListView *trListView = [[TrListView alloc]initWithNibName:@"TrListView" bundle:nil];
 
@@ -127,7 +127,7 @@ enum {
                               @"货品对应关系", kTitleKey,
                               @"查询货品的对应关系情况", kExplainKey,
                               trListView, kViewControllerKey,
-                              @"基础数据.png",iconKey,
+                              @"jcsj.png",iconKey,
 							  nil]];
     
     RgGroupListView *rgGroupListView = [[RgGroupListView alloc]initWithNibName:@"RgGroupListView" bundle:nil];
@@ -136,7 +136,7 @@ enum {
                               @"品种收货汇总查询", kTitleKey,
                               @"查询一个月内收货信息的汇总情况", kExplainKey,
                               rgGroupListView, kViewControllerKey,
-                              @"库存查询.png",iconKey,
+                              @"kccx.png",iconKey,
 							  nil]];
     
     [scanview release];
@@ -153,7 +153,7 @@ enum {
                                       @"库存调整", kTitleKey,
                                       @"可进行移库或退货等操作", kExplainKey,
                                       stockAdjustView, kViewControllerKey,
-                                      @"库存调整.png",iconKey,
+                                      @"kctz.png",iconKey,
                                       nil]];
             [stockAdjustView release];
 //        }
@@ -163,7 +163,7 @@ enum {
                                   @"药房领药", kTitleKey,
                                   @"对低于库存下限的货品进行批量移库", kExplainKey,
                                   medicineReqListView, kViewControllerKey,
-                                  @"药房领药.png",iconKey,
+                                  @"yfly.png",iconKey,
                                   nil]];
         [medicineReqListView release];
     }
