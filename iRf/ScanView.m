@@ -42,7 +42,21 @@ static NSString *msgKey = @"msg";
     }
     if (self) {
         // Custom initialization
-//        resultText.delegate = self;
+        
+//        //增加滑动手势操作
+        UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeView:)];
+//        [swipeGesture setDirection:UISwipeGestureRecognizerDirectionLeft]; //左划
+        [swipeGesture setNumberOfTouchesRequired:2];//双指操作有效
+        [swipeGesture setDelegate:self];
+        [self.view addGestureRecognizer:swipeGesture];
+        [swipeGesture release];
+        
+//        UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panView:)];
+//        [panGesture setMaximumNumberOfTouches:2];
+//        
+//        [self.view addGestureRecognizer:panGesture];
+//        
+//        [panGesture release];
     }
     return self;
 }
@@ -337,7 +351,10 @@ static NSString *msgKey = @"msg";
             }
             else{
                 NSString *msg = (NSString*) [ret objectForKey:msgKey];
-                [self alert:@"错误" msg:msg];
+                if ([msg isKindOfClass:[NSNull class]]) {
+                    msg = @"空指针";
+                }
+                [self alert:NSLocalizedString(@"Error",@"Error") msg:msg];
             }
             
         }
@@ -374,10 +391,65 @@ static NSString *msgKey = @"msg";
     }
 }
 
--(void)confirmCallBack:(BOOL )_confirm values:(NSDictionary *)_obj{
-    
+#pragma mark -
+#pragma mark === Touch handling  ===
+
+//- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+//{
+//    
+//    // Disallow recognition of tap gestures in the segmented control.
+//    UIView *view = [gestureRecognizer view];
+//    if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
+//        UIPanGestureRecognizer *recognizer = (UIPanGestureRecognizer *)gestureRecognizer;
+//        CGPoint translation = [recognizer translationInView:[view superview]];
+//        NSLog(@"x:%f y:%f",translation.x,translation.y);
+//    }
+//    
+//    return YES;
+//}
+
+- (void)swipeView:(UISwipeGestureRecognizer *)recognizer
+{
+//    CGPoint location = [recognizer locationInView:self.view];
+	[self.navigationController popToRootViewControllerAnimated:YES];
 }
 
-
+//- (void)panView:(UIPanGestureRecognizer *)gestureRecognizer{
+//    
+//    UIView *view = [gestureRecognizer view];
+//    [self adjustAnchorPointForGestureRecognizer:gestureRecognizer];
+//    
+//    NSInteger state = [gestureRecognizer state];
+//    if (state == UIGestureRecognizerStateBegan || state == UIGestureRecognizerStateChanged) {
+//        CGPoint translation = [gestureRecognizer translationInView:[view superview]];
+//        
+//        [view setCenter:CGPointMake([view center].x + translation.x, [view center].y)];
+//        [gestureRecognizer setTranslation:CGPointZero inView:[view superview]];
+//    }
+//    
+//    if (state == UIGestureRecognizerStateCancelled || state == UIGestureRecognizerStateEnded) {
+//        CGRect rect = GetScreenSize;
+//        NSLog(@"x:%f y:%f",view.frame.origin.x,view.frame.origin.y);
+//        if (view.frame.origin.x > rect.size.width * 0.4  ) { //超过40%屏幕
+//            [self.navigationController popToRootViewControllerAnimated:YES];
+//        }
+//        else{
+//            NSLog(@"x:%f y:%f",view.center.x,view.center.y);
+//            [view setCenter:CGPointMake(view.superview.center.x, view.superview.center.y)];
+//            NSLog(@"x:%f y:%f",view.center.x,view.center.y);
+//        }
+//    }
+//}
+//
+//- (void)adjustAnchorPointForGestureRecognizer:(UIGestureRecognizer *)gestureRecognizer {
+//    if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
+//        UIView *view = gestureRecognizer.view;
+//        CGPoint locationInView = [gestureRecognizer locationInView:view];
+//        CGPoint locationInSuperview = [gestureRecognizer locationInView:view.superview];
+//        
+//        view.layer.anchorPoint = CGPointMake(locationInView.x / view.bounds.size.width, locationInView.y / view.bounds.size.height);
+//        view.center = locationInSuperview;
+//    }
+//}
 
 @end

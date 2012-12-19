@@ -11,7 +11,7 @@
 
 @interface ScanView : UIViewController     
 // ADD: delegate protocol
-< ZBarReaderDelegate,UITextFieldDelegate,NSXMLParserDelegate >
+< ZBarReaderDelegate,UITextFieldDelegate,NSXMLParserDelegate,UIGestureRecognizerDelegate >
 {
     UIImageView *resultImage;
     UITextField *resultText;
