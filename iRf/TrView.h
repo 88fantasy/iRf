@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface TrView : UIViewController
-<UITextFieldDelegate>
+<UITextFieldDelegate,ZBarReaderDelegate>
 {
     UIScrollView *scrollView;
     UITextField *ugoodsid;
@@ -21,6 +21,8 @@
     UITextField *cusgdsid;
     UITextField *multi;
     UITextField *companyname;
+    UIButton *locbtn;
+    UITextField *locno;
     NSDictionary *values;
 }
 
@@ -34,8 +36,12 @@
 @property (nonatomic, retain) IBOutlet UITextField *cusgdsid;
 @property (nonatomic, retain) IBOutlet UITextField *multi;
 @property (nonatomic, retain) IBOutlet UITextField *companyname;
+@property (nonatomic, retain) IBOutlet UIButton *locbtn;
+@property (nonatomic, retain) IBOutlet UITextField *locno;
 @property (nonatomic, retain) IBOutlet NSDictionary *values;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil values:(NSDictionary*)obj ;
+
+- (IBAction) scanButtonTapped;
 
 @end

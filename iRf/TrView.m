@@ -11,7 +11,7 @@
 #import "SBJson.h"
 
 @implementation TrView
-@synthesize ugoodsid,goodsname,goodstype,tradename,factno,goodsunit,cusgdsid,multi,companyname;
+@synthesize ugoodsid,goodsname,goodstype,tradename,factno,goodsunit,cusgdsid,multi,companyname,locbtn,locno;
 @synthesize scrollView,values;
 
 NSString const *retFlagKey = @"ret";
@@ -29,8 +29,7 @@ NSString const *msgKey = @"msg";
     if (self) {
         // Custom initialization
         self.title = @"货品对应关系明细";
-        UIBarButtonItem *saveButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemSave
-                                            target:self action:@selector(confirmTr:)];
+        UIBarButtonItem *saveButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemSave target:self action:@selector(confirmTr:)];
         self.navigationItem.rightBarButtonItem = saveButton;
         [saveButton release];
     }
@@ -119,7 +118,7 @@ NSString const *msgKey = @"msg";
 - (void)confirmTr:(id)sender {
     
     if ([[self.cusgdsid.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] isEqualToString:@""]) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"错误"
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", @"Error")
                                                         message: @"客户货品码不能为空"
                                                        delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
         [alert show];	
@@ -134,18 +133,50 @@ NSString const *msgKey = @"msg";
     NSString *username = [defaults stringForKey:@"username_preference"];
     NSString *password = [defaults stringForKey:@"password_preference"];
     
-    [service doTr:self 
-            action:@selector(doTrHandler:) 
-     username: username 
-     password: password 
-     ugoodsid: [self.ugoodsid.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
-    goodsname: [self.goodsname.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] 
-    goodstype: [self.goodstype.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] 
-    tradename: [self.tradename.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] 
-       factno: [self.factno.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] 
-    goodsunit: [self.goodsunit.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] 
-     cusgdsid: [self.cusgdsid.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] 
-        multi: [self.multi.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
+    NSMutableDictionary *trobj = [NSMutableDictionary dictionary];
+    NSString *goodsnamestr = [self.goodsname.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSString *goodstypestr = [self.goodstype.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSString *tradenamestr = [self.tradename.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSString *factnostr = [self.factno.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSString *goodsunitstr = [self.goodsunit.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSString *cusgdsidstr = [self.cusgdsid.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSString *multistr = [self.multi.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSString *locnostr = [self.locno.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    
+    if (goodsnamestr!=nil && ![@"" isEqualToString:goodsnamestr] ) {
+        [trobj setObject:goodsnamestr forKey:@"goodsname"];
+    }
+    if (goodstypestr!=nil && ![@"" isEqualToString:goodstypestr] ) {
+        [trobj setObject:goodstypestr forKey:@"goodstype"];
+    }
+    if (tradenamestr!=nil && ![@"" isEqualToString:tradenamestr] ) {
+        [trobj setObject:tradenamestr forKey:@"tradename"];
+    }
+    if (factnostr!=nil && ![@"" isEqualToString:factnostr] ) {
+        [trobj setObject:factnostr forKey:@"factno"];
+    }
+    if (goodsunitstr!=nil && ![@"" isEqualToString:goodsunitstr] ) {
+        [trobj setObject:goodsunitstr forKey:@"goodsunit"];
+    }
+    if (cusgdsidstr!=nil && ![@"" isEqualToString:cusgdsidstr] ) {
+        [trobj setObject:cusgdsidstr forKey:@"cusgdsid"];
+    }
+    if (multistr!=nil && ![@"" isEqualToString:multistr] ) {
+        [trobj setObject:multistr forKey:@"multi"];
+    }
+    if (locnostr!=nil && ![@"" isEqualToString:locnostr] ) {
+        [trobj setObject:locnostr forKey:@"locno"];
+    }
+    
+    SBJsonWriter *writer = [[SBJsonWriter alloc] init];
+    NSString *json = [writer stringWithObject:trobj];
+    
+    [service doTr:self
+           action:@selector(doTrHandler:)
+         username: username
+         password: password
+          pkvalue:[self.ugoodsid.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
+       jsonConfig:json
      ];
     
     
@@ -192,15 +223,18 @@ NSString const *msgKey = @"msg";
         
         if ([retflag boolValue]==YES) {
             [values setValue:self.cusgdsid.text forKey:@"cusgdsid"];
-            //            if (self.scanViewDelegate!=nil) { 
-            //                //调用回调函数 
-            //                [self.scanViewDelegate confirmCallBack:YES values:values]; 
-            //            } 
+//            if (self.scanViewDelegate!=nil) { 
+//                //调用回调函数 
+//                [self.scanViewDelegate confirmCallBack:YES values:values]; 
+//            } 
             [self.navigationController popViewControllerAnimated:YES];
         }
         else{
             NSString *msg = (NSString*) [ret objectForKey:msgKey];
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"错误"
+            if ([msg isKindOfClass:[NSNull class]]) {
+                msg = @"空指针";
+            }
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", @"Error")
                                                             message: msg
                                                            delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
             [alert show];	
@@ -212,6 +246,9 @@ NSString const *msgKey = @"msg";
         
     }
 }
+
+#pragma mark - 
+#pragma mark UITextFieldDelegate 
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
@@ -232,5 +269,62 @@ NSString const *msgKey = @"msg";
 //- (IBAction) scrollToBottom:(id)sender{
 //    [self.scrollView setContentOffset:CGPointMake(0, 250) animated:YES];
 //}
+
+
+#pragma mark Scan and Handle
+
+- (IBAction) scanButtonTapped
+{
+    // ADD: present a barcode reader that scans from the camera feed
+    ZBarReaderViewController *reader = [ZBarReaderViewController new];
+    reader.readerDelegate = self;
+	
+    
+    //    CGRect rect_screen = [[UIScreen mainScreen] bounds];
+    //    CGRect rect = reader.readerView.frame;
+    //
+    //    rect.size.height = rect_screen.size.height;
+    //    rect.size.width = rect_screen.size.width;
+    //    reader.readerView.frame = rect;
+    
+    
+    
+	//reader.showsZBarControls = NO;
+	
+	
+	
+    //    ZBarImageScanner *scanner = reader.scanner;
+    // TODO: (optional) additional reader configuration here
+	
+    // EXAMPLE: disable rarely used I2/5 to improve performance
+    //    [scanner setSymbology: ZBAR_I25
+    //				   config: ZBAR_CFG_ENABLE
+    //					   to: 0];
+	
+    // present and release the controller
+    [self presentModalViewController: reader
+							animated: YES];
+    [reader release];
+}
+
+- (void) imagePickerController: (UIImagePickerController*) reader
+ didFinishPickingMediaWithInfo: (NSDictionary*) info
+{
+    // ADD: get the decode results
+    id<NSFastEnumeration> results =
+	[info objectForKey: ZBarReaderControllerResults];
+    ZBarSymbol *symbol = nil;
+    for(symbol in results)
+        // EXAMPLE: just grab the first barcode
+        break;
+	
+    // EXAMPLE: do something useful with the barcode data
+	
+    self.locno.text = symbol.data;
+	
+    // ADD: dismiss the controller (NB dismiss from the *reader*!)
+    [reader dismissModalViewControllerAnimated: YES];
+    
+}
 
 @end

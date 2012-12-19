@@ -232,6 +232,8 @@ static NSString *msgKey = @"msg";
     // self.clearsSelectionOnViewWillAppear = NO;
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
+    titleFontSize = 20;
+    detailFontSize = 17;
     
     [self resetBarbutton];
     
@@ -289,9 +291,10 @@ static NSString *msgKey = @"msg";
 	}
 	
 	cell.textLabel.text = [[self.menuList objectAtIndex:indexPath.row] objectForKey:kTitleKey];
-    [cell.textLabel setFont: [UIFont fontWithName:@"Heiti SC" size:20]];
+    [cell.textLabel setFont: [UIFont fontWithName:@"Heiti SC" size:titleFontSize]];
     cell.detailTextLabel.text = [[self.menuList objectAtIndex:indexPath.row] objectForKey:kExplainKey];
-    cell.detailTextLabel.textAlignment = UITextAlignmentRight;
+    [cell.detailTextLabel setFont: [UIFont fontWithName:@"Heiti SC" size:detailFontSize]];
+    cell.detailTextLabel.textAlignment = UITextAlignmentLeft;
     
     NSDictionary *obj = [[self.menuList objectAtIndex:indexPath.row] objectForKey:kObjKey];
     
@@ -446,7 +449,10 @@ static NSString *msgKey = @"msg";
             }
             else{
                 NSString *msg = (NSString*) [ret objectForKey:msgKey];
-                [self alert:@"错误" msg:msg];
+                if ([msg isKindOfClass:[NSNull class]]) {
+                    msg = @"空指针";
+                }
+                [self alert:NSLocalizedString(@"Error", @"Error") msg:msg];
             }
             
         }
@@ -746,7 +752,10 @@ static NSString *msgKey = @"msg";
         }
         else{
             NSString *msg = (NSString*) [ret objectForKey:msgKey];
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"错误"
+            if ([msg isKindOfClass:[NSNull class]]) {
+                msg = @"空指针";
+            }
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", @"Error")
                                                             message: msg
                                                            delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
             [alert show];

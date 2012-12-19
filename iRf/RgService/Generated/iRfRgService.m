@@ -21,7 +21,7 @@
 		{
 			NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
             if (IsInternet) {
-                self.serviceUrl = @"http://www.gzmpc.com/gzmpcscm3/services/RgService";
+                self.serviceUrl = @"http://125.88.8.28/gzmpcscm3/services/RgService";
 //                self.serviceUrl = @"http://192.168.200.237:8070/gzmpcscm3/services/RgService";
             }
             else{
@@ -255,25 +255,20 @@
 	}
 
 	/* Returns NSString*.  */
-	- (SoapRequest*) doTr: (id <SoapDelegate>) handler username: (NSString*) username password: (NSString*) password ugoodsid: (NSString*) ugoodsid goodsname: (NSString*) goodsname goodstype: (NSString*) goodstype tradename: (NSString*) tradename factno: (NSString*) factno goodsunit: (NSString*) goodsunit cusgdsid: (NSString*) cusgdsid multi: (NSString*) multi
+	- (SoapRequest*) doTr: (id <SoapDelegate>) handler username: (NSString*) username password: (NSString*) password pkvalue: (NSString*) pkvalue jsonConfig: (NSString*) jsonConfig
 	{
-		return [self doTr: handler action: nil username: username password: password ugoodsid: ugoodsid goodsname: goodsname goodstype: goodstype tradename: tradename factno: factno goodsunit: goodsunit cusgdsid: cusgdsid multi: multi];
+		return [self doTr: handler action: nil username: username password: password pkvalue:pkvalue jsonConfig:jsonConfig];
 	}
 
-	- (SoapRequest*) doTr: (id) _target action: (SEL) _action username: (NSString*) username password: (NSString*) password ugoodsid: (NSString*) ugoodsid goodsname: (NSString*) goodsname goodstype: (NSString*) goodstype tradename: (NSString*) tradename factno: (NSString*) factno goodsunit: (NSString*) goodsunit cusgdsid: (NSString*) cusgdsid multi: (NSString*) multi
+	- (SoapRequest*) doTr: (id) _target action: (SEL) _action username: (NSString*) username password: (NSString*) password pkvalue: (NSString*) pkvalue jsonConfig: (NSString*) jsonConfig
 		{
 		NSMutableArray* _params = [NSMutableArray array];
 		
 		[_params addObject: [[[SoapParameter alloc] initWithValue: username forName: @"username"] autorelease]];
 		[_params addObject: [[[SoapParameter alloc] initWithValue: password forName: @"password"] autorelease]];
-		[_params addObject: [[[SoapParameter alloc] initWithValue: ugoodsid forName: @"ugoodsid"] autorelease]];
-		[_params addObject: [[[SoapParameter alloc] initWithValue: goodsname forName: @"goodsname"] autorelease]];
-		[_params addObject: [[[SoapParameter alloc] initWithValue: goodstype forName: @"goodstype"] autorelease]];
-		[_params addObject: [[[SoapParameter alloc] initWithValue: tradename forName: @"tradename"] autorelease]];
-		[_params addObject: [[[SoapParameter alloc] initWithValue: factno forName: @"factno"] autorelease]];
-		[_params addObject: [[[SoapParameter alloc] initWithValue: goodsunit forName: @"goodsunit"] autorelease]];
-		[_params addObject: [[[SoapParameter alloc] initWithValue: cusgdsid forName: @"cusgdsid"] autorelease]];
-		[_params addObject: [[[SoapParameter alloc] initWithValue: multi forName: @"multi"] autorelease]];
+		[_params addObject: [[[SoapParameter alloc] initWithValue: pkvalue forName: @"pkvalue"] autorelease]];
+		[_params addObject: [[[SoapParameter alloc] initWithValue: jsonConfig forName: @"jsonConfig"] autorelease]];
+            
 		NSString* _envelope = [Soap createEnvelope: @"doTr" forNamespace: self.namespace withParameters: _params withHeaders: self.headers];
 		SoapRequest* _request = [SoapRequest create: _target action: _action service: self soapAction: @"" postData: _envelope deserializeTo: @"NSString"];
 		[_request send];

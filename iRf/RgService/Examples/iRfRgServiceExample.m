@@ -23,7 +23,7 @@
 	[service doRg:self action:@selector(doRgHandler:) username: @"" password: @"" splid: @"" rgqty: @"" locno: @""];
 
 	// Returns NSString*. 
-	[service doTr:self action:@selector(doTrHandler:) username: @"" password: @"" ugoodsid: @"" goodsname: @"" goodstype: @"" tradename: @"" factno: @"" goodsunit: @"" cusgdsid: @"" multi: @""];
+	[service doTr:self action:@selector(doTrHandler:) username: @"" password: @"" pkvalue: @"" jsonConfig: @""];
 
 	// Returns NSString*. 
 	[service getAllRg:self action:@selector(getAllRgHandler:) username: @"" password: @"" queryjson: @""];

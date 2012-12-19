@@ -33,6 +33,9 @@ UIActionSheetDelegate>
     
     int notDoRgCount;
     int doneDoRgCoount;
+    
+    int titleFontSize;
+    int detailFontSize;
 }
 
 @property (nonatomic, retain) NSMutableArray *menuList;

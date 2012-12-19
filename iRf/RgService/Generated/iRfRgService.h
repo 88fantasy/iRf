@@ -60,8 +60,8 @@
 	- (SoapRequest*) queryXML: (id) target action: (SEL) action sql: (NSString*) sql dbname: (NSString*) dbname;
 
 	/* Returns NSString*.  */
-	- (SoapRequest*) doTr: (id <SoapDelegate>) handler username: (NSString*) username password: (NSString*) password ugoodsid: (NSString*) ugoodsid goodsname: (NSString*) goodsname goodstype: (NSString*) goodstype tradename: (NSString*) tradename factno: (NSString*) factno goodsunit: (NSString*) goodsunit cusgdsid: (NSString*) cusgdsid multi: (NSString*) multi;
-	- (SoapRequest*) doTr: (id) target action: (SEL) action username: (NSString*) username password: (NSString*) password ugoodsid: (NSString*) ugoodsid goodsname: (NSString*) goodsname goodstype: (NSString*) goodstype tradename: (NSString*) tradename factno: (NSString*) factno goodsunit: (NSString*) goodsunit cusgdsid: (NSString*) cusgdsid multi: (NSString*) multi;
+	- (SoapRequest*) doTr: (id <SoapDelegate>) handler username: (NSString*) username password: (NSString*) password pkvalue: (NSString*) pkvalue jsonConfig: (NSString*) jsonConfig;
+	- (SoapRequest*) doTr: (id) target action: (SEL) action username: (NSString*) username password: (NSString*) password pkvalue: (NSString*) pkvalue jsonConfig: (NSString*) jsonConfig;
 
 	/* Returns NSString*.  */
 	- (SoapRequest*) doRg: (id <SoapDelegate>) handler username: (NSString*) username password: (NSString*) password splid: (NSString*) splid rgqty: (NSString*) rgqty locno: (NSString*) locno;

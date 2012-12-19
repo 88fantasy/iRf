@@ -49,6 +49,9 @@ static NSString *msgKey = @"msg";
 {
     [super viewDidLoad];
 
+    titleFontSize = 20;
+    detailFontSize = 17;
+    
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
  
@@ -218,8 +221,9 @@ static NSString *msgKey = @"msg";
     }
 	cell.textLabel.text = title;
     cell.textLabel.adjustsFontSizeToFitWidth = YES;
-    [cell.textLabel setFont: [UIFont fontWithName:@"Heiti SC" size:20]];
+    [cell.textLabel setFont: [UIFont fontWithName:@"Heiti SC" size:titleFontSize]];
     cell.detailTextLabel.text = detail;
+    [cell.textLabel setFont: [UIFont fontWithName:@"Heiti SC" size:detailFontSize]];
     cell.detailTextLabel.textAlignment = UITextAlignmentLeft;
     cell.detailTextLabel.numberOfLines = 0;
     cell.detailTextLabel.lineBreakMode = UILineBreakModeWordWrap;
@@ -525,7 +529,10 @@ static NSString *msgKey = @"msg";
             }
             else{
                 NSString *msg = (NSString*) [ret objectForKey:msgKey];
-                [CommonUtil alert:@"错误" msg:msg];
+                if ([msg isKindOfClass:[NSNull class]]) {
+                    msg = @"空指针";
+                }
+                [CommonUtil alert:NSLocalizedString(@"Error", @"Error") msg:msg];
             }
             
         }

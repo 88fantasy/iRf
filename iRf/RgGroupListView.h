@@ -24,6 +24,8 @@
     
     NSDictionary *searchObj;
     
+    int titleFontSize;
+    int detailFontSize;
 }
 
 @property (nonatomic, retain) NSMutableArray *menuList;
