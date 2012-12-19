@@ -149,6 +149,9 @@ static NSString *msgKey = @"msg";
             }
             else{
                 NSString *msg = (NSString*) [ret objectForKey:msgKey];
+                if ([msg isKindOfClass:[NSNull class]]) {
+                    msg = @"空指针";
+                }
                 [self alert:NSLocalizedString(@"Error", @"Error") msg:msg];
             }
             
@@ -245,6 +248,9 @@ static NSString *msgKey = @"msg";
             }
             else{
                 NSString *msg = (NSString*) [ret objectForKey:msgKey];
+                if ([msg isKindOfClass:[NSNull class]]) {
+                    msg = @"空指针";
+                }
                 [self alert:NSLocalizedString(@"Error", @"Error") msg:msg];
             }
             

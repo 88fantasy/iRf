@@ -294,7 +294,10 @@ typedef NS_ENUM(NSInteger, StockAdjustViewAlertStyle) {
             }
             else{
                 NSString *msg = (NSString*) [ret objectForKey:msgKey];
-                [self alert:@"错误" msg:msg];
+                if ([msg isKindOfClass:[NSNull class]]) {
+                    msg = @"空指针";
+                }
+                [self alert:NSLocalizedString(@"Error",@"Error") msg:msg];
             }
             
         }
@@ -515,6 +518,9 @@ typedef NS_ENUM(NSInteger, StockAdjustViewAlertStyle) {
         }
         else{
             NSString *msg = (NSString*) [ret objectForKey:msgKey];
+            if ([msg isKindOfClass:[NSNull class]]) {
+                msg = @"空指针";
+            }
             [self alert:NSLocalizedString(@"Error",@"Error") msg:msg];
         }
         self.vender = nil;
@@ -748,6 +754,9 @@ typedef NS_ENUM(NSInteger, StockAdjustViewAlertStyle) {
         }
         else{
             NSString *msg = (NSString*) [ret objectForKey:msgKey];
+            if ([msg isKindOfClass:[NSNull class]]) {
+                msg = @"空指针";
+            }
             [self alert:NSLocalizedString(@"Error",@"Error") msg:msg];
         }
         

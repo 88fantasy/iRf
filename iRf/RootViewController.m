@@ -466,7 +466,10 @@ enum {
             }
             else{
                 NSString *msg = (NSString*) [ret objectForKey:msgKey];
-                [self alert:@"错误" msg:msg];
+                if ([msg isKindOfClass:[NSNull class]]) {
+                    msg = @"空指针";
+                }
+                [self alert:NSLocalizedString(@"Error", @"Error") msg:msg];
             }
             
         }
@@ -612,7 +615,10 @@ enum {
         }
         else{
             NSString *msg = (NSString*) [ret objectForKey:msgKey];
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"错误"
+            if ([msg isKindOfClass:[NSNull class]]) {
+                msg = @"空指针";
+            }
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", @"Error")
                                                             message: msg
                                                            delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
             [alert show];
