@@ -18,6 +18,8 @@
 	UISwitch *vswitch;
     UIAlertView *activityView;
     UIActivityIndicatorView *activityIndicator;
+    
+    ZBarReaderViewController *_reader;
 }
 @property (nonatomic, retain) IBOutlet UIImageView *resultImage;
 @property (nonatomic, retain) IBOutlet UITextField *resultText;
@@ -25,9 +27,13 @@
 @property (nonatomic, retain) UIAlertView *activityView;
 @property (nonatomic, retain) UIActivityIndicatorView *activityIndicator;
 
+@property (nonatomic, retain) ZBarReaderViewController *_reader;
+
 - (IBAction) scanButtonTapped;
 - (IBAction) searchButtonTapped;
 - (IBAction) cancelKeyboard:(id)sender;
+
+
 @end
 
 

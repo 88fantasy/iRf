@@ -13,7 +13,7 @@
 #import "RgView.h"
 #import "RgListView.h"
 #import "RootViewController.h"
-
+#import "ScanOverlayView.h"
 
 static NSString *retFlagKey = @"ret";
 static NSString *msgKey = @"msg";
@@ -23,6 +23,7 @@ static NSString *msgKey = @"msg";
 @implementation ScanView
 
 @synthesize resultImage, resultText,vswitch,activityView,activityIndicator;
+@synthesize _reader;
 
 - (void) alert:(NSString*)title msg:(NSString*)msg {
     // open an alert with just an OK button
@@ -57,6 +58,16 @@ static NSString *msgKey = @"msg";
 //        [self.view addGestureRecognizer:panGesture];
 //        
 //        [panGesture release];
+        
+//        ScanOverlayView *over = [[ScanOverlayView alloc]initWithFrame:GetScreenSize];
+//        [self.view addSubview:over];
+//        [over release];
+        
+        
+        // ADD: present a barcode reader that scans from the camera feed
+        _reader = [ZBarReaderViewController new];
+        _reader.readerDelegate = self;
+        [self setOverView];
     }
     return self;
 }
@@ -67,6 +78,7 @@ static NSString *msgKey = @"msg";
 	[vswitch release];
     [activityView release];
     [activityIndicator release];
+    [_reader release];
     [super dealloc];
 }
 
@@ -104,6 +116,7 @@ static NSString *msgKey = @"msg";
 	self.vswitch = nil;
     self.activityView = nil;
     self.activityIndicator = nil;
+    self._reader = nil;
 }
 
 #pragma mark 纵向旋转控制
@@ -120,6 +133,7 @@ static NSString *msgKey = @"msg";
 }
 - (NSUInteger)supportedInterfaceOrientations
 {
+//    [self setOverView];
     return UIInterfaceOrientationMaskPortrait;
 }
 - (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
@@ -127,14 +141,14 @@ static NSString *msgKey = @"msg";
     return UIInterfaceOrientationPortrait;
 }
 
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+//    [self setOverView];
+}
 
 //- (void) viewDidAppear:(BOOL)animated
 //{
-//    //获取当前电池条的方向
-//    UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
-//    if (UIInterfaceOrientationIsLandscape(orientation)) {
-//        
-//    }
+//
 //}
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
@@ -148,39 +162,22 @@ static NSString *msgKey = @"msg";
     [sender resignFirstResponder];
 }
 
+#pragma mark scan and handles
+
+- (void) setOverView
+{
+    ScanOverlayView *over = [[ScanOverlayView alloc]initWithFrame:GetScreenSize];
+    [_reader setCameraOverlayView: over];
+    [over release];
+}
 
 - (IBAction) scanButtonTapped
 {
-    // ADD: present a barcode reader that scans from the camera feed
-    ZBarReaderViewController *reader = [ZBarReaderViewController new];
-    reader.readerDelegate = self;
-	
-    
-//    CGRect rect_screen = [[UIScreen mainScreen] bounds];
-//    CGRect rect = reader.readerView.frame;
-//    
-//    rect.size.height = rect_screen.size.height;
-//    rect.size.width = rect_screen.size.width;
-//    reader.readerView.frame = rect;
-    
-    
-    
-	//reader.showsZBarControls = NO;
-	
-	
-	
-    //    ZBarImageScanner *scanner = reader.scanner;
-    // TODO: (optional) additional reader configuration here
-	
-    // EXAMPLE: disable rarely used I2/5 to improve performance
-    //    [scanner setSymbology: ZBAR_I25
-    //				   config: ZBAR_CFG_ENABLE
-    //					   to: 0];
-	
     // present and release the controller
-    [self presentModalViewController: reader
-							animated: YES];
-    [reader release];
+//    [self setOverView];
+    [self presentViewController: _reader
+							animated: YES
+        completion:nil];
 }
 
 - (void) imagePickerController: (UIImagePickerController*) reader

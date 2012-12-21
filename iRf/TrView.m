@@ -76,6 +76,7 @@ NSString const *msgKey = @"msg";
     self.cusgdsid.text = (NSString*) [values objectForKey:@"cusgdsid"];
     self.multi.text = (NSString*) [values objectForKey:@"multi"];
     self.companyname.text = (NSString*) [values objectForKey:@"companyname"];
+    self.locno.text = (NSString*) [values objectForKey:@"locno"];
 }
 
 - (void)viewDidUnload
