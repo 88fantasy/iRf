@@ -10,6 +10,7 @@
 #import "iRfRgService.h"
 #import "SBJson.h"
 #import "TrView.h"
+#import "POAPinyin.h"
 
 static NSString *kCellIdentifier = @"MyIdentifier";
 static NSString *kTitleKey = @"title";
@@ -519,6 +520,9 @@ static NSString *msgKey = @"msg";
     else if ([scope isEqualToString:@"货品码"]) {
         searchKey = @"cusgdsid";
     }
+    else if ([scope isEqualToString:@"拼音"]) {
+        searchKey = @"goodsname";
+    }
     else{
         searchKey = @"goodsname";
     }
@@ -529,7 +533,15 @@ static NSString *msgKey = @"msg";
 	{
        
         NSString *field = [[row objectForKey:kObjKey] objectForKey:searchKey];
-        if ( [field  rangeOfString:searchText].location != NSNotFound )
+        NSUInteger result = NSNotFound;
+        if ([scope isEqualToString:@"拼音"]) {
+            NSString *pinyin = [POAPinyin quickConvert:field byConvertMode:POAPinyinConvertModeFirstWord];
+            result = [pinyin  rangeOfString:[searchText uppercaseString]].location;
+        }
+        else{
+            result = [field  rangeOfString:searchText].location;
+        }
+        if ( result != NSNotFound )
         {
             [self.filteredListContent addObject:row];
         }

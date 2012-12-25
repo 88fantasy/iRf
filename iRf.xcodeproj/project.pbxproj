@@ -14,6 +14,7 @@
 		8F0CB2BE1592D87C00195B49 /* RgViewHD.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8F0CB2BD1592D87C00195B49 /* RgViewHD.xib */; };
 		8F2452F716606CF400788180 /* CommonUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F2452F616606CF400788180 /* CommonUtil.m */; };
 		8F24EF4E165F0BA0006A24C9 /* DbUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F24EF4D165F0BA0006A24C9 /* DbUtil.m */; };
+		8F29A4C0168945710069579B /* POAPinyin.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F29A4BF168945710069579B /* POAPinyin.m */; };
 		8F32116315931CC80070CC41 /* TrViewHD.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8F32116215931CC80070CC41 /* TrViewHD.xib */; };
 		8F3E21E81665AD5F0056268A /* iRfRgServiceExample.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F3E21B21665AD5F0056268A /* iRfRgServiceExample.m */; };
 		8F3E21E91665AD5F0056268A /* iRfArrayOfString.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F3E21B51665AD5F0056268A /* iRfArrayOfString.m */; };
@@ -183,6 +184,8 @@
 		8F24EF4C165F0BA0006A24C9 /* DbUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DbUtil.h; sourceTree = "<group>"; };
 		8F24EF4D165F0BA0006A24C9 /* DbUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DbUtil.m; sourceTree = "<group>"; };
 		8F24EF4F165F48CA006A24C9 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../../Default-568h@2x.png"; sourceTree = "<group>"; };
+		8F29A4BE168945710069579B /* POAPinyin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POAPinyin.h; sourceTree = "<group>"; };
+		8F29A4BF168945710069579B /* POAPinyin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = POAPinyin.m; sourceTree = "<group>"; };
 		8F32116215931CC80070CC41 /* TrViewHD.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TrViewHD.xib; sourceTree = "<group>"; };
 		8F3E21B11665AD5F0056268A /* iRfRgServiceExample.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iRfRgServiceExample.h; sourceTree = "<group>"; };
 		8F3E21B21665AD5F0056268A /* iRfRgServiceExample.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = iRfRgServiceExample.m; sourceTree = "<group>"; };
@@ -455,6 +458,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8F29A4BD168945710069579B /* allPinyin */ = {
+			isa = PBXGroup;
+			children = (
+				8F29A4BE168945710069579B /* POAPinyin.h */,
+				8F29A4BF168945710069579B /* POAPinyin.m */,
+			);
+			path = allPinyin;
+			sourceTree = "<group>";
+		};
 		8F3E21B01665AD5F0056268A /* Examples */ = {
 			isa = PBXGroup;
 			children = (
@@ -646,6 +658,7 @@
 		8F93E2E113D41B6F006BF26D /* iRf */ = {
 			isa = PBXGroup;
 			children = (
+				8F29A4BD168945710069579B /* allPinyin */,
 				8F85CB9C16819A8D0062777C /* ZBarSDK */,
 				8F98EA76166352CA0088CB89 /* GoalBar */,
 				8FFBF8A7165DFA740034C596 /* iRf.rdb */,
@@ -1145,6 +1158,7 @@
 				8F04E7E11667428A003EBE36 /* ViewController.m in Sources */,
 				8F0CA5C416689E9300A56971 /* RgGroupListView.m in Sources */,
 				8F4421121682ABFF005176A9 /* ScanOverlayView.m in Sources */,
+				8F29A4C0168945710069579B /* POAPinyin.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

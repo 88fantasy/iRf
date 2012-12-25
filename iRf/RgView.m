@@ -10,6 +10,7 @@
 #import "iRfRgService.h"
 #import "SBJson.h"
 #import "RootViewController.h"
+#import "POAPinyin.h"
 
 static NSString *retFlagKey = @"ret";
 static NSString *msgKey = @"msg";
@@ -130,8 +131,10 @@ static NSString *msgKey = @"msg";
         [self.rgqty setEnabled:YES];
         [self.locno setEnabled:YES];
     }
-    
-    //    [self.scrollView setContentSize:CGSizeMake(self.view.frame.size.width,self.view.frame.size.height+200 )];
+
+    NSString *pinyin = [POAPinyin quickConvert:self.goodsname.text byConvertMode:POAPinyinConvertModeFirstWord] ;
+
+    NSLog(@"%@",pinyin);
 }
 
 - (void)viewDidUnload
