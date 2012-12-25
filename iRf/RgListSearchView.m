@@ -11,7 +11,7 @@
 
 @implementation RgListSearchView
 
-@synthesize scrollView,goodsname,prodarea,lotno,invno,startdate,enddate;
+@synthesize scrollView,goodsname,prodarea,lotno,invno,startdate,enddate,goodspy;
 @synthesize finButton,tmp;
 @synthesize rgListSearchViewDelegate;
 
@@ -73,6 +73,7 @@
     self.invno = nil;
     self.startdate = nil;
     self.enddate = nil;
+    self.goodspy = nil;
     self.finButton = nil;
     self.tmp = nil;
 }
@@ -86,6 +87,7 @@
     [invno release];
     [startdate release];
     [enddate release];
+    [goodspy release];
     [finButton release];
     [tmp release];
     [super dealloc];
@@ -205,12 +207,13 @@
 //    }
     
     NSDictionary *fields = [NSDictionary dictionaryWithObjectsAndKeys:
-                            self.goodsname.text==nil?@"":self.goodsname.text,@"goodsname",
-                            self.prodarea.text==nil?@"":self.prodarea.text,@"prodarea",
+                            self.goodsname.text==nil?@"":[self.goodsname.text stringByAppendingString:@"%"],@"goodsname",
+                            self.prodarea.text==nil?@"":[self.prodarea.text stringByAppendingString:@"%"],@"prodarea",
                             self.lotno.text==nil?@"":self.lotno.text,@"lotno",
                             self.invno.text==nil?@"":self.invno.text,@"invno",
                             self.startdate.text==nil?@"":self.startdate.text,@"startdate",
                             self.enddate.text==nil?@"":self.enddate.text,@"enddate",
+                            self.goodspy.text==nil?@"":[self.goodspy.text stringByAppendingString:@"%"],@"goodspy",
                             @"0",@"rgflag",
                             nil];
     [self.navigationController popViewControllerAnimated:YES];

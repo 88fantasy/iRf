@@ -35,7 +35,7 @@ static NSString *msgKey = @"msg";
         self.title = @"未收货列表";
         
      
-        
+        _firstload = YES;
         canReload = YES;
         if (_refreshHeaderView == nil) {
             
@@ -58,6 +58,7 @@ static NSString *msgKey = @"msg";
     self = [super initWithStyle:style];
     if (self) {
         // Custom initialization
+        _firstload = NO;
         canReload = NO;
         self.objs = _arrays;
         
@@ -155,6 +156,10 @@ static NSString *msgKey = @"msg";
             NSString *enddate = [self.searchObj objectForKey:@"enddate"];
             if (![enddate isEqualToString:@""] && enddate != nil) {
                 sql = [sql stringByAppendingFormat:@" and credate <= date('%@')",enddate];
+            }
+            NSString *goodspy = [self.searchObj objectForKey:@"goodspy"];
+            if (![goodspy isEqualToString:@""] && goodspy != nil) {
+                sql = [sql stringByAppendingFormat:@" and goodspy like '%@%%'",goodspy];
             }
             
             FMResultSet *rs = [db executeQuery:sql];
@@ -385,9 +390,9 @@ static NSString *msgKey = @"msg";
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    if (canReload &&
-            ([self.tableView numberOfRowsInSection:0] == 0 || [RootViewController isSync]) ) {
+    if (canReload && _firstload ) {
         [self getAllRg];
+        _firstload = NO;
     }
 	// this UIViewController is about to re-appear, make sure we remove the current selection in our table view
 	NSIndexPath *tableSelection = [self.tableView indexPathForSelectedRow];
@@ -588,14 +593,39 @@ static NSString *msgKey = @"msg";
 - (IBAction) setSearchJson:(id)sender{
     RgListSearchView *rsv = [[RgListSearchView alloc] initWithNibName:@"RgListSearchView" bundle:nil];
     rsv.rgListSearchViewDelegate = self;
+    
     [self.navigationController pushViewController:rsv animated:YES];
     
-    rsv.goodsname.text = [self.searchObj objectForKey:@"goodsname"];
-    rsv.prodarea.text = [self.searchObj objectForKey:@"prodarea"];
+    NSString *goodspy = [self.searchObj objectForKey:@"goodspy"];
+    if (goodspy != nil && ![@"" isEqualToString:goodspy]) {
+        if ([[goodspy substringFromIndex:[goodspy length]-1] isEqualToString:@"%"]) {
+            goodspy = [goodspy substringToIndex:[goodspy length]-1];
+        }
+        rsv.goodspy.text = goodspy;
+    }
+    NSString *goodsname = [self.searchObj objectForKey:@"goodsname"];
+    if (goodsname != nil && ![@"" isEqualToString:goodsname]) {
+        if ([[goodsname substringFromIndex:[goodsname length]-1] isEqualToString:@"%"]) {
+            goodsname = [goodsname substringToIndex:[goodsname length]-1];
+        }
+        rsv.goodsname.text = goodsname;
+    }
+    
+    NSString *prodarea = [self.searchObj objectForKey:@"prodarea"];
+    if (prodarea != nil && ![@"" isEqualToString:prodarea]) {
+        if ([[prodarea substringFromIndex:[prodarea length]-1] isEqualToString:@"%"]) {
+            prodarea = [prodarea substringToIndex:[prodarea length]-1];
+        }
+        rsv.prodarea.text = prodarea;
+    }
+    
     rsv.lotno.text = [self.searchObj objectForKey:@"lotno"];
     rsv.invno.text = [self.searchObj objectForKey:@"invno"];
     rsv.startdate.text = [self.searchObj objectForKey:@"startdate"];
     rsv.enddate.text = [self.searchObj objectForKey:@"enddate"];
+    
+    
+    
     
     [rsv release];
 }

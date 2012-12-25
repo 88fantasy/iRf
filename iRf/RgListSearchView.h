@@ -24,6 +24,7 @@
     UITextField *invno;
     UITextField *startdate;
     UITextField *enddate;
+    UITextField *goodspy;
     
     UIBarButtonItem *finButton;
     UITextField *tmp;
@@ -38,6 +39,7 @@
 @property (nonatomic, retain) IBOutlet UITextField *invno;
 @property (nonatomic, retain) IBOutlet UITextField *startdate;
 @property (nonatomic, retain) IBOutlet UITextField *enddate;
+@property (nonatomic, retain) IBOutlet UITextField *goodspy;
 
 @property (nonatomic, retain) IBOutlet UIBarButtonItem *finButton;
 @property (nonatomic, retain) IBOutlet UITextField *tmp;

@@ -64,7 +64,7 @@
     CGFloat y = frame.size.height / 2;
     CGFloat linewidth = 2.0;
 //
-    CGRect newframe = frame;
+//    CGRect newframe = frame;
 //    newframe.size.height = frame.size.height - 54;  //减去底部工具栏高度
 //    newframe.size.width = frame.size.width;
 //    //获取当前电池条的方向

@@ -36,6 +36,7 @@ UIActionSheetDelegate>
     
     int titleFontSize;
     int detailFontSize;
+    BOOL _firstload;
 }
 
 @property (nonatomic, retain) NSMutableArray *menuList;

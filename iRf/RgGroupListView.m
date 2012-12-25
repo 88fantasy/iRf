@@ -441,8 +441,29 @@ static NSString *msgKey = @"msg";
     rsv.rgListSearchViewDelegate = self;
     [self.navigationController pushViewController:rsv animated:YES];
     
-    rsv.goodsname.text = [self.searchObj objectForKey:@"goodsname"];
-    rsv.prodarea.text = [self.searchObj objectForKey:@"prodarea"];
+    NSString *goodspy = [self.searchObj objectForKey:@"goodspy"];
+    if (goodspy != nil && ![@"" isEqualToString:goodspy]) {
+        if ([[goodspy substringFromIndex:[goodspy length]-1] isEqualToString:@"%"]) {
+            goodspy = [goodspy substringToIndex:[goodspy length]-1];
+        }
+        rsv.goodspy.text = goodspy;
+    }
+    NSString *goodsname = [self.searchObj objectForKey:@"goodsname"];
+    if (goodsname != nil && ![@"" isEqualToString:goodsname]) {
+        if ([[goodsname substringFromIndex:[goodsname length]-1] isEqualToString:@"%"]) {
+            goodsname = [goodsname substringToIndex:[goodsname length]-1];
+        }
+        rsv.goodsname.text = goodsname;
+    }
+    
+    NSString *prodarea = [self.searchObj objectForKey:@"prodarea"];
+    if (prodarea != nil && ![@"" isEqualToString:prodarea]) {
+        if ([[prodarea substringFromIndex:[prodarea length]-1] isEqualToString:@"%"]) {
+            prodarea = [prodarea substringToIndex:[prodarea length]-1];
+        }
+        rsv.prodarea.text = prodarea;
+    }
+    
     rsv.lotno.text = [self.searchObj objectForKey:@"lotno"];
     rsv.invno.text = [self.searchObj objectForKey:@"invno"];
     rsv.startdate.text = [self.searchObj objectForKey:@"startdate"];
