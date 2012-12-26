@@ -14,7 +14,7 @@
 static bool syncflag = NO;
 
 @interface RootViewController : UITableViewController
-<UIAlertViewDelegate>
+<UIAlertViewDelegate,NSURLConnectionDataDelegate>
 {
     NSMutableArray *menuList;
 	UITextField *userfield;

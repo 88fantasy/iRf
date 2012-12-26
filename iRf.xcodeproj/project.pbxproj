@@ -1246,7 +1246,7 @@
 				GCC_VERSION = "";
 				INFOPLIST_FILE = "iRf/iRf-Info.plist";
 				INSTALL_PATH = /Applications;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/iRf/ZBarSDK\"",
@@ -1271,7 +1271,7 @@
 				GCC_VERSION = "";
 				INFOPLIST_FILE = "iRf/iRf-Info.plist";
 				INSTALL_PATH = /Applications;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/iRf/ZBarSDK\"",

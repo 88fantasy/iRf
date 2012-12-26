@@ -27,10 +27,10 @@ static NSString *iconKey = @"iconfile";
 static NSString *retFlagKey = @"ret";
 static NSString *msgKey = @"msg";
 
-
 enum {
-    UserAlert = 0,
-    SyncAlert
+    UserAlert = 100000,
+    SyncAlert = 100001,
+    VersionAlert = 100002
 };
 
 //@interface RootViewController ()
@@ -97,6 +97,25 @@ enum {
     [super viewDidLoad];
     // Set up the edit and add buttons.
 //    self.navigationItem.leftBarButtonItem = self.editButtonItem;
+    
+    // 新版本检查
+    NSDictionary *appinfo = [[NSBundle mainBundle] infoDictionary] ;
+    
+    NSLog(@"%@",appinfo);
+    
+    NSString *version = [appinfo objectForKey:(NSString *)kCFBundleVersionKey];
+    
+    NSString *urlString =[NSString stringWithFormat:@"http://%@/phoneapp/ios/iRf.php?newestver=%@",host,version];
+    
+    NSMutableURLRequest *request = [[[NSMutableURLRequest alloc] init] autorelease];
+    [request setURL:[NSURL URLWithString:urlString]];
+    [request setHTTPMethod:@"GET"];
+    
+    NSURLConnection *connection = [NSURLConnection connectionWithRequest:request delegate:self];
+    
+    [connection start];
+    
+    // 版本检查end
     
     if (IsInternet) {
         UIBarButtonItem *syncButton = [[UIBarButtonItem alloc] initWithTitle:@"0" style:UIBarButtonItemStylePlain target:self action:@selector(syncAction:)];
@@ -296,7 +315,12 @@ enum {
                 ;
         }
     }
-
+    else if ([alertView tag] == VersionAlert) {
+        if(buttonIndex == 1) {
+            NSString *appurl = [NSString stringWithFormat:@"itms-services:///?action=download-manifest&url=http://%@/phoneapp/ios/iRf.php",host];
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:appurl]]; 
+        }
+    }
 }
 
 //- (void)alertViewCancel:(UIAlertView *)alertView {
@@ -561,7 +585,8 @@ enum {
                                                         message: [result localizedFailureReason]
 													   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
 		[alert show];
-		[alert release];	}
+		[alert release];
+    }
     
 	// Handle faults
 	if([value isKindOfClass:[SoapFault class]]) {
@@ -631,5 +656,31 @@ enum {
     }
 }
 
+#pragma mark -
+#pragma mark 版本检查  NSURLConnectionDataDelegate delegate
+
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
+{
+    NSMutableString *result = [[NSMutableString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+
+    NSLog(@"Version check result string is :%@",result);
+    
+    SBJsonParser *parser = [[SBJsonParser alloc] init];
+    id retObj = [parser objectWithString:result];
+    [parser release];
+    if (retObj != nil) {
+        NSLog(@"%@",retObj);
+        NSDictionary *versionobj = (NSDictionary *)retObj;
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"有新版本啦[%@]",[versionobj objectForKey:@"version"]]
+                                                        message:[versionobj objectForKey:@"comments"]
+													   delegate:self
+                                cancelButtonTitle:NSLocalizedString(@"Cancel",@"Cancel")
+                                            otherButtonTitles:@"立即安装", nil];
+        [alert setTag:VersionAlert];
+		[alert show];
+		[alert release];
+    }
+    
+}
 @end
 
