@@ -32,8 +32,7 @@ static NSString *msgKey = @"msg";
     self = [super initWithStyle:style];
     if (self) {
         // Custom initialization
-        self.title = @"未收货列表";
-        
+        self.title = @"收货明细列表";
      
         _firstload = YES;
         canReload = YES;
@@ -132,7 +131,8 @@ static NSString *msgKey = @"msg";
         FMDatabase *db = [DbUtil retConnectionForResource:@"iRf" ofType:@"rdb"];
         if (db != nil) {
             
-            NSString *sql = @"select * from scm_rg where rgflag in ('',0)";
+            NSString *sql = @"select * from scm_rg where 1 = 1";
+            
             NSString *goodsname = [self.searchObj objectForKey:@"goodsname"];
             if (![goodsname isEqualToString:@""] && goodsname != nil) {
                 sql = [sql stringByAppendingFormat:@" and goodsname like '%@%%'",goodsname];
@@ -160,6 +160,15 @@ static NSString *msgKey = @"msg";
             NSString *goodspy = [self.searchObj objectForKey:@"goodspy"];
             if (![goodspy isEqualToString:@""] && goodspy != nil) {
                 sql = [sql stringByAppendingFormat:@" and goodspy like '%@%%'",goodspy];
+            }
+            NSString *rgflag = [self.searchObj objectForKey:@"rgflag"];
+            if (![rgflag isEqualToString:@""] && rgflag != nil) {
+                if ([rgflag isEqualToString:@"1"]) {
+                    sql = [sql stringByAppendingFormat:@" and rgflag = 1 "];
+                }
+                else {
+                    sql = [sql stringByAppendingFormat:@" and rgflag in ('',0) "];
+                }
             }
             
             FMResultSet *rs = [db executeQuery:sql];
@@ -282,7 +291,17 @@ static NSString *msgKey = @"msg";
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    self.title = [NSString stringWithFormat:@"未收货列表 (%d)" ,[self.menuList count]] ;
+    NSString *rgflag = [self.searchObj objectForKey:@"rgflag"];
+    if (rgflag == nil) {
+        self.title = [NSString stringWithFormat:@"收货明细列表 (%d)" ,[self.menuList count]] ;
+    }
+    else if ([rgflag isEqualToString:@"1"]){
+        self.title = [NSString stringWithFormat:@"已收货 (%d)" ,[self.menuList count]] ;
+    }
+    else {
+        self.title = [NSString stringWithFormat:@"未收货 (%d)" ,[self.menuList count]] ;
+    }
+    
     return [self.menuList count];
 }
 
@@ -590,6 +609,8 @@ static NSString *msgKey = @"msg";
     
 }
 
+#pragma mark - 
+#pragma mark SearchView Methods
 - (IBAction) setSearchJson:(id)sender{
     RgListSearchView *rsv = [[RgListSearchView alloc] initWithNibName:@"RgListSearchView" bundle:nil];
     rsv.rgListSearchViewDelegate = self;
@@ -624,8 +645,16 @@ static NSString *msgKey = @"msg";
     rsv.startdate.text = [self.searchObj objectForKey:@"startdate"];
     rsv.enddate.text = [self.searchObj objectForKey:@"enddate"];
     
-    
-    
+    NSString *rgflag = [self.searchObj objectForKey:@"rgflag"];
+    if (rgflag == nil) {
+        [rsv.rgflag setSelectedSegmentIndex:0];
+    }
+    else if ([rgflag isEqualToString:@"1"]){
+        [rsv.rgflag setSelectedSegmentIndex:2];
+    }
+    else {
+        [rsv.rgflag setSelectedSegmentIndex:1];
+    }
     
     [rsv release];
 }
@@ -635,6 +664,9 @@ static NSString *msgKey = @"msg";
     [self getAllRg];
 }
 
+
+#pragma mark - 
+#pragma mark BatchMode Methods
 
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath{
     return UITableViewCellEditingStyleDelete | UITableViewCellEditingStyleInsert;
@@ -721,6 +753,8 @@ static NSString *msgKey = @"msg";
     [self resetBarbutton];
 }
 
+#pragma mark rghandle
+
 - (void)doRgHandler:(id)value {
     // Handle errors
 	if([value isKindOfClass:[NSError class]]) {
@@ -798,9 +832,7 @@ static NSString *msgKey = @"msg";
     }
 }
 
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
-    NSLog(@"commit");
-}
+#pragma mark 进度条
 
 //显示等待进度条
 - (void) displayGoalBarView:(int)percent {

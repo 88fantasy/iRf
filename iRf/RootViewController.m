@@ -135,8 +135,8 @@ enum {
     
     RgListView *rglistView = [[RgListView alloc] initWithStyle:UITableViewStylePlain];
     [self.menuList addObject:[NSDictionary dictionaryWithObjectsAndKeys:
-                              @"未收货列表", kTitleKey,
-                              @"查询一个月内所有未收货的信息", kExplainKey,
+                              @"收货明细列表", kTitleKey,
+                              @"查询一个月内所有收货的信息", kExplainKey,
                               rglistView, kViewControllerKey,
                               @"kccx.png",iconKey,
 							  nil]];

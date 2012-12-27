@@ -26,9 +26,11 @@
     UITextField *enddate;
     UITextField *goodspy;
     
+    UISegmentedControl *rgflag;
+    
     UIBarButtonItem *finButton;
     UITextField *tmp;
-    NSMutableDictionary *searchFields;
+    
     id<RgListSearchViewDelegate> rgListSearchViewDelegate;
 }
 
@@ -40,11 +42,12 @@
 @property (nonatomic, retain) IBOutlet UITextField *startdate;
 @property (nonatomic, retain) IBOutlet UITextField *enddate;
 @property (nonatomic, retain) IBOutlet UITextField *goodspy;
+@property (nonatomic, retain) IBOutlet UISegmentedControl *rgflag;
 
 @property (nonatomic, retain) IBOutlet UIBarButtonItem *finButton;
 @property (nonatomic, retain) IBOutlet UITextField *tmp;
 @property (nonatomic,retain) id<RgListSearchViewDelegate>  rgListSearchViewDelegate;
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil value:(NSMutableDictionary*)obj;
+
 - (IBAction) finSearch:(id)sender;
 @end

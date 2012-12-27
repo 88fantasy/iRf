@@ -11,7 +11,7 @@
 
 @implementation RgListSearchView
 
-@synthesize scrollView,goodsname,prodarea,lotno,invno,startdate,enddate,goodspy;
+@synthesize scrollView,goodsname,prodarea,lotno,invno,startdate,enddate,goodspy,rgflag;
 @synthesize finButton,tmp;
 @synthesize rgListSearchViewDelegate;
 
@@ -25,16 +25,6 @@
     return self;
 }
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil value:(NSMutableDictionary*)obj
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-//        searchFields = obj;
-        
-    }
-    return self;
-}
 - (void)didReceiveMemoryWarning
 {
     // Releases the view if it doesn't have a superview.
@@ -51,13 +41,6 @@
     // Do any additional setup after loading the view from its nib.
     
     self.navigationItem.rightBarButtonItem = self.finButton;
-//    self.goodsname.text = [searchFields objectForKey:@"goodsname"];
-//    self.prodarea.text = [searchFields objectForKey:@"prodarea"];
-//    self.lotno.text = [searchFields objectForKey:@"lotno"];
-//    self.invno.text = [searchFields objectForKey:@"invno"];
-//    self.startdate.text = [searchFields objectForKey:@"startdate"];
-//    self.enddate.text = [searchFields objectForKey:@"enddate"];
-    
    
 }
 
@@ -164,62 +147,48 @@
 
 
 - (IBAction) finSearch:(id)sender{
-//    if (self.goodsname.text != nil) {
-//        [searchFields setObject:self.goodsname.text forKey:@"goodsname"];
-//    }
-//    else{
-//        [searchFields removeObjectForKey:@"goodsname"];
-//    }
-//    
-//    if (self.prodarea.text != nil) {
-//       [searchFields setObject:self.prodarea.text forKey:@"prodarea"];
-//    }
-//    else{
-//        [searchFields removeObjectForKey:@"prodarea"];
-//    }
-//    
-//    if (self.lotno.text != nil) {
-//        [searchFields setObject:self.lotno.text forKey:@"lotno"];
-//    }
-//    else{
-//        [searchFields removeObjectForKey:@"lotno"];
-//    }
-//    
-//    if (self.invno.text != nil) {
-//        [searchFields setObject:self.invno.text forKey:@"invno"];
-//    }
-//    else{
-//        [searchFields removeObjectForKey:@"invno"];
-//    }
-//    
-//    if (self.startdate.text != nil) {
-//        [searchFields setObject:self.startdate.text forKey:@"startdate"];
-//    }
-//    else{
-//        [searchFields removeObjectForKey:@"startdate"];
-//    }
-//    
-//    if (self.enddate.text != nil) {
-//        [searchFields setObject:self.enddate.text forKey:@"enddate"];
-//    }
-//    else{
-//        [searchFields removeObjectForKey:@"enddate"];
-//    }
+    NSMutableDictionary *searchFields = [NSMutableDictionary dictionary];
+    if (![self.goodspy.text isEqualToString:@""] && self.goodspy.text != nil) {
+        [searchFields setObject:[self.goodspy.text stringByAppendingString:@"%"] forKey:@"goodspy"];
+    }
+    if (![self.goodsname.text isEqualToString:@""] && self.goodsname.text != nil) {
+        [searchFields setObject:[self.goodsname.text stringByAppendingString:@"%"] forKey:@"goodsname"];
+    }
     
-    NSDictionary *fields = [NSDictionary dictionaryWithObjectsAndKeys:
-                            self.goodsname.text==nil?@"":[self.goodsname.text stringByAppendingString:@"%"],@"goodsname",
-                            self.prodarea.text==nil?@"":[self.prodarea.text stringByAppendingString:@"%"],@"prodarea",
-                            self.lotno.text==nil?@"":self.lotno.text,@"lotno",
-                            self.invno.text==nil?@"":self.invno.text,@"invno",
-                            self.startdate.text==nil?@"":self.startdate.text,@"startdate",
-                            self.enddate.text==nil?@"":self.enddate.text,@"enddate",
-                            self.goodspy.text==nil?@"":[self.goodspy.text stringByAppendingString:@"%"],@"goodspy",
-                            @"0",@"rgflag",
-                            nil];
+    if (![self.prodarea.text isEqualToString:@""] && self.prodarea.text != nil) {
+       [searchFields setObject:[self.prodarea.text stringByAppendingString:@"%"] forKey:@"prodarea"];
+    }
+    
+    if (![self.lotno.text isEqualToString:@""] && self.lotno.text != nil) {
+        [searchFields setObject:self.lotno.text forKey:@"lotno"];
+    }
+    
+    if (![self.invno.text isEqualToString:@""] && self.invno.text != nil) {
+        [searchFields setObject:self.invno.text forKey:@"invno"];
+    }
+    
+    if (![self.startdate.text isEqualToString:@""] && self.startdate.text != nil) {
+        [searchFields setObject:self.startdate.text forKey:@"startdate"];
+    }
+    
+    if (![self.enddate.text isEqualToString:@""] && self.enddate.text != nil) {
+        [searchFields setObject:self.enddate.text forKey:@"enddate"];
+    }
+    
+    if (self.rgflag.selectedSegmentIndex != 0) {
+        if (self.rgflag.selectedSegmentIndex == 1) {
+            [searchFields setObject:@"0" forKey:@"rgflag"];
+        }
+        else if (self.rgflag.selectedSegmentIndex == 2) {
+            [searchFields setObject:@"1" forKey:@"rgflag"];
+        }
+        
+    }
+    
     [self.navigationController popViewControllerAnimated:YES];
     if (self.rgListSearchViewDelegate!=nil) { 
         //调用回调函数 
-        [self.rgListSearchViewDelegate searchCallBack:fields]; 
+        [self.rgListSearchViewDelegate searchCallBack:searchFields]; 
     } 
 }
 
