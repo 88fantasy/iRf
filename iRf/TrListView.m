@@ -23,13 +23,15 @@ static NSString *msgKey = @"msg";
 
 @synthesize menuList,refreshButtonItem,activityView,activityIndicator;
 @synthesize tablelistView,filteredListContent, savedSearchTerm, savedScopeButtonIndex, searchWasActive;
+@synthesize titleSegmentIndex;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
-        self.title = @"货品对应关系";
+        self.navigationItem.prompt = @"货品对应关系";
+        
         if (_refreshHeaderView == nil) {
             self.tablelistView  = (UITableView*)self.view;
             EGORefreshTableHeaderView *view = [[EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0.0f, 0.0f - self.view.bounds.size.height, self.view.frame.size.width, self.view.bounds.size.height)];
@@ -39,6 +41,13 @@ static NSString *msgKey = @"msg";
             [view release];
             
         }
+        
+        if (self.refreshButtonItem == nil) {
+            self.refreshButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh                                                                          target:self action:@selector(scrollToRefresh:)];
+            
+        }
+        
+        self.navigationItem.rightBarButtonItem = self.refreshButtonItem;
         
         //  update the last update date
         [_refreshHeaderView refreshLastUpdatedDate];
@@ -131,7 +140,21 @@ static NSString *msgKey = @"msg";
     // self.clearsSelectionOnViewWillAppear = NO;
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-
+    
+    //增加未维护客户码和货位的过滤项
+    
+    NSArray *segmentTextContent = [NSArray arrayWithObjects:@"全部",@"无客户码", @"无货位",nil];
+	UISegmentedControl *segmentedControl = [[UISegmentedControl alloc] initWithItems:segmentTextContent];
+	segmentedControl.selectedSegmentIndex = 0;
+	segmentedControl.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+	segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
+//	segmentedControl.frame = CGRectMake(0, 0, 400, kCustomButtonHeight);
+	[segmentedControl addTarget:self action:@selector(switchSegment:) forControlEvents:UIControlEventValueChanged];
+	
+//	defaultTintColor = [segmentedControl.tintColor retain];	// keep track of this for later
+    
+	self.navigationItem.titleView = segmentedControl;
+	[segmentedControl release];
     
 	
 	// restore search settings if they were saved in didReceiveMemoryWarning.
@@ -169,37 +192,94 @@ static NSString *msgKey = @"msg";
 
 #pragma mark - Table view data source
 
-//- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-//{
-//    // Return the number of sections.
-//    return [menuList count];
-//}
+- (NSDictionary *) tableView:(UITableView *)tableView rowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSDictionary *row = nil;
+    NSMutableArray *list = nil;
+    NSInteger count = 0;
+    if (tableView == self.searchDisplayController.searchResultsTableView)
+	{
+        list =  self.filteredListContent;
+    }
+	else
+	{
+        list = self.menuList;
+    }
+    if (titleSegmentIndex == TrListTitleSegAll) {
+        row = [list objectAtIndex:indexPath.row];
+    }
+    else if (titleSegmentIndex == TrListTitleSegNoCusid){
+        for (int i=0,j=list.count; i<j; i++) {
+            NSDictionary *tmprow = [list objectAtIndex:i];
+            NSDictionary *obj = [tmprow objectForKey:kObjKey];
+            NSString *cusgdsid = [obj objectForKey:@"cusgdsid"];
+            if ([@"" isEqualToString:cusgdsid]) {
+                if (indexPath.row == count) {
+                    row = tmprow;
+                    break;
+                }
+                count++;
+            }
+        }
+    }
+    else if (titleSegmentIndex == TrListTitleSegNoLocno){
+        for (int i=0,j=list.count; i<j; i++) {
+            NSDictionary *tmprow = [list objectAtIndex:i];
+            NSDictionary *obj = [tmprow objectForKey:kObjKey];
+            NSString *locno = [obj objectForKey:@"locno"];
+            if ([@"" isEqualToString:locno]) {
+                if (indexPath.row == count) {
+                    row = tmprow;
+                    break;
+                }
+                count++;
+            }
+        }
+    }
+    
+    return row;
+}
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
+    NSMutableArray *list = nil;
+    NSInteger count = 0;
     if (tableView == self.searchDisplayController.searchResultsTableView)
 	{
-        return [self.filteredListContent count];
+        list =  self.filteredListContent;
     }
 	else
 	{
-        return [self.menuList count];
+        list = self.menuList;
     }
+    if (titleSegmentIndex == TrListTitleSegAll) {
+        count =  [list count];
+    }
+    else if (titleSegmentIndex == TrListTitleSegNoCusid){
+        for (int i=0,j=list.count; i<j; i++) {
+            NSDictionary *obj = [[list objectAtIndex:i] objectForKey:kObjKey];
+            NSString *cusgdsid = [obj objectForKey:@"cusgdsid"];
+            if ([@"" isEqualToString:cusgdsid]) {
+                count++;
+            }
+        }
+    }
+    else if (titleSegmentIndex == TrListTitleSegNoLocno){
+        for (int i=0,j=list.count; i<j; i++) {
+            NSDictionary *obj = [[list objectAtIndex:i] objectForKey:kObjKey];
+            NSString *locno = [obj objectForKey:@"locno"];
+            if ([@"" isEqualToString:locno]) {
+                count++;
+            }
+        }
+    }
+    return count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSDictionary *row = nil;
-    if (tableView == self.searchDisplayController.searchResultsTableView)
-	{
-        row = [self.filteredListContent objectAtIndex:indexPath.row];
-    }
-	else
-	{
-        row = [self.menuList objectAtIndex:indexPath.row];
-    }
-
+    NSDictionary *row = [self tableView:tableView rowAtIndexPath:indexPath];
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:[row objectForKey:kCellIdentifier]];
 	if (cell == nil)
@@ -284,15 +364,7 @@ static NSString *msgKey = @"msg";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSDictionary *row = nil;
-    if (tableView == self.searchDisplayController.searchResultsTableView)
-	{
-        row = [self.filteredListContent objectAtIndex:indexPath.row];
-    }
-	else
-	{
-        row = [self.menuList objectAtIndex:indexPath.row];
-    }
+    NSDictionary *row = [self tableView:tableView rowAtIndexPath:indexPath];
     // Navigation logic may go here. Create and push another view controller.
     
     NSDictionary *obj = [row objectForKey:kObjKey];
@@ -379,13 +451,6 @@ static NSString *msgKey = @"msg";
                     [self alert:@"提示" msg:@"没有找到货品关系"];
                 }
                 else{
-                    if (self.refreshButtonItem == nil) {
-                        self.refreshButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh                                                                          target:self action:@selector(scrollToRefresh:)];
-                        
-                    }
-                    
-                    self.navigationItem.rightBarButtonItem = self.refreshButtonItem;
-                    
                     
                     self.menuList = [NSMutableArray array];
                     
@@ -411,7 +476,7 @@ static NSString *msgKey = @"msg";
                     self.filteredListContent = [NSMutableArray arrayWithCapacity:[self.menuList count]];
                     
                     [self.tablelistView reloadData];
-//                    [self doneLoadingTableViewData];
+                    [self doneLoadingTableViewData];
                 }
                 
             }
@@ -458,14 +523,20 @@ static NSString *msgKey = @"msg";
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView{
     
-    [_refreshHeaderView egoRefreshScrollViewDidScroll:scrollView];
+    if (scrollView != self.searchDisplayController.searchResultsTableView)
+	{
+       [_refreshHeaderView egoRefreshScrollViewDidScroll:scrollView];
+    }
+    
     
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
     
-    [_refreshHeaderView egoRefreshScrollViewDidEndDragging:scrollView];
-    
+    if (scrollView != self.searchDisplayController.searchResultsTableView)
+	{
+        [_refreshHeaderView egoRefreshScrollViewDidEndDragging:scrollView];
+    }
 }
 
 #pragma mark -
@@ -571,6 +642,17 @@ static NSString *msgKey = @"msg";
     
     // Return YES to cause the search result table view to be reloaded.
     return YES;
+}
+
+#pragma mark -
+#pragma mark  titleview segment action
+
+- (IBAction)switchSegment:(id)sender
+{
+	// The segmented control was clicked, handle it here
+	UISegmentedControl *segmentedControl = (UISegmentedControl *)sender;
+	titleSegmentIndex =  segmentedControl.selectedSegmentIndex;
+    [self.tablelistView reloadData];
 }
 
 @end

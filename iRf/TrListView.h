@@ -9,6 +9,12 @@
 #import <UIKit/UIKit.h>
 #import "EGORefreshTableHeaderView.h"
 
+typedef NS_ENUM (NSInteger,TrListTitleSeg){
+	TrListTitleSegAll = 0,  //全部
+	TrListTitleSegNoCusid = 1, //无客户码
+	TrListTitleSegNoLocno = 2,  //无默认货位
+};
+
 @interface TrListView : UIViewController
 <UITableViewDelegate,UITableViewDataSource,EGORefreshTableHeaderDelegate
 ,UISearchDisplayDelegate, UISearchBarDelegate>
@@ -29,6 +35,8 @@
     NSMutableArray	*filteredListContent;	// The content filtered as a result of a search.
     UISearchDisplayController *seachDispalyController;
     UITableView *tablelistView;
+    
+    NSInteger   titleSegmentIndex;
 }
 
 @property (nonatomic, retain) NSMutableArray *menuList;
@@ -43,6 +51,7 @@
 @property (nonatomic) NSInteger savedScopeButtonIndex;
 @property (nonatomic) BOOL searchWasActive;
 
+@property (nonatomic) NSInteger titleSegmentIndex;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil;
 
