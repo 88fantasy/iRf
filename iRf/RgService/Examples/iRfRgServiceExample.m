@@ -61,8 +61,14 @@
 	// Returns iRfRet*. 
 	[service setEdisRg:self action:@selector(setEdisRgHandler:) xml: @""];
 
+	// Returns id. 
+	[service setIRfSetting:self action:@selector(setIRfSettingHandler:) username: @"" password: @"" jsonObject: @""];
+
 	// Returns iRfRet*. 
 	[service setRgSuccess:self action:@selector(setRgSuccessHandler:) ids: [NSMutableArray array] code: @""];
+
+	// Returns NSString*. 
+	[service test:self action:@selector(testHandler:) username: @"" password: @""];
 }
 
 	
@@ -427,6 +433,30 @@
 }
 	
 
+// Handle the response from setIRfSetting.
+		
+- (void) setIRfSettingHandler: (id) value {
+
+	// Handle errors
+	if([value isKindOfClass:[NSError class]]) {
+		NSLog(@"%@", value);
+		return;
+	}
+
+	// Handle faults
+	if([value isKindOfClass:[SoapFault class]]) {
+		NSLog(@"%@", value);
+		return;
+	}				
+			
+
+	// Do something with the id result
+		id result = (id)value;
+	NSLog(@"setIRfSetting returned the value: %@", result);
+			
+}
+	
+
 // Handle the response from setRgSuccess.
 		
 - (void) setRgSuccessHandler: (id) value {
@@ -447,6 +477,30 @@
 	// Do something with the iRfRet* result
 		iRfRet* result = (iRfRet*)value;
 	NSLog(@"setRgSuccess returned the value: %@", result);
+			
+}
+	
+
+// Handle the response from test.
+		
+- (void) testHandler: (id) value {
+
+	// Handle errors
+	if([value isKindOfClass:[NSError class]]) {
+		NSLog(@"%@", value);
+		return;
+	}
+
+	// Handle faults
+	if([value isKindOfClass:[SoapFault class]]) {
+		NSLog(@"%@", value);
+		return;
+	}				
+			
+
+	// Do something with the NSString* result
+		NSString* result = (NSString*)value;
+	NSLog(@"test returned the value: %@", result);
 			
 }
 	

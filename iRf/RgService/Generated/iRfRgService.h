@@ -35,6 +35,14 @@
 	- (SoapRequest*) getTrGds: (id <SoapDelegate>) handler username: (NSString*) username password: (NSString*) password page: (int) page;
 	- (SoapRequest*) getTrGds: (id) target action: (SEL) action username: (NSString*) username password: (NSString*) password page: (int) page;
 
+	/* Returns NSString*.  */
+	- (SoapRequest*) test: (id <SoapDelegate>) handler username: (NSString*) username password: (NSString*) password;
+	- (SoapRequest*) test: (id) target action: (SEL) action username: (NSString*) username password: (NSString*) password;
+
+	/* Returns id.  */
+	- (SoapRequest*) setIRfSetting: (id <SoapDelegate>) handler username: (NSString*) username password: (NSString*) password jsonObject: (NSString*) jsonObject;
+	- (SoapRequest*) setIRfSetting: (id) target action: (SEL) action username: (NSString*) username password: (NSString*) password jsonObject: (NSString*) jsonObject;
+
 	/* Returns iRfRet*.  */
 	- (SoapRequest*) getRgs: (id <SoapDelegate>) handler queryxml: (NSString*) queryxml code: (NSString*) code;
 	- (SoapRequest*) getRgs: (id) target action: (SEL) action queryxml: (NSString*) queryxml code: (NSString*) code;

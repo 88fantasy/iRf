@@ -162,7 +162,6 @@ enum {
     [rglistView release];
     [trListView release];
     [rgGroupListView release];
-    
     if (!IsInternet) {
         
 //        if (!IsPad) {
@@ -295,9 +294,7 @@ enum {
             }
             [defaults setBool: YES forKey:@"enabled_preference"];
         }
-        else {
-            [self confirmUser];
-        }
+        [self confirmUser];
     }
 	else if ([alertView tag] == SyncAlert) {
         switch (buttonIndex) {

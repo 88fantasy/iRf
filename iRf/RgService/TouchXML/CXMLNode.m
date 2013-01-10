@@ -201,8 +201,8 @@ switch([self kind])
 		break;
 	case XML_COMMENT_NODE:
 //	case XML_CDATA_SECTION_NODE:
-//		// TODO: NSXML does not have XML_CDATA_SECTION_NODE correspondent.
-//		break;
+		// TODO: NSXML does not have XML_CDATA_SECTION_NODE correspondent.
+		break;
 	default:
 		NSAssert1(NO, @"TODO not implemented type (%d).",  [self kind]);
 	}

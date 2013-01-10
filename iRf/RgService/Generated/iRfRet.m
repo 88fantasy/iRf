@@ -22,7 +22,7 @@
 	+ (iRfRet*) createWithNode: (CXMLNode*) node
 	{
 		if(node == nil) { return nil; }
-		return (iRfRet*)[[[iRfRet alloc] initWithNode: node] autorelease];
+		return [[[self alloc] initWithNode: node] autorelease];
 	}
 
 	- (id) initWithNode: (CXMLNode*) node {

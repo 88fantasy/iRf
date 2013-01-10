@@ -9,7 +9,7 @@
 
 	+ (id) createWithNode: (CXMLNode*) node
 	{
-		return [[[iRfArrayOfString alloc] initWithNode: node] autorelease];
+		return [[[self alloc] initWithNode: node] autorelease];
 	}
 
 	- (id) initWithNode: (CXMLNode*) node

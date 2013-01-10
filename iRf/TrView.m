@@ -146,28 +146,69 @@ NSString const *msgKey = @"msg";
     
     if (goodsnamestr!=nil && ![@"" isEqualToString:goodsnamestr] ) {
         [trobj setObject:goodsnamestr forKey:@"goodsname"];
+        [values setValue:goodsnamestr forKey:@"goodsname"];
     }
+    else {
+        [values setValue:@"" forKey:@"goodsname"];
+    }
+    
     if (goodstypestr!=nil && ![@"" isEqualToString:goodstypestr] ) {
         [trobj setObject:goodstypestr forKey:@"goodstype"];
+        [values setValue:goodstypestr forKey:@"goodstype"];
     }
+    else {
+        [values setValue:@"" forKey:@"goodstype"];
+    }
+    
     if (tradenamestr!=nil && ![@"" isEqualToString:tradenamestr] ) {
         [trobj setObject:tradenamestr forKey:@"tradename"];
+        [values setValue:tradenamestr forKey:@"tradename"];
     }
+    else {
+        [values setValue:@"" forKey:@"tradename"];
+    }
+    
     if (factnostr!=nil && ![@"" isEqualToString:factnostr] ) {
         [trobj setObject:factnostr forKey:@"factno"];
+        [values setValue:factnostr forKey:@"factno"];
     }
+    else {
+        [values setValue:@"" forKey:@"factno"];
+    }
+    
     if (goodsunitstr!=nil && ![@"" isEqualToString:goodsunitstr] ) {
         [trobj setObject:goodsunitstr forKey:@"goodsunit"];
+        [values setValue:goodsunitstr forKey:@"goodsunit"];
     }
+    else {
+        [values setValue:@"" forKey:@"goodsunit"];
+    }
+    
     if (cusgdsidstr!=nil && ![@"" isEqualToString:cusgdsidstr] ) {
         [trobj setObject:cusgdsidstr forKey:@"cusgdsid"];
+        [values setValue:cusgdsidstr forKey:@"cusgdsid"];
     }
+    else {
+        [values setValue:@"" forKey:@"cusgdsid"];
+    }
+    
     if (multistr!=nil && ![@"" isEqualToString:multistr] ) {
         [trobj setObject:multistr forKey:@"multi"];
+        [values setValue:multistr forKey:@"multi"];
     }
+    else {
+        [values setValue:@"" forKey:@"multi"];
+    }
+    
     if (locnostr!=nil && ![@"" isEqualToString:locnostr] ) {
         [trobj setObject:locnostr forKey:@"locno"];
+        [values setValue:locnostr forKey:@"locno"];
     }
+    else {
+        [values setValue:@"" forKey:@"locno"];
+    }
+    
+    
     
     SBJsonWriter *writer = [[SBJsonWriter alloc] init];
     NSString *json = [writer stringWithObject:trobj];

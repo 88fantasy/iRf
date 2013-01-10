@@ -9,6 +9,7 @@
 #import "iRfAppDelegate.h"
 
 #import "RootViewController.h"
+#import "iRfRgService.h"
 
 @implementation iRfAppDelegate
 
@@ -23,6 +24,7 @@
 
 @synthesize navigationController=_navigationController;
 
+@synthesize devtoken,currentuser;
 
 + (BOOL)checkHostReachability {
 	Reachability* hostReach = [Reachability reachabilityWithHostName: host] ;
@@ -50,13 +52,48 @@
        
     // Finish app initialization...
     
+    NSLog(@"Finish app initialization");
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *username = [defaults stringForKey:@"username_preference"];
+    
+    self.currentuser = username;
+    
     if (IsInternet) {
         [iRfAppDelegate checkHostReachability];
-    }
         
+//        UIRemoteNotificationType rntype = [application enabledRemoteNotificationTypes];
+//        NSLog(@"%d",rntype);
+//        if (rntype == UIRemoteNotificationTypeNone) {
+            // Register for push notifications 注册推送服务
+            [application registerForRemoteNotificationTypes:
+             UIRemoteNotificationTypeBadge |
+             UIRemoteNotificationTypeAlert |
+             UIRemoteNotificationTypeSound];
+            
+            // 注销推送服务
+//            [application unregisterForRemoteNotifications];
+//        }
+    }
+
+    
     // Add the navigation controller's view to the window and display.
     self.window.rootViewController = self.navigationController;
     [self.window makeKeyAndVisible];
+    
+//    当程序不在运行(后台和前台都不在运行) 会运行以下代码
+//    看是否有push notification到达，并做相应处理，这个方法和local notification相同，但注意key要对应就行 
+//    UILocalNotification *remoteNotification = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
+//    if (remoteNotification) {
+//        //弹出一个alertview,显示相应信息
+//        UIAlertView * al = [[UIAlertView alloc]initWithTitle:@"receive remote notification!" message:@"hello" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+//        [al show];
+//        [al release];
+        
+//        NSLog(@"%@",remoteNotification);
+//        [self application:application didReceiveRemoteNotification:remoteNotification.userInfo];
+//    }
+//    代码end
     return YES;
 }
 
@@ -66,6 +103,7 @@
      Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
      Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
      */
+    NSLog(@"application inactive");
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
@@ -74,6 +112,7 @@
      Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
      If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
      */
+    NSLog(@"application enter background");
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -81,6 +120,7 @@
     /*
      Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
      */
+    NSLog(@"application enter foreground");
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
@@ -88,6 +128,32 @@
     /*
      Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
      */
+    NSLog(@"application active");
+    
+//    检查切换账号
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *username = [defaults stringForKey:@"username_preference"];
+    NSLog(@"currentuser=%@,settinguser=%@",self.currentuser,username);
+    if (![username isEqualToString:self.currentuser]) {
+        if (IsInternet) {
+        
+            NSLog(@"update server");
+            NSDictionary *obj = [NSDictionary dictionaryWithObjectsAndKeys:
+                                 self.devtoken,@"token",
+                                 username,@"username",
+                                 nil];
+            SBJsonWriter *writer = [[SBJsonWriter alloc] init];
+            NSString *json = [writer stringWithObject:obj];
+            
+            iRfRgService* service = [iRfRgService service];
+            
+            [service setIRfSetting:self action:@selector(setIRfSettingHandler:) username:@"iRfsetting" password:nil jsonObject:json];
+            
+            
+        }
+        self.currentuser = username;
+    }
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
@@ -220,4 +286,64 @@
     return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
 }
 
+
+#pragma mark - 
+#pragma mark push notifications handle
+
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)newDeviceToken
+{
+    NSLog(@"Device Token=%@",newDeviceToken);
+    NSString *token = [NSString stringWithFormat:@"%@",newDeviceToken];
+    self.devtoken = [token substringWithRange:NSMakeRange(1, [token length]-2)];
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *username = [defaults stringForKey:@"username_preference"];
+    
+    NSDictionary *obj = [NSDictionary dictionaryWithObjectsAndKeys:
+                         self.devtoken,@"token",
+                         username,@"username",
+                         nil];
+    SBJsonWriter *writer = [[SBJsonWriter alloc] init];
+    NSString *json = [writer stringWithObject:obj];
+    
+    iRfRgService* service = [iRfRgService service];
+    
+    [service setIRfSetting:self action:@selector(setIRfSettingHandler:) username:@"iRfsetting" password:nil jsonObject:json];
+}
+- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
+{
+    NSLog(@"Fail to get Device Token=%@",[error localizedDescription]);
+}
+
+//广播频道（broadcast channel）用于同时联系到所有用户，所以很多时候开发者可能需要自己创建一些更精准化的频道。一旦推送通知被接受但是应用不在前台，就会被显示在iOS推送中心。反之如果应用刚好处于活动状态，则交于应用去自行处理。具体我们可以在app delegate中实现[application:didReceiveRemoteNotification]方法。
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
+{
+    NSLog(@"Receive a Remote Notification : %@",userInfo);
+    //可以根据application状态来判断，程序当前是在前台还是后台
+    UIApplicationState state = [application applicationState];
+    if (state == UIApplicationStateInactive) {
+        
+        // Application was in the background when notification
+        // was delivered.
+    }
+}
+
+
+- (void)setIRfSettingHandler:(id)value {
+    // Handle errors
+	if([value isKindOfClass:[NSError class]]) {
+		NSLog(@"%@", value);
+        NSError* result = (NSError*)value;
+        
+        [CommonUtil alert:@"连接失败" msg:[result localizedFailureReason]];
+    }
+    
+	// Handle faults
+	if([value isKindOfClass:[SoapFault class]]) {
+		NSLog(@"%@", value);
+        SoapFault * result = (SoapFault*)value;
+        [CommonUtil alert:@"soap连接失败" msg:[result faultString]];
+	}
+    NSLog(@"setting success");
+}
 @end

@@ -27,8 +27,6 @@
             else{
                 self.serviceUrl = [defaults stringForKey:@"serviceurl_preference"];
             }
-            
-//			self.serviceUrl = @"http://173.1.1.237:8070/gzmpcscm3/services/RgService";
 			self.namespace = @"http://org/gzmpc/RgService";
 			self.headers = nil;
 			self.logging = NO;
@@ -140,6 +138,43 @@
 		[_params addObject: [[[SoapParameter alloc] initWithValue: [NSNumber numberWithInt: page] forName: @"page"] autorelease]];
 		NSString* _envelope = [Soap createEnvelope: @"getTrGds" forNamespace: self.namespace withParameters: _params withHeaders: self.headers];
 		SoapRequest* _request = [SoapRequest create: _target action: _action service: self soapAction: @"" postData: _envelope deserializeTo: @"NSString"];
+		[_request send];
+		return _request;
+	}
+
+	/* Returns NSString*.  */
+	- (SoapRequest*) test: (id <SoapDelegate>) handler username: (NSString*) username password: (NSString*) password
+	{
+		return [self test: handler action: nil username: username password: password];
+	}
+
+	- (SoapRequest*) test: (id) _target action: (SEL) _action username: (NSString*) username password: (NSString*) password
+		{
+		NSMutableArray* _params = [NSMutableArray array];
+		
+		[_params addObject: [[[SoapParameter alloc] initWithValue: username forName: @"username"] autorelease]];
+		[_params addObject: [[[SoapParameter alloc] initWithValue: password forName: @"password"] autorelease]];
+		NSString* _envelope = [Soap createEnvelope: @"test" forNamespace: self.namespace withParameters: _params withHeaders: self.headers];
+		SoapRequest* _request = [SoapRequest create: _target action: _action service: self soapAction: @"" postData: _envelope deserializeTo: @"NSString"];
+		[_request send];
+		return _request;
+	}
+
+	/* Returns id.  */
+	- (SoapRequest*) setIRfSetting: (id <SoapDelegate>) handler username: (NSString*) username password: (NSString*) password jsonObject: (NSString*) jsonObject
+	{
+		return [self setIRfSetting: handler action: nil username: username password: password jsonObject: jsonObject];
+	}
+
+	- (SoapRequest*) setIRfSetting: (id) _target action: (SEL) _action username: (NSString*) username password: (NSString*) password jsonObject: (NSString*) jsonObject
+		{
+		NSMutableArray* _params = [NSMutableArray array];
+		
+		[_params addObject: [[[SoapParameter alloc] initWithValue: username forName: @"username"] autorelease]];
+		[_params addObject: [[[SoapParameter alloc] initWithValue: password forName: @"password"] autorelease]];
+		[_params addObject: [[[SoapParameter alloc] initWithValue: jsonObject forName: @"jsonObject"] autorelease]];
+		NSString* _envelope = [Soap createEnvelope: @"setIRfSetting" forNamespace: self.namespace withParameters: _params withHeaders: self.headers];
+		SoapRequest* _request = [SoapRequest create: _target action: _action service: self soapAction: @"" postData: _envelope deserializeTo: nil];
 		[_request send];
 		return _request;
 	}
@@ -257,7 +292,7 @@
 	/* Returns NSString*.  */
 	- (SoapRequest*) doTr: (id <SoapDelegate>) handler username: (NSString*) username password: (NSString*) password pkvalue: (NSString*) pkvalue jsonConfig: (NSString*) jsonConfig
 	{
-		return [self doTr: handler action: nil username: username password: password pkvalue:pkvalue jsonConfig:jsonConfig];
+		return [self doTr: handler action: nil username: username password: password pkvalue: pkvalue jsonConfig: jsonConfig];
 	}
 
 	- (SoapRequest*) doTr: (id) _target action: (SEL) _action username: (NSString*) username password: (NSString*) password pkvalue: (NSString*) pkvalue jsonConfig: (NSString*) jsonConfig
@@ -268,7 +303,6 @@
 		[_params addObject: [[[SoapParameter alloc] initWithValue: password forName: @"password"] autorelease]];
 		[_params addObject: [[[SoapParameter alloc] initWithValue: pkvalue forName: @"pkvalue"] autorelease]];
 		[_params addObject: [[[SoapParameter alloc] initWithValue: jsonConfig forName: @"jsonConfig"] autorelease]];
-            
 		NSString* _envelope = [Soap createEnvelope: @"doTr" forNamespace: self.namespace withParameters: _params withHeaders: self.headers];
 		SoapRequest* _request = [SoapRequest create: _target action: _action service: self soapAction: @"" postData: _envelope deserializeTo: @"NSString"];
 		[_request send];
