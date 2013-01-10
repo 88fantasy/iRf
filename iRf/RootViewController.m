@@ -674,6 +674,15 @@ enum {
                                 cancelButtonTitle:NSLocalizedString(@"Cancel",@"Cancel")
                                             otherButtonTitles:@"立即安装", nil];
         [alert setTag:VersionAlert];
+        NSArray *subViewArray = alert.subviews;
+        
+        for(int x=0;x<[subViewArray count];x++){
+            if([[[subViewArray objectAtIndex:x] class] isSubclassOfClass:[UILabel class]])
+            {
+                UILabel *label = [subViewArray objectAtIndex:x];
+                label.textAlignment = UITextAlignmentLeft;
+            }
+        }
 		[alert show];
 		[alert release];
     }
