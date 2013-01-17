@@ -18,8 +18,6 @@ static NSString *kTitleKey = @"title";
 static NSString *kExplainKey = @"explanation";
 //static NSString *kViewControllerKey = @"viewController";
 static NSString *kObjKey = @"obj";
-static NSString *retFlagKey = @"ret";
-static NSString *msgKey = @"msg";
 
 @implementation RgListView
 
@@ -203,9 +201,9 @@ static NSString *msgKey = @"msg";
     }
     else{
         iRfRgService* service = [iRfRgService service];
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        NSString *username = [defaults stringForKey:@"username_preference"];
-        NSString *password = [defaults stringForKey:@"password_preference"];
+        NSDictionary *setting = [CommonUtil getSettings];
+        NSString *username = [setting objectForKey:kSettingUserKey];
+        NSString *password = [setting objectForKey:kSettingPwdKey];
         
         SBJsonWriter *writer = [[SBJsonWriter alloc] init];
         NSString *json = [writer stringWithObject:self.searchObj];
@@ -464,15 +462,15 @@ static NSString *msgKey = @"msg";
         
         if (json != nil) {
             NSDictionary *ret = (NSDictionary*)json;
-            NSString *retflag = (NSString*) [ret objectForKey:retFlagKey];
+            NSString *retflag = (NSString*) [ret objectForKey:kRetFlagKey];
             
             if ([retflag boolValue]) {
-                NSArray *rows = (NSArray*) [ret objectForKey:msgKey];
+                NSArray *rows = (NSArray*) [ret objectForKey:kMsgKey];
                 self.objs = rows;
                 [self reload];
             }
             else{
-                NSString *msg = (NSString*) [ret objectForKey:msgKey];
+                NSString *msg = (NSString*) [ret objectForKey:kMsgKey];
                 if ([msg isKindOfClass:[NSNull class]]) {
                     msg = @"空指针";
                 }
@@ -712,10 +710,9 @@ static NSString *msgKey = @"msg";
         [self displayGoalBarView:0];
         iRfRgService* service = [iRfRgService service];
         //    service.logging = YES;
-        
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        NSString *username = [defaults stringForKey:@"username_preference"];
-        NSString *password = [defaults stringForKey:@"password_preference"];
+        NSDictionary *setting = [CommonUtil getSettings];
+        NSString *username = [setting objectForKey:kSettingUserKey];
+        NSString *password = [setting objectForKey:kSettingPwdKey];
         
         for (int i=0; i<notDoRgCount; i++) {
             NSIndexPath *indexPath = [rows objectAtIndex:i];
@@ -800,10 +797,10 @@ static NSString *msgKey = @"msg";
     
     if (retObj != nil) {
         NSDictionary *ret = (NSDictionary*)retObj;
-        NSString *retflag = (NSString*) [ret objectForKey:retFlagKey];
+        NSString *retflag = (NSString*) [ret objectForKey:kRetFlagKey];
         
         if ([retflag boolValue]==YES) {
-            NSDictionary *msg = (NSDictionary*) [ret objectForKey:msgKey];
+            NSDictionary *msg = (NSDictionary*) [ret objectForKey:kMsgKey];
             NSString *spdid = (NSString*) [msg objectForKey:@"spdid"];
             if ([RootViewController isSync]) {
                 FMDatabase *db = [DbUtil retConnectionForResource:@"iRf" ofType:@"rdb"];
@@ -815,7 +812,7 @@ static NSString *msgKey = @"msg";
             
         }
         else{
-            NSString *msg = (NSString*) [ret objectForKey:msgKey];
+            NSString *msg = (NSString*) [ret objectForKey:kMsgKey];
             if ([msg isKindOfClass:[NSNull class]]) {
                 msg = @"空指针";
             }

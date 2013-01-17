@@ -14,8 +14,6 @@ static NSString *kCellIdentifier = @"MyIdentifier";
 static NSString *kTitleKey = @"title";
 static NSString *kExplainKey = @"explanation";
 static NSString *kObjKey = @"obj";
-static NSString *retFlagKey = @"ret";
-static NSString *msgKey = @"msg";
 
 
 typedef NS_ENUM(NSInteger, StockAdjustViewAlertStyle) {
@@ -189,9 +187,9 @@ typedef NS_ENUM(NSInteger, StockAdjustViewAlertStyle) {
         [self displayActiveIndicatorView];
         
         iRfRgService* service = [iRfRgService service];
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        NSString *username = [defaults stringForKey:@"username_preference"];
-        NSString *password = [defaults stringForKey:@"password_preference"];
+        NSDictionary *setting = [CommonUtil getSettings];
+        NSString *username = [setting objectForKey:kSettingUserKey];
+        NSString *password = [setting objectForKey:kSettingPwdKey];
         
         [service getStockByLoc:self action:@selector(getStockListHandler:) 
                       username: username 
@@ -233,10 +231,10 @@ typedef NS_ENUM(NSInteger, StockAdjustViewAlertStyle) {
         
         if (json != nil) {
             NSDictionary *ret = (NSDictionary*)json;
-            NSString *retflag = (NSString*) [ret objectForKey:retFlagKey];
+            NSString *retflag = (NSString*) [ret objectForKey:kRetFlagKey];
             
             if ([retflag boolValue]) {
-                NSArray *rows = (NSArray*) [ret objectForKey:msgKey];
+                NSArray *rows = (NSArray*) [ret objectForKey:kMsgKey];
                 NSUInteger count = [rows count];
                 if (count <1) {
                     [self alert:@"提示" msg:@"没有库存"];
@@ -293,7 +291,7 @@ typedef NS_ENUM(NSInteger, StockAdjustViewAlertStyle) {
                 
             }
             else{
-                NSString *msg = (NSString*) [ret objectForKey:msgKey];
+                NSString *msg = (NSString*) [ret objectForKey:kMsgKey];
                 if ([msg isKindOfClass:[NSNull class]]) {
                     msg = @"空指针";
                 }
@@ -425,9 +423,9 @@ typedef NS_ENUM(NSInteger, StockAdjustViewAlertStyle) {
             NSLog(@"%@",json);
             
             iRfRgService* service = [iRfRgService service];
-            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-            NSString *username = [defaults stringForKey:@"username_preference"];
-            NSString *password = [defaults stringForKey:@"password_preference"];
+            NSDictionary *setting = [CommonUtil getSettings];
+            NSString *username = [setting objectForKey:kSettingUserKey];
+            NSString *password = [setting objectForKey:kSettingPwdKey];
             
             [service mvConfirm:self action:@selector(confirmHandler:) 
                       username: username 
@@ -496,7 +494,7 @@ typedef NS_ENUM(NSInteger, StockAdjustViewAlertStyle) {
     
     if (retObj != nil) {
         NSDictionary *ret = (NSDictionary*)retObj;
-        NSString *retflag = (NSString*) [ret objectForKey:retFlagKey];
+        NSString *retflag = (NSString*) [ret objectForKey:kRetFlagKey];
         
         if ([retflag boolValue]==YES) {
             if (self.orgswitch.isOn) {
@@ -517,7 +515,7 @@ typedef NS_ENUM(NSInteger, StockAdjustViewAlertStyle) {
             [self.scrollView setContentOffset:CGPointMake(0, 0) animated:YES];
         }
         else{
-            NSString *msg = (NSString*) [ret objectForKey:msgKey];
+            NSString *msg = (NSString*) [ret objectForKey:kMsgKey];
             if ([msg isKindOfClass:[NSNull class]]) {
                 msg = @"空指针";
             }
@@ -728,12 +726,12 @@ typedef NS_ENUM(NSInteger, StockAdjustViewAlertStyle) {
     
     if (retObj != nil) {
         NSDictionary *ret = (NSDictionary*)retObj;
-        NSString *retflag = (NSString*) [ret objectForKey:retFlagKey];
+        NSString *retflag = (NSString*) [ret objectForKey:kRetFlagKey];
         
         if ([retflag boolValue]==YES) {
             
             
-            NSArray *rows = (NSArray*) [ret objectForKey:msgKey];
+            NSArray *rows = (NSArray*) [ret objectForKey:kMsgKey];
             NSUInteger count = [rows count];
             if (count <1) {
                 [self alert:@"提示" msg:@"没有设置供应商"];
@@ -753,7 +751,7 @@ typedef NS_ENUM(NSInteger, StockAdjustViewAlertStyle) {
             
         }
         else{
-            NSString *msg = (NSString*) [ret objectForKey:msgKey];
+            NSString *msg = (NSString*) [ret objectForKey:kMsgKey];
             if ([msg isKindOfClass:[NSNull class]]) {
                 msg = @"空指针";
             }

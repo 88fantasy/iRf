@@ -16,8 +16,7 @@ static NSString *kCellIdentifier = @"MyIdentifier";
 static NSString *kTitleKey = @"title";
 static NSString *kExplainKey = @"explanation";
 static NSString *kObjKey = @"obj";
-static NSString *retFlagKey = @"ret";
-static NSString *msgKey = @"msg";
+
 
 @implementation TrListView
 
@@ -118,9 +117,9 @@ static NSString *msgKey = @"msg";
     [self displayActiveIndicatorView];
     
     iRfRgService* service = [iRfRgService service];
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *username = [defaults stringForKey:@"username_preference"];
-    NSString *password = [defaults stringForKey:@"password_preference"];
+    NSDictionary *setting = [CommonUtil getSettings];
+    NSString *username = [setting objectForKey:kSettingUserKey];
+    NSString *password = [setting objectForKey:kSettingPwdKey];
     
     [service getTrGds:self action:@selector(getTrGdsHandler:) 
              username: username 
@@ -442,10 +441,10 @@ static NSString *msgKey = @"msg";
         
         if (json != nil) {
             NSDictionary *ret = (NSDictionary*)json;
-            NSString *retflag = (NSString*) [ret objectForKey:retFlagKey];
+            NSString *retflag = (NSString*) [ret objectForKey:kRetFlagKey];
             
             if ([retflag boolValue]) {
-                NSArray *rows = (NSArray*) [ret objectForKey:msgKey];
+                NSArray *rows = (NSArray*) [ret objectForKey:kMsgKey];
                 NSUInteger count = [rows count];
                 if (count <1) {
                     [self alert:@"提示" msg:@"没有找到货品关系"];
@@ -481,7 +480,7 @@ static NSString *msgKey = @"msg";
                 
             }
             else{
-                NSString *msg = (NSString*) [ret objectForKey:msgKey];
+                NSString *msg = (NSString*) [ret objectForKey:kMsgKey];
                 if ([msg isKindOfClass:[NSNull class]]) {
                     msg = @"空指针";
                 }

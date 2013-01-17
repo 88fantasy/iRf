@@ -548,7 +548,7 @@
 					</object>
 					<object class="IBUITextField" id="907531485">
 						<reference key="NSNextResponder" ref="96476599"/>
-						<int key="NSvFlags">292</int>
+						<int key="NSvFlags">290</int>
 						<string key="NSFrame">{{307, 569}, {400, 30}}</string>
 						<reference key="NSSuperview" ref="96476599"/>
 						<reference key="NSWindow"/>
@@ -907,6 +907,14 @@
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
+				<object class="IBPartialClassDescription">
+					<string key="className">NSDictionary</string>
+					<string key="superclassName">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/NSDictionary.h</string>
+					</object>
+				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">TrView</string>
 					<string key="superclassName">UIViewController</string>

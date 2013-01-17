@@ -46,6 +46,7 @@
 		8F4421121682ABFF005176A9 /* ScanOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F4421111682ABFF005176A9 /* ScanOverlayView.m */; };
 		8F4421141684426D005176A9 /* kccx@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8F4421131684426D005176A9 /* kccx@2x.png */; };
 		8F64B6331591C6C400C1C50B /* MainWindow-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8F64B6321591C6C400C1C50B /* MainWindow-iPad.xib */; };
+		8F7ECD95169FEA4300724559 /* SettingListView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F7ECD94169FEA4300724559 /* SettingListView.m */; };
 		8F85239515B8E75A007B376C /* MedicineReqCellHD.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8F85239415B8E75A007B376C /* MedicineReqCellHD.xib */; };
 		8F85239A15B8F7D9007B376C /* StockAdjustViewHD.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8F85239815B8F7D9007B376C /* StockAdjustViewHD.xib */; };
 		8F85CBBA16819A8D0062777C /* libzbar.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8F85CBB416819A8D0062777C /* libzbar.a */; };
@@ -165,7 +166,6 @@
 		CE6224E51414B93700E65616 /* TrListView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE6224E31414B93700E65616 /* TrListView.xib */; };
 		CECB5019140E1B8E00DD8568 /* TrView.m in Sources */ = {isa = PBXBuildFile; fileRef = CECB5017140E1B8D00DD8568 /* TrView.m */; };
 		CECB501A140E1B8E00DD8568 /* TrView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CECB5018140E1B8D00DD8568 /* TrView.xib */; };
-		CED2DE1A140F84AD00ADAB43 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = CED2DE19140F84AC00ADAB43 /* Settings.bundle */; };
 		CEE6F12E1410831100D766DC /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEE6F12F1410831100D766DC /* MainWindow.xib */; };
 		CEE6F1301410832600D766DC /* RootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEE6F1311410832600D766DC /* RootViewController.xib */; };
 		CEE6F1321410847700D766DC /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = CEE6F1331410847700D766DC /* InfoPlist.strings */; };
@@ -243,6 +243,8 @@
 		8F4421111682ABFF005176A9 /* ScanOverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScanOverlayView.m; sourceTree = "<group>"; };
 		8F4421131684426D005176A9 /* kccx@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "kccx@2x.png"; sourceTree = "<group>"; };
 		8F64B6321591C6C400C1C50B /* MainWindow-iPad.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = "MainWindow-iPad.xib"; path = "iPad/MainWindow-iPad.xib"; sourceTree = "<group>"; };
+		8F7ECD93169FEA4300724559 /* SettingListView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingListView.h; sourceTree = "<group>"; };
+		8F7ECD94169FEA4300724559 /* SettingListView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingListView.m; sourceTree = "<group>"; };
 		8F85239415B8E75A007B376C /* MedicineReqCellHD.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MedicineReqCellHD.xib; sourceTree = "<group>"; };
 		8F85239815B8F7D9007B376C /* StockAdjustViewHD.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StockAdjustViewHD.xib; sourceTree = "<group>"; };
 		8F85CBA016819A8D0062777C /* Decoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Decoder.h; sourceTree = "<group>"; };
@@ -429,7 +431,6 @@
 		CECB5016140E1B8D00DD8568 /* TrView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrView.h; sourceTree = "<group>"; };
 		CECB5017140E1B8D00DD8568 /* TrView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TrView.m; sourceTree = "<group>"; };
 		CECB5018140E1B8D00DD8568 /* TrView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TrView.xib; sourceTree = "<group>"; };
-		CED2DE19140F84AC00ADAB43 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		CEE6F12F1410831100D766DC /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
 		CEE6F1311410832600D766DC /* RootViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RootViewController.xib; sourceTree = "<group>"; };
 		CEE6F1331410847700D766DC /* InfoPlist.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = InfoPlist.strings; sourceTree = "<group>"; };
@@ -555,6 +556,15 @@
 			name = iPad;
 			sourceTree = "<group>";
 		};
+		8F7ECD90169FE5D700724559 /* Resource */ = {
+			isa = PBXGroup;
+			children = (
+				8FF14E321597FB8500AFB828 /* iRf.entitlements */,
+				8FFBF8A7165DFA740034C596 /* iRf.rdb */,
+			);
+			name = Resource;
+			sourceTree = "<group>";
+		};
 		8F85CB9C16819A8D0062777C /* ZBarSDK */ = {
 			isa = PBXGroup;
 			children = (
@@ -661,15 +671,14 @@
 				8F29A4BD168945710069579B /* allPinyin */,
 				8F85CB9C16819A8D0062777C /* ZBarSDK */,
 				8F98EA76166352CA0088CB89 /* GoalBar */,
-				8FFBF8A7165DFA740034C596 /* iRf.rdb */,
 				8FFBF861165DD6460034C596 /* FMDB */,
-				8FF14E321597FB8500AFB828 /* iRf.entitlements */,
 				8F64B6311591C6C400C1C50B /* iPad */,
 				CE4BB93D14049EB5006FF3F6 /* RefreshTableHeaderView */,
 				CE353E5914038E1100012DF3 /* logo */,
 				8F93E41F13D42C42006BF26D /* JSON */,
 				8F93E39F13D41E85006BF26D /* RgService */,
 				8F93E31813D41BA5006BF26D /* Base */,
+				8F7ECD90169FE5D700724559 /* Resource */,
 				8F93E2EA13D41B6F006BF26D /* iRfAppDelegate.h */,
 				8F93E2EB13D41B6F006BF26D /* iRfAppDelegate.m */,
 				CEE6F12F1410831100D766DC /* MainWindow.xib */,
@@ -700,7 +709,6 @@
 				CECB5017140E1B8D00DD8568 /* TrView.m */,
 				CECB5018140E1B8D00DD8568 /* TrView.xib */,
 				8F32116215931CC80070CC41 /* TrViewHD.xib */,
-				CED2DE19140F84AC00ADAB43 /* Settings.bundle */,
 				CE6224E11414B93700E65616 /* TrListView.h */,
 				CE6224E21414B93700E65616 /* TrListView.m */,
 				CE6224E31414B93700E65616 /* TrListView.xib */,
@@ -721,6 +729,8 @@
 				8FFB455315B7B388009ED1FC /* MedicineReqCell.m */,
 				8FFB455415B7B388009ED1FC /* MedicineReqCell.xib */,
 				8F85239415B8E75A007B376C /* MedicineReqCellHD.xib */,
+				8F7ECD93169FEA4300724559 /* SettingListView.h */,
+				8F7ECD94169FEA4300724559 /* SettingListView.m */,
 			);
 			path = iRf;
 			sourceTree = "<group>";
@@ -1027,7 +1037,6 @@
 				CE4BB9651404EF52006FF3F6 /* whiteArrow.png in Resources */,
 				CE4BB9661404EF52006FF3F6 /* whiteArrow@2x.png in Resources */,
 				CECB501A140E1B8E00DD8568 /* TrView.xib in Resources */,
-				CED2DE1A140F84AD00ADAB43 /* Settings.bundle in Resources */,
 				CE6224E51414B93700E65616 /* TrListView.xib in Resources */,
 				CE04389C14161CBF0078D955 /* RgListSearchView.xib in Resources */,
 				8F64B6331591C6C400C1C50B /* MainWindow-iPad.xib in Resources */,
@@ -1159,6 +1168,7 @@
 				8F0CA5C416689E9300A56971 /* RgGroupListView.m in Sources */,
 				8F4421121682ABFF005176A9 /* ScanOverlayView.m in Sources */,
 				8F29A4C0168945710069579B /* POAPinyin.m in Sources */,
+				8F7ECD95169FEA4300724559 /* SettingListView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

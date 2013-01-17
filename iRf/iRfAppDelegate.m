@@ -24,7 +24,7 @@
 
 @synthesize navigationController=_navigationController;
 
-@synthesize devtoken,currentuser;
+@synthesize devtoken;
 
 + (BOOL)checkHostReachability {
 	Reachability* hostReach = [Reachability reachabilityWithHostName: host] ;
@@ -54,28 +54,11 @@
     
     NSLog(@"Finish app initialization");
     
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *username = [defaults stringForKey:@"username_preference"];
-    
-    self.currentuser = username;
-    
     if (IsInternet) {
         [iRfAppDelegate checkHostReachability];
-        
-//        UIRemoteNotificationType rntype = [application enabledRemoteNotificationTypes];
-//        NSLog(@"%d",rntype);
-//        if (rntype == UIRemoteNotificationTypeNone) {
-            // Register for push notifications 注册推送服务
-            [application registerForRemoteNotificationTypes:
-             UIRemoteNotificationTypeBadge |
-             UIRemoteNotificationTypeAlert |
-             UIRemoteNotificationTypeSound];
-            
-            // 注销推送服务
-//            [application unregisterForRemoteNotifications];
-//        }
     }
 
+    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
     
     // Add the navigation controller's view to the window and display.
     self.window.rootViewController = self.navigationController;
@@ -129,31 +112,7 @@
      Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
      */
     NSLog(@"application active");
-    
-//    检查切换账号
-    
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *username = [defaults stringForKey:@"username_preference"];
-    NSLog(@"currentuser=%@,settinguser=%@",self.currentuser,username);
-    if (![username isEqualToString:self.currentuser]) {
-        if (IsInternet) {
-        
-            NSLog(@"update server");
-            NSDictionary *obj = [NSDictionary dictionaryWithObjectsAndKeys:
-                                 self.devtoken,@"token",
-                                 username,@"username",
-                                 nil];
-            SBJsonWriter *writer = [[SBJsonWriter alloc] init];
-            NSString *json = [writer stringWithObject:obj];
-            
-            iRfRgService* service = [iRfRgService service];
-            
-            [service setIRfSetting:self action:@selector(setIRfSettingHandler:) username:@"iRfsetting" password:nil jsonObject:json];
-            
-            
-        }
-        self.currentuser = username;
-    }
+
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
@@ -290,25 +249,29 @@
 #pragma mark - 
 #pragma mark push notifications handle
 
+
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)newDeviceToken
 {
     NSLog(@"Device Token=%@",newDeviceToken);
     NSString *token = [NSString stringWithFormat:@"%@",newDeviceToken];
     self.devtoken = [token substringWithRange:NSMakeRange(1, [token length]-2)];
     
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *username = [defaults stringForKey:@"username_preference"];
-    
-    NSDictionary *obj = [NSDictionary dictionaryWithObjectsAndKeys:
-                         self.devtoken,@"token",
-                         username,@"username",
-                         nil];
-    SBJsonWriter *writer = [[SBJsonWriter alloc] init];
-    NSString *json = [writer stringWithObject:obj];
-    
-    iRfRgService* service = [iRfRgService service];
-    
-    [service setIRfSetting:self action:@selector(setIRfSettingHandler:) username:@"iRfsetting" password:nil jsonObject:json];
+    NSString *username = [[CommonUtil getSettings] objectForKey:kSettingUserKey];
+    if (username != nil && IsInternet) {
+        NSString *appid = [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleIdentifierKey];
+        NSDictionary *obj = [NSDictionary dictionaryWithObjectsAndKeys:
+                             devtoken,@"token",
+                             appid,@"appid",
+                             username,@"username",
+                             nil];
+        SBJsonWriter *writer = [[SBJsonWriter alloc] init];
+        NSString *json = [writer stringWithObject:obj];
+        
+        iRfRgService* service = [iRfRgService service];
+        
+        [service setIRfSetting:self action:nil username:@"iRfsetting" password:nil jsonObject:json];
+    }
+   
 }
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
 {
@@ -329,21 +292,21 @@
 }
 
 
-- (void)setIRfSettingHandler:(id)value {
-    // Handle errors
-	if([value isKindOfClass:[NSError class]]) {
-		NSLog(@"%@", value);
-        NSError* result = (NSError*)value;
-        
-        [CommonUtil alert:@"连接失败" msg:[result localizedFailureReason]];
-    }
-    
-	// Handle faults
-	if([value isKindOfClass:[SoapFault class]]) {
-		NSLog(@"%@", value);
-        SoapFault * result = (SoapFault*)value;
-        [CommonUtil alert:@"soap连接失败" msg:[result faultString]];
-	}
-    NSLog(@"setting success");
-}
+//- (void)setIRfSettingHandler:(id)value {
+//    // Handle errors
+//	if([value isKindOfClass:[NSError class]]) {
+//		NSLog(@"%@", value);
+//        NSError* result = (NSError*)value;
+//        
+//        [CommonUtil alert:@"连接失败" msg:[result localizedFailureReason]];
+//    }
+//    
+//	// Handle faults
+//	if([value isKindOfClass:[SoapFault class]]) {
+//		NSLog(@"%@", value);
+//        SoapFault * result = (SoapFault*)value;
+//        [CommonUtil alert:@"soap连接失败" msg:[result faultString]];
+//	}
+//    NSLog(@"setting success");
+//}
 @end

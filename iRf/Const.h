@@ -12,3 +12,9 @@
 
 static NSString *base = @"http://www.gzmpc.com/gzmpcscm3";
 static NSString *host = @"www.gzmpc.com";
+static NSString *kRetFlagKey = @"ret";
+static NSString *kMsgKey = @"msg";
+static NSString *kSettingUserKey = @"setuser";
+static NSString *kSettingPwdKey = @"setpwd";
+static NSString *kSettingInternetKey = @"setinternet";
+static NSString *kSettingServerKey = @"setserver";

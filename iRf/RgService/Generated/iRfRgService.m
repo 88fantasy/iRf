@@ -19,13 +19,13 @@
 	{
 		if(self = [super init])
 		{
-			NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+            NSDictionary *settingData = [CommonUtil getSettings];
             if (IsInternet) {
                 self.serviceUrl = @"http://125.88.8.28/gzmpcscm3/services/RgService";
 //                self.serviceUrl = @"http://192.168.200.237:8070/gzmpcscm3/services/RgService";
             }
             else{
-                self.serviceUrl = [defaults stringForKey:@"serviceurl_preference"];
+                self.serviceUrl = [settingData objectForKey:kSettingServerKey];
             }
 			self.namespace = @"http://org/gzmpc/RgService";
 			self.headers = nil;

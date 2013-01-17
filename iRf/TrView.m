@@ -14,8 +14,6 @@
 @synthesize ugoodsid,goodsname,goodstype,tradename,factno,goodsunit,cusgdsid,multi,companyname,locbtn,locno;
 @synthesize scrollView,values;
 
-NSString const *retFlagKey = @"ret";
-NSString const *msgKey = @"msg";
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil values:(NSDictionary*)obj 
 {
@@ -130,9 +128,9 @@ NSString const *msgKey = @"msg";
     iRfRgService* service = [iRfRgService service];
     //    service.logging = YES;
     
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *username = [defaults stringForKey:@"username_preference"];
-    NSString *password = [defaults stringForKey:@"password_preference"];
+    NSDictionary *setting = [CommonUtil getSettings];
+    NSString *username = [setting objectForKey:kSettingUserKey];
+    NSString *password = [setting objectForKey:kSettingPwdKey];
     
     NSMutableDictionary *trobj = [NSMutableDictionary dictionary];
     NSString *goodsnamestr = [self.goodsname.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
@@ -261,7 +259,7 @@ NSString const *msgKey = @"msg";
     
     if (retObj != nil) {
         NSDictionary *ret = (NSDictionary*)retObj;
-        NSString *retflag = (NSString*) [ret objectForKey:retFlagKey];
+        NSString *retflag = (NSString*) [ret objectForKey:kRetFlagKey];
         
         if ([retflag boolValue]==YES) {
             [values setValue:self.cusgdsid.text forKey:@"cusgdsid"];
@@ -272,7 +270,7 @@ NSString const *msgKey = @"msg";
             [self.navigationController popViewControllerAnimated:YES];
         }
         else{
-            NSString *msg = (NSString*) [ret objectForKey:msgKey];
+            NSString *msg = (NSString*) [ret objectForKey:kMsgKey];
             if ([msg isKindOfClass:[NSNull class]]) {
                 msg = @"空指针";
             }

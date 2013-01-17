@@ -6,10 +6,20 @@
 //
 //
 
+#import <CoreData/CoreData.h>
 #import <Foundation/Foundation.h>
 
 @interface CommonUtil : NSObject
+{
+
+}
 
 + (void) alert:(NSString*)title msg:(NSString*)msg;
+
++ (NSString*) getSettingPath;
+
++ (NSDictionary*) getSettings;
+
++ (NSDictionary*) rebuildSetting;
 
 @end

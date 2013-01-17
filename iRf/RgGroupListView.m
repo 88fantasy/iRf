@@ -15,8 +15,6 @@
 @end
 
 static NSString *kCellIdentifier = @"MyIdentifier";
-static NSString *retFlagKey = @"ret";
-static NSString *msgKey = @"msg";
 
 
 @implementation RgGroupListView
@@ -486,9 +484,9 @@ static NSString *msgKey = @"msg";
     
    
     iRfRgService* service = [iRfRgService service];
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *username = [defaults stringForKey:@"username_preference"];
-    NSString *password = [defaults stringForKey:@"password_preference"];
+    NSDictionary *setting = [CommonUtil getSettings];
+    NSString *username = [setting objectForKey:kSettingUserKey];
+    NSString *password = [setting objectForKey:kSettingPwdKey];
     
     SBJsonWriter *writer = [[SBJsonWriter alloc] init];
     NSString *json = [writer stringWithObject:self.searchObj];
@@ -541,15 +539,15 @@ static NSString *msgKey = @"msg";
         
         if (json != nil) {
             NSDictionary *ret = (NSDictionary*)json;
-            NSString *retflag = (NSString*) [ret objectForKey:retFlagKey];
+            NSString *retflag = (NSString*) [ret objectForKey:kRetFlagKey];
             
             if ([retflag boolValue]) {
-                NSArray *rows = (NSArray*) [ret objectForKey:msgKey];
+                NSArray *rows = (NSArray*) [ret objectForKey:kMsgKey];
                 self.objs = rows;
                 [self reload];
             }
             else{
-                NSString *msg = (NSString*) [ret objectForKey:msgKey];
+                NSString *msg = (NSString*) [ret objectForKey:kMsgKey];
                 if ([msg isKindOfClass:[NSNull class]]) {
                     msg = @"空指针";
                 }

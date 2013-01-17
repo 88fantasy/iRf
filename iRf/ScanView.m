@@ -15,10 +15,6 @@
 #import "RootViewController.h"
 #import "ScanOverlayView.h"
 
-static NSString *retFlagKey = @"ret";
-static NSString *msgKey = @"msg";
-
-
 
 @implementation ScanView
 
@@ -285,9 +281,9 @@ static NSString *msgKey = @"msg";
         //    service.logging = YES;
         NSLog(@"getrg开始");
         
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        NSString *username = [defaults stringForKey:@"username_preference"];
-        NSString *password = [defaults stringForKey:@"password_preference"];
+        NSDictionary *setting = [CommonUtil getSettings];
+        NSString *username = [setting objectForKey:kSettingUserKey];
+        NSString *password = [setting objectForKey:kSettingPwdKey];
         
         [service getRg:self action:@selector(getRgHandler:) 
               username: username 
@@ -339,15 +335,15 @@ static NSString *msgKey = @"msg";
         
         if (json != nil) {
             NSDictionary *ret = (NSDictionary*)json;
-            NSString *retflag = (NSString*) [ret objectForKey:retFlagKey];
+            NSString *retflag = (NSString*) [ret objectForKey:kRetFlagKey];
             
             if ([retflag boolValue]) {
-                NSArray *rows = (NSArray*) [ret objectForKey:msgKey];
+                NSArray *rows = (NSArray*) [ret objectForKey:kMsgKey];
                 
                 [self showRg:rows];
             }
             else{
-                NSString *msg = (NSString*) [ret objectForKey:msgKey];
+                NSString *msg = (NSString*) [ret objectForKey:kMsgKey];
                 if ([msg isKindOfClass:[NSNull class]]) {
                     msg = @"空指针";
                 }

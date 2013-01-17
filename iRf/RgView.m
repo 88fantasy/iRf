@@ -12,9 +12,6 @@
 #import "RootViewController.h"
 #import "POAPinyin.h"
 
-static NSString *retFlagKey = @"ret";
-static NSString *msgKey = @"msg";
-
 @implementation RgView
 
 @synthesize scrollView,invno,goodsname,goodstype,factoryname,goodsprice,goodsunit,lotno
@@ -204,10 +201,9 @@ static NSString *msgKey = @"msg";
 - (void)confirmRg {
     iRfRgService* service = [iRfRgService service];
     //    service.logging = YES;
-    
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *username = [defaults stringForKey:@"username_preference"];
-    NSString *password = [defaults stringForKey:@"password_preference"];
+    NSDictionary *setting = [CommonUtil getSettings];
+    NSString *username = [setting objectForKey:kSettingUserKey];
+    NSString *password = [setting objectForKey:kSettingPwdKey];
     
     NSLog(@"dorg开始");
     [service doRg:self
@@ -267,11 +263,11 @@ static NSString *msgKey = @"msg";
     
     if (retObj != nil) {
         NSDictionary *ret = (NSDictionary*)retObj;
-        NSString *retflag = (NSString*) [ret objectForKey:retFlagKey];
+        NSString *retflag = (NSString*) [ret objectForKey:kRetFlagKey];
         
         if ([retflag boolValue]==YES) {
             [values setValue:@"1" forKey:@"rgflag"];
-            //            NSDictionary *msg = (NSDictionary*) [ret objectForKey:msgKey];
+            //            NSDictionary *msg = (NSDictionary*) [ret objectForKey:kMsgKey];
             //            NSString *sid = (NSString*) [msg objectForKey:@"spdid"];
             
             if ([RootViewController isSync]) {
@@ -289,7 +285,7 @@ static NSString *msgKey = @"msg";
             //            [self.navigationController popViewControllerAnimated:YES];
         }
         else{
-            NSString *msg = (NSString*) [ret objectForKey:msgKey];
+            NSString *msg = (NSString*) [ret objectForKey:kMsgKey];
             if ([msg isKindOfClass:[NSNull class]]) {
                 msg = @"空指针";
             }
@@ -414,9 +410,9 @@ static NSString *msgKey = @"msg";
                     iRfRgService* service = [iRfRgService service];
                     //    service.logging = YES;
                     
-                    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-                    NSString *username = [defaults stringForKey:@"username_preference"];
-                    NSString *password = [defaults stringForKey:@"password_preference"];
+                    NSDictionary *setting = [CommonUtil getSettings];
+                    NSString *username = [setting objectForKey:kSettingUserKey];
+                    NSString *password = [setting objectForKey:kSettingPwdKey];
                     
                     FMDatabase *db = [DbUtil retConnectionForResource:@"iRf" ofType:@"rdb"];
                     
@@ -497,10 +493,10 @@ static NSString *msgKey = @"msg";
     
     if (retObj != nil) {
         NSDictionary *ret = (NSDictionary*)retObj;
-        NSString *retflag = (NSString*) [ret objectForKey:retFlagKey];
+        NSString *retflag = (NSString*) [ret objectForKey:kRetFlagKey];
         
         if ([retflag boolValue]==YES) {
-            NSDictionary *msg = (NSDictionary*) [ret objectForKey:msgKey];
+            NSDictionary *msg = (NSDictionary*) [ret objectForKey:kMsgKey];
             NSString *idv = (NSString*) [msg objectForKey:@"spdid"];
             if ([RootViewController isSync]) {
                 FMDatabase *db = [DbUtil retConnectionForResource:@"iRf" ofType:@"rdb"];
@@ -512,7 +508,7 @@ static NSString *msgKey = @"msg";
             
         }
         else{
-            NSString *msg = (NSString*) [ret objectForKey:msgKey];
+            NSString *msg = (NSString*) [ret objectForKey:kMsgKey];
             if ([msg isKindOfClass:[NSNull class]]) {
                 msg = @"空指针";
             }

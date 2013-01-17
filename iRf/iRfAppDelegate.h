@@ -12,7 +12,6 @@
 
 @interface iRfAppDelegate : NSObject <UIApplicationDelegate> {
     NSString *devtoken;
-    NSString *currentuser;
 }
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
@@ -27,6 +26,5 @@
 @property (nonatomic, retain) IBOutlet UINavigationController *navigationController;
 
 @property (nonatomic, retain) NSString *devtoken;
-@property (nonatomic, retain) NSString *currentuser;
 
 @end

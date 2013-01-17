@@ -16,6 +16,7 @@
 #import "StockAdjustView.h"
 #import "MedicineReqListView.h"
 #import "RgGroupListView.h"
+#import "SettingListView.h"
 
 
 static NSString *kCellIdentifier = @"MyIdentifier";
@@ -24,11 +25,9 @@ static NSString *kExplainKey = @"explanation";
 static NSString *kViewControllerKey = @"viewController";
 static NSString *iconKey = @"iconfile";
 
-static NSString *retFlagKey = @"ret";
-static NSString *msgKey = @"msg";
+
 
 enum {
-    UserAlert = 100000,
     SyncAlert = 100001,
     VersionAlert = 100002
 };
@@ -53,41 +52,62 @@ enum {
 }
 
 - (void)confirmUser{
+    NSDictionary *settingData = [CommonUtil getSettings];
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSString *username = [defaults stringForKey:@"username_preference"];
     NSString *password = [defaults stringForKey:@"password_preference"];
-	NSLog(@"%@",username);
-	NSLog(@"%@",password);
+    
+//    兼容以前已设置的信息 保存至新方式
+	if (username != nil || password != nil) {
+        NSMutableDictionary *newSetting = [NSMutableDictionary dictionaryWithDictionary:settingData];
+        [newSetting setObject:username forKey:kSettingUserKey];
+        [newSetting setObject:password forKey:kSettingPwdKey];
+        if (([defaults boolForKey:@"enabled_preference"]||[defaults stringForKey:@"enabled_preference"]==nil)) {
+            [newSetting setObject:@"true" forKey:kSettingInternetKey];
+        }
+        else {
+            [newSetting setObject:@"false" forKey:kSettingInternetKey];
+        }
+        NSString *server = [defaults stringForKey:@"serviceurl_preference"];
+        if (server!=nil) {
+            [newSetting setObject:server forKey:kSettingServerKey];
+        }
+        [newSetting writeToFile:[CommonUtil getSettingPath] atomically:YES];
+        settingData = [NSDictionary dictionaryWithDictionary:newSetting];
+    }
+    username = [settingData objectForKey:kSettingUserKey];
+    password = [settingData objectForKey:kSettingPwdKey];
 	if (username == nil || [@"" isEqualToString:username] || password == nil || [@"" isEqualToString:password]) {
-		
-		
-		UIAlertView *prompt = [[UIAlertView alloc] initWithTitle:@"尚未设置用户名密码" 
-														 message:@"\n\n\n" // IMPORTANT
-														delegate:self 
-											   cancelButtonTitle:@"取消" 
-											   otherButtonTitles:@"确定", nil];
-		
-		if (username == nil || [@"" isEqualToString:username]) {
-			userfield = [[UITextField alloc] initWithFrame:CGRectMake(12.0, 55.0, 260.0, 25.0)]; 
-			[userfield setBackgroundColor:[UIColor whiteColor]];
-			[userfield setPlaceholder:@"用户名"];
-			[prompt addSubview:userfield];
-			
-		}
-		
-		if(password == nil|| [@"" isEqualToString:password]){
-			pwdfield = [[UITextField alloc] initWithFrame:CGRectMake(12.0, 90.0, 260.0, 25.0)]; 
-			[pwdfield setBackgroundColor:[UIColor whiteColor]];
-			[pwdfield setPlaceholder:@"密码"];
-			[pwdfield setSecureTextEntry:YES];
-			[prompt addSubview:pwdfield];
-			
-		}
-        [prompt setTag:UserAlert];
-		// set place
-		[prompt setCenter:self.view.center];
-		[prompt show];
-		[prompt release];
+        [self setAction];
+
+//    旧输入方式
+//		UIAlertView *prompt = [[UIAlertView alloc] initWithTitle:@"尚未设置用户名密码"
+//														 message:@"\n\n\n" // IMPORTANT
+//														delegate:self 
+//											   cancelButtonTitle:@"取消" 
+//											   otherButtonTitles:@"确定", nil];
+//		
+//		if (username == nil || [@"" isEqualToString:username]) {
+//			userfield = [[UITextField alloc] initWithFrame:CGRectMake(12.0, 55.0, 260.0, 25.0)]; 
+//			[userfield setBackgroundColor:[UIColor whiteColor]];
+//			[userfield setPlaceholder:@"用户名"];
+//			[prompt addSubview:userfield];
+//			
+//		}
+//		
+//		if(password == nil|| [@"" isEqualToString:password]){
+//			pwdfield = [[UITextField alloc] initWithFrame:CGRectMake(12.0, 90.0, 260.0, 25.0)]; 
+//			[pwdfield setBackgroundColor:[UIColor whiteColor]];
+//			[pwdfield setPlaceholder:@"密码"];
+//			[pwdfield setSecureTextEntry:YES];
+//			[prompt addSubview:pwdfield];
+//			
+//		}
+//        [prompt setTag:UserAlert];
+//		// set place
+//		[prompt setCenter:self.view.center];
+//		[prompt show];
+//		[prompt release];
 		
 	}
 }
@@ -116,6 +136,12 @@ enum {
     [connection start];
     
     // 版本检查end
+    
+    // 增加设置按钮
+    UIBarButtonItem *settingButton = [[UIBarButtonItem alloc] initWithTitle:@"设置" style:UIBarButtonItemStylePlain target:self action:@selector(setAction)];
+    self.navigationItem.leftBarButtonItem = settingButton;
+    [settingButton release];
+    
     
     if (IsInternet) {
         UIBarButtonItem *syncButton = [[UIBarButtonItem alloc] initWithTitle:@"0" style:UIBarButtonItemStylePlain target:self action:@selector(syncAction:)];
@@ -283,20 +309,7 @@ enum {
 #pragma mark UIAlertViewDelegate
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
      
-    if ([alertView tag] == UserAlert) {
-        if (buttonIndex == 1) {
-            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-            if (userfield.text !=nil && ![@"" isEqualToString:userfield.text]) {
-                [defaults setValue: userfield.text forKey:@"username_preference"];
-            }
-            if (pwdfield.text !=nil && ![@"" isEqualToString:pwdfield.text]) {
-                [defaults setValue: pwdfield.text forKey:@"password_preference"];
-            }
-            [defaults setBool: YES forKey:@"enabled_preference"];
-        }
-        [self confirmUser];
-    }
-	else if ([alertView tag] == SyncAlert) {
+    if ([alertView tag] == SyncAlert) {
         switch (buttonIndex) {
             case 1:
                 [self getAllRg];
@@ -393,9 +406,9 @@ enum {
     [self displayActiveIndicatorView];
     
     iRfRgService* service = [iRfRgService service];
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *username = [defaults stringForKey:@"username_preference"];
-    NSString *password = [defaults stringForKey:@"password_preference"];
+    NSDictionary *setting = [CommonUtil getSettings];
+    NSString *username = [setting objectForKey:kSettingUserKey];
+    NSString *password = [setting objectForKey:kSettingPwdKey];
     
     [service getAllRg:self action:@selector(getAllRgHandler:)
              username: username
@@ -447,11 +460,11 @@ enum {
         
         if (json != nil) {
             NSDictionary *ret = (NSDictionary*)json;
-            NSString *retflag = (NSString*) [ret objectForKey:retFlagKey];
+            NSString *retflag = (NSString*) [ret objectForKey:kRetFlagKey];
             
             if ([retflag boolValue]) {
                 
-                NSArray *rows = (NSArray*) [ret objectForKey:msgKey];
+                NSArray *rows = (NSArray*) [ret objectForKey:kMsgKey];
                 
                 if (rows != nil) {
                     
@@ -486,7 +499,7 @@ enum {
                 syncflag = YES;
             }
             else{
-                NSString *msg = (NSString*) [ret objectForKey:msgKey];
+                NSString *msg = (NSString*) [ret objectForKey:kMsgKey];
                 if ([msg isKindOfClass:[NSNull class]]) {
                     msg = @"空指针";
                 }
@@ -545,9 +558,9 @@ enum {
             iRfRgService* service = [iRfRgService service];
             //    service.logging = YES;
             
-            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-            NSString *username = [defaults stringForKey:@"username_preference"];
-            NSString *password = [defaults stringForKey:@"password_preference"];
+            NSDictionary *setting = [CommonUtil getSettings];
+            NSString *username = [setting objectForKey:kSettingUserKey];
+            NSString *password = [setting objectForKey:kSettingPwdKey];
                 
             rs = [db executeQuery:@"select spdid,rgqty,locno from SCM_RG where rgflag = 1 and rgdate in ('')"];
             while ([rs next]) {
@@ -616,10 +629,10 @@ enum {
     
     if (retObj != nil) {
         NSDictionary *ret = (NSDictionary*)retObj;
-        NSString *retflag = (NSString*) [ret objectForKey:retFlagKey];
+        NSString *retflag = (NSString*) [ret objectForKey:kRetFlagKey];
         
         if ([retflag boolValue]==YES) {
-            NSDictionary *msg = (NSDictionary*) [ret objectForKey:msgKey];
+            NSDictionary *msg = (NSDictionary*) [ret objectForKey:kMsgKey];
             NSString *spdid = (NSString*) [msg objectForKey:@"spdid"];
             if ([RootViewController isSync]) {
                 FMDatabase *db = [DbUtil retConnectionForResource:@"iRf" ofType:@"rdb"];
@@ -636,7 +649,7 @@ enum {
             //            [self.navigationController popViewControllerAnimated:YES];
         }
         else{
-            NSString *msg = (NSString*) [ret objectForKey:msgKey];
+            NSString *msg = (NSString*) [ret objectForKey:kMsgKey];
             if ([msg isKindOfClass:[NSNull class]]) {
                 msg = @"空指针";
             }
@@ -688,5 +701,16 @@ enum {
     }
     
 }
+
+
+#pragma mark -
+#pragma mark 进入设置界面
+- (void) setAction
+{
+    SettingListView *settingView = [[SettingListView alloc] initWithStyle:UITableViewStyleGrouped];
+    [[self navigationController] pushViewController:settingView animated:YES];
+    [settingView release];
+}
+
 @end
 
