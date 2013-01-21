@@ -58,7 +58,7 @@ enum {
     NSString *password = [defaults stringForKey:@"password_preference"];
     
 //    兼容以前已设置的信息 保存至新方式
-	if (username != nil || password != nil) {
+	if ((username != nil || password != nil ) && [settingData objectForKey:kSettingUserKey] == nil) {
         NSMutableDictionary *newSetting = [NSMutableDictionary dictionaryWithDictionary:settingData];
         [newSetting setObject:username forKey:kSettingUserKey];
         [newSetting setObject:password forKey:kSettingPwdKey];
@@ -115,9 +115,7 @@ enum {
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Set up the edit and add buttons.
-//    self.navigationItem.leftBarButtonItem = self.editButtonItem;
-    
+
     // 新版本检查
     NSDictionary *appinfo = [[NSBundle mainBundle] infoDictionary] ;
     
@@ -143,10 +141,21 @@ enum {
     [settingButton release];
     
     
+    [self reloadMain];
+    
+	[self confirmUser];
+}
+
+- (void) reloadMain
+{
+    
     if (IsInternet) {
         UIBarButtonItem *syncButton = [[UIBarButtonItem alloc] initWithTitle:@"0" style:UIBarButtonItemStylePlain target:self action:@selector(syncAction:)];
         self.navigationItem.rightBarButtonItem = syncButton;
         [syncButton release];
+    }
+    else {
+        self.navigationItem.rightBarButtonItem = nil;
     }
     
     self.menuList = [NSMutableArray array];
@@ -166,8 +175,8 @@ enum {
                               rglistView, kViewControllerKey,
                               @"kccx.png",iconKey,
 							  nil]];
-    TrListView *trListView = [[TrListView alloc]initWithNibName:@"TrListView" bundle:nil];
-
+    TrListView *trListView = [[[TrListView alloc]initWithNibName:@"TrListView" bundle:nil] retain];
+    
     [self.menuList addObject:[NSDictionary dictionaryWithObjectsAndKeys:
                               @"货品对应关系", kTitleKey,
                               @"查询货品的对应关系情况", kExplainKey,
@@ -190,17 +199,17 @@ enum {
     [rgGroupListView release];
     if (!IsInternet) {
         
-//        if (!IsPad) {
-            StockAdjustView *stockAdjustView = [[StockAdjustView alloc]initWithNibName:@"StockAdjustView" bundle:nil];
-            
-            [self.menuList addObject:[NSDictionary dictionaryWithObjectsAndKeys:
-                                      @"库存调整", kTitleKey,
-                                      @"可进行移库或退货等操作", kExplainKey,
-                                      stockAdjustView, kViewControllerKey,
-                                      @"kctz.png",iconKey,
-                                      nil]];
-            [stockAdjustView release];
-//        }
+        //        if (!IsPad) {
+        StockAdjustView *stockAdjustView = [[StockAdjustView alloc]initWithNibName:@"StockAdjustView" bundle:nil];
+        
+        [self.menuList addObject:[NSDictionary dictionaryWithObjectsAndKeys:
+                                  @"库存调整", kTitleKey,
+                                  @"可进行移库或退货等操作", kExplainKey,
+                                  stockAdjustView, kViewControllerKey,
+                                  @"kctz.png",iconKey,
+                                  nil]];
+        [stockAdjustView release];
+        //        }
         
         MedicineReqListView *medicineReqListView = [[MedicineReqListView alloc] initWithNibName:@"MedicineReqListView" bundle:nil];
         [self.menuList addObject:[NSDictionary dictionaryWithObjectsAndKeys:
@@ -212,8 +221,7 @@ enum {
         [medicineReqListView release];
     }
     
-    
-	[self confirmUser];
+    [self.tableView reloadData];
 }
 
 #pragma mark -
@@ -224,8 +232,14 @@ enum {
 	// this UIViewController is about to re-appear, make sure we remove the current selection in our table view
 	NSIndexPath *tableSelection = [self.tableView indexPathForSelectedRow];
 	[self.tableView deselectRowAtIndexPath:tableSelection animated:NO];
+    
+    
 }
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    [self reloadMain];
+}
 
 #pragma mark -
 #pragma mark UITableViewDelegate

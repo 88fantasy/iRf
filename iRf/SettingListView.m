@@ -12,7 +12,7 @@
 
 #define kLeftMargin		110.0
 #define kTopMargin   8.0
-#define kTextFieldWidth		200.0
+#define kTextFieldWidth		180.0
 #define kTextFieldHeight		30.0
 #define kFontSize   20.0
 #define kSwitchLeftMargin 233.0
@@ -39,6 +39,11 @@ typedef NS_OPTIONS(NSUInteger, SettingListSectionTypeServerRow) {
 typedef NS_OPTIONS(NSUInteger, SettingListTestBtnType) {
     SettingListTestBtnTypeLogin = 1000001,          // 登陆
     SettingListTestBtnTypeLogout = 1000002          // 注销
+};
+
+
+typedef NS_OPTIONS(NSUInteger, SettingListSectionTypeExtraRow) {
+    SettingListSectionTypeExtraRowVersion = 0,          // 当前版本
 };
 
 @implementation SettingListView
@@ -124,7 +129,7 @@ typedef NS_OPTIONS(NSUInteger, SettingListTestBtnType) {
     
     [self.testBtn addTarget:self action:@selector(doAccountTest) forControlEvents:UIControlEventTouchUpInside];
     
-    CGRect frame = CGRectMake(kSwitchLeftMargin, kTopMargin, 27.0, kTextFieldHeight);
+    CGRect frame = CGRectMake(0, kTopMargin, 27.0, kTextFieldHeight);
     self.internet = [[UISwitch alloc] initWithFrame:frame];
     self.internet.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin |
     UIViewAutoresizingFlexibleTopMargin |
@@ -184,7 +189,7 @@ typedef NS_OPTIONS(NSUInteger, SettingListTestBtnType) {
         case SettingListSectionTypeServer:
             return 3;
         case SettingListSectionTypeExtra:
-            return 0;
+            return 1;
         default:
             return 0;
     }
@@ -216,12 +221,12 @@ typedef NS_OPTIONS(NSUInteger, SettingListTestBtnType) {
         if (indexPath.row == SettingListSectionTypeAccountRowUser) {
             cell.textLabel.text = @"账号";
             
-            [cell.contentView addSubview:self.username];
+            cell.accessoryView = self.username;
         }
         else if(indexPath.row == SettingListSectionTypeAccountRowPwd){
             cell.textLabel.text = @"密码";
             
-            [cell.contentView addSubview:self.password];
+            cell.accessoryView =  self.password;
         }
         else if(indexPath.row == SettingListSectionTypeAccountRowTest){
             [self.testBtn setCenter:cell.center];
@@ -233,13 +238,13 @@ typedef NS_OPTIONS(NSUInteger, SettingListTestBtnType) {
         if (indexPath.row == SettingListSectionTypeServerRowInternet) {
             cell.textLabel.text = @"互联网";
             
-            [cell.contentView addSubview:self.internet];
+            cell.accessoryView = self.internet;
 
         }
         else if (indexPath.row == SettingListSectionTypeServerRowServerUrl){
             cell.textLabel.text = @"服务地址";
             
-            [cell.contentView addSubview:self.server];
+            cell.accessoryView = self.server;
 
         }
         else if (indexPath.row == SettingListSectionTypeServerRowApns){
@@ -247,7 +252,7 @@ typedef NS_OPTIONS(NSUInteger, SettingListTestBtnType) {
             
             UIRemoteNotificationType rntype = [[UIApplication sharedApplication] enabledRemoteNotificationTypes];
             
-            CGRect frame = CGRectMake(kSwitchLeftMargin, kTopMargin, 27.0, kTextFieldHeight);
+            CGRect frame = CGRectMake(0, kTopMargin, 27.0, kTextFieldHeight);
             UISwitch *pns = [[UISwitch alloc] initWithFrame:frame];
             pns.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin |
             UIViewAutoresizingFlexibleTopMargin |
@@ -262,8 +267,19 @@ typedef NS_OPTIONS(NSUInteger, SettingListTestBtnType) {
             
             [pns addTarget:self action:@selector(doApnsChange:) forControlEvents:UIControlEventValueChanged];
             
-            [cell.contentView addSubview:pns];
+            cell.accessoryView = pns;
             
+        }
+    }
+    else if (indexPath.section == SettingListSectionTypeExtra){
+        if (indexPath.row == SettingListSectionTypeExtraRowVersion) {
+            cell.textLabel.text = @"当前版本";
+            
+            UILabel *version = [[UILabel alloc] initWithFrame:CGRectMake(0, kTopMargin, 100, kTextFieldHeight)];
+            version.textAlignment = NSTextAlignmentRight;
+            version.text = [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleVersionKey];
+            cell.accessoryView = version;
+            [version release];
         }
     }
     
@@ -335,10 +351,14 @@ typedef NS_OPTIONS(NSUInteger, SettingListTestBtnType) {
     }
     if (self.server.text!=nil) {
         NSString *serverurl = self.server.text;
-        NSRange range = [serverurl rangeOfString:@"http://" options:NSAnchoredSearch];
-        if (range.length == 0) {
-            [serverurl stringByAppendingString:@"http://"];
-        }
+//        NSRange range = [serverurl rangeOfString:@"/" options:NSCaseInsensitiveSearch];
+//        if (range.length == 0) {
+//            serverurl = [NSString stringWithFormat:@"%@/gzmpcscm3/services/RgService",serverurl];
+//        }
+//        NSRange range2 = [serverurl rangeOfString:@"http://" options:NSCaseInsensitiveSearch];
+//        if (range2.length == 0) {
+//            serverurl = [NSString stringWithFormat:@"http://%@",serverurl];
+//        }
         [newSetting setObject:serverurl forKey:kSettingServerKey];
     }
     
@@ -437,7 +457,7 @@ typedef NS_OPTIONS(NSUInteger, SettingListTestBtnType) {
 
 - (UITextField*) genTextField
 {
-    CGRect frame = CGRectMake(kLeftMargin, kTopMargin, kTextFieldWidth, kTextFieldHeight);
+    CGRect frame = CGRectMake(0, kTopMargin, kTextFieldWidth, kTextFieldHeight);
     UITextField *textfield = [[UITextField alloc] initWithFrame:frame];
     
     textfield.borderStyle = UITextBorderStyleRoundedRect;
@@ -447,6 +467,7 @@ typedef NS_OPTIONS(NSUInteger, SettingListTestBtnType) {
     textfield.autocorrectionType = UITextAutocorrectionTypeNo;	// no auto correction support
     textfield.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin |
     UIViewAutoresizingFlexibleTopMargin |
+    UIViewAutoresizingFlexibleRightMargin |
     UIViewAutoresizingFlexibleWidth;
     
     textfield.keyboardType = UIKeyboardTypeDefault;
