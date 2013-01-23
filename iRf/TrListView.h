@@ -8,16 +8,19 @@
 
 #import <UIKit/UIKit.h>
 #import "EGORefreshTableHeaderView.h"
+#import "LeveyPopListView.h"
 
 typedef NS_ENUM (NSInteger,TrListTitleSeg){
 	TrListTitleSegAll = 0,  //全部
 	TrListTitleSegNoCusid = 1, //无客户码
 	TrListTitleSegNoLocno = 2,  //无默认货位
+    TrListTitleSegNoBasecode = 3,  //无基本码
+
 };
 
 @interface TrListView : UIViewController
 <UITableViewDelegate,UITableViewDataSource,EGORefreshTableHeaderDelegate
-,UISearchDisplayDelegate, UISearchBarDelegate>
+,UISearchDisplayDelegate, UISearchBarDelegate,LeveyPopListViewDelegate>
 {
     NSMutableArray *menuList;
     
@@ -37,6 +40,8 @@ typedef NS_ENUM (NSInteger,TrListTitleSeg){
     UITableView *tablelistView;
     
     NSInteger   titleSegmentIndex;
+    NSArray *titleArray;
+    UIButton *titleBtn;
 }
 
 @property (nonatomic, retain) NSMutableArray *menuList;
@@ -52,6 +57,8 @@ typedef NS_ENUM (NSInteger,TrListTitleSeg){
 @property (nonatomic) BOOL searchWasActive;
 
 @property (nonatomic) NSInteger titleSegmentIndex;
+@property (nonatomic, retain) NSArray *titleArray;
+@property (nonatomic, retain) UIButton *titleBtn;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil;
 

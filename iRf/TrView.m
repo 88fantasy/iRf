@@ -10,8 +10,13 @@
 #import "iRfRgService.h"
 #import "SBJson.h"
 
+typedef NS_OPTIONS(NSUInteger, TrViewType) {
+    TrViewTypeBasecode = 0,          
+    TrViewTypeLocno = 1,           
+};
+
 @implementation TrView
-@synthesize ugoodsid,goodsname,goodstype,tradename,factno,goodsunit,cusgdsid,multi,companyname,locbtn,locno;
+@synthesize ugoodsid,goodsname,goodstype,tradename,factno,goodsunit,cusgdsid,multi,companyname,locbtn,locno,basebtn,basecode;
 @synthesize scrollView,values;
 
 
@@ -75,6 +80,7 @@
     self.multi.text = (NSString*) [values objectForKey:@"multi"];
     self.companyname.text = (NSString*) [values objectForKey:@"companyname"];
     self.locno.text = (NSString*) [values objectForKey:@"locno"];
+    self.basecode.text = (NSString*) [values objectForKey:@"basecode"];
 }
 
 - (void)viewDidUnload
@@ -91,6 +97,11 @@
     self.goodsunit = nil ;
     self.cusgdsid = nil ;
     self.multi = nil ;
+    self.companyname = nil;
+    self.locbtn = nil;
+    self.locno = nil;
+    self.basebtn = nil;
+    self.basecode = nil;
 }
 
 #pragma mark 纵向旋转控制
@@ -141,6 +152,7 @@
     NSString *cusgdsidstr = [self.cusgdsid.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     NSString *multistr = [self.multi.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     NSString *locnostr = [self.locno.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSString *basecodestr = [self.basecode.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     
     if (goodsnamestr!=nil && ![@"" isEqualToString:goodsnamestr] ) {
         [trobj setObject:goodsnamestr forKey:@"goodsname"];
@@ -204,6 +216,14 @@
     }
     else {
         [values setValue:@"" forKey:@"locno"];
+    }
+    
+    if (basecodestr!=nil && ![@"" isEqualToString:basecodestr] ) {
+        [trobj setObject:basecodestr forKey:@"basecode"];
+        [values setValue:basecodestr forKey:@"basecode"];
+    }
+    else {
+        [values setValue:@"" forKey:@"basecode"];
     }
     
     
@@ -313,13 +333,18 @@
 
 #pragma mark Scan and Handle
 
-- (IBAction) scanButtonTapped
+- (IBAction) scanButtonTapped:(UIButton *)btn
 {
     // ADD: present a barcode reader that scans from the camera feed
     ZBarReaderViewController *reader = [ZBarReaderViewController new];
     reader.readerDelegate = self;
 	
-    
+    if (btn == self.locbtn) {
+        scanType = TrViewTypeLocno;
+    }
+    else if (btn == self.basebtn){
+        scanType = TrViewTypeBasecode;
+    }
     //    CGRect rect_screen = [[UIScreen mainScreen] bounds];
     //    CGRect rect = reader.readerView.frame;
     //
@@ -360,7 +385,13 @@
 	
     // EXAMPLE: do something useful with the barcode data
 	
-    self.locno.text = symbol.data;
+    if (scanType == TrViewTypeLocno) {
+        self.locno.text = symbol.data;
+    }
+    else if (scanType == TrViewTypeBasecode){
+        self.basecode.text = symbol.data;
+    }
+    
 	
     // ADD: dismiss the controller (NB dismiss from the *reader*!)
     [reader dismissModalViewControllerAnimated: YES];

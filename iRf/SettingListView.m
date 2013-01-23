@@ -161,6 +161,8 @@ typedef NS_OPTIONS(NSUInteger, SettingListSectionTypeExtraRow) {
     else {
         [self.username setEnabled:YES];
         [self.password setEnabled:YES];
+        self.username.text = @"";
+        self.password.text = @"";
         [self.testBtn setTitle:@"测 试 账 号" forState:UIControlStateNormal];
         self.testBtn.tag = SettingListTestBtnTypeLogin;
     }

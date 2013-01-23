@@ -23,7 +23,11 @@
     UITextField *companyname;
     UIButton *locbtn;
     UITextField *locno;
+    UIButton *basebtn;
+    UITextField *basecode;
     NSDictionary *values;
+    
+    NSUInteger scanType;
 }
 
 @property (nonatomic, retain) IBOutlet UIScrollView *scrollView;
@@ -38,10 +42,13 @@
 @property (nonatomic, retain) IBOutlet UITextField *companyname;
 @property (nonatomic, retain) IBOutlet UIButton *locbtn;
 @property (nonatomic, retain) IBOutlet UITextField *locno;
+@property (nonatomic, retain) IBOutlet UIButton *basebtn;
+@property (nonatomic, retain) IBOutlet UITextField *basecode;
+
 @property (nonatomic, retain) IBOutlet NSDictionary *values;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil values:(NSDictionary*)obj ;
 
-- (IBAction) scanButtonTapped;
+- (IBAction) scanButtonTapped:(UIButton *)btn;
 
 @end

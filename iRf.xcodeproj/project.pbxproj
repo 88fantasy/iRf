@@ -126,6 +126,8 @@
 		8FE1DA9215AD164700EA5331 /* StockAdjustView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8FE1DA9015AD164700EA5331 /* StockAdjustView.xib */; };
 		8FE4844215B3C1A300A9FB32 /* BaseCodeTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FE4844015B3C1A200A9FB32 /* BaseCodeTableView.m */; };
 		8FE4844315B3C1A300A9FB32 /* BaseCodeTableView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8FE4844115B3C1A300A9FB32 /* BaseCodeTableView.xib */; };
+		8FF0DD0816AD3D9300624203 /* LeveyPopListView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FF0DD0516AD3D9300624203 /* LeveyPopListView.m */; };
+		8FF0DD0916AD3D9300624203 /* LeveyPopListViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FF0DD0716AD3D9300624203 /* LeveyPopListViewCell.m */; };
 		8FFB455815B7B388009ED1FC /* MedicineReqCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FFB455315B7B388009ED1FC /* MedicineReqCell.m */; };
 		8FFB455915B7B388009ED1FC /* MedicineReqCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8FFB455415B7B388009ED1FC /* MedicineReqCell.xib */; };
 		8FFB455A15B7B388009ED1FC /* MedicineReqListView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FFB455615B7B388009ED1FC /* MedicineReqListView.m */; };
@@ -378,6 +380,10 @@
 		8FE4843F15B3C1A200A9FB32 /* BaseCodeTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseCodeTableView.h; sourceTree = "<group>"; };
 		8FE4844015B3C1A200A9FB32 /* BaseCodeTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseCodeTableView.m; sourceTree = "<group>"; };
 		8FE4844115B3C1A300A9FB32 /* BaseCodeTableView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BaseCodeTableView.xib; sourceTree = "<group>"; };
+		8FF0DD0416AD3D9300624203 /* LeveyPopListView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LeveyPopListView.h; sourceTree = "<group>"; };
+		8FF0DD0516AD3D9300624203 /* LeveyPopListView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LeveyPopListView.m; sourceTree = "<group>"; };
+		8FF0DD0616AD3D9300624203 /* LeveyPopListViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LeveyPopListViewCell.h; sourceTree = "<group>"; };
+		8FF0DD0716AD3D9300624203 /* LeveyPopListViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LeveyPopListViewCell.m; sourceTree = "<group>"; };
 		8FF14E321597FB8500AFB828 /* iRf.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = iRf.entitlements; sourceTree = "<group>"; };
 		8FFB455215B7B388009ED1FC /* MedicineReqCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MedicineReqCell.h; sourceTree = "<group>"; };
 		8FFB455315B7B388009ED1FC /* MedicineReqCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MedicineReqCell.m; sourceTree = "<group>"; };
@@ -668,6 +674,7 @@
 		8F93E2E113D41B6F006BF26D /* iRf */ = {
 			isa = PBXGroup;
 			children = (
+				8FF0DD0316AD3D9200624203 /* LeveyPopListView */,
 				8F29A4BD168945710069579B /* allPinyin */,
 				8F85CB9C16819A8D0062777C /* ZBarSDK */,
 				8F98EA76166352CA0088CB89 /* GoalBar */,
@@ -893,6 +900,17 @@
 				8FCBC887167F00C800EEAC21 /* shgl.png */,
 			);
 			path = 44X44;
+			sourceTree = "<group>";
+		};
+		8FF0DD0316AD3D9200624203 /* LeveyPopListView */ = {
+			isa = PBXGroup;
+			children = (
+				8FF0DD0416AD3D9300624203 /* LeveyPopListView.h */,
+				8FF0DD0516AD3D9300624203 /* LeveyPopListView.m */,
+				8FF0DD0616AD3D9300624203 /* LeveyPopListViewCell.h */,
+				8FF0DD0716AD3D9300624203 /* LeveyPopListViewCell.m */,
+			);
+			path = LeveyPopListView;
 			sourceTree = "<group>";
 		};
 		8FFBF861165DD6460034C596 /* FMDB */ = {
@@ -1169,6 +1187,8 @@
 				8F4421121682ABFF005176A9 /* ScanOverlayView.m in Sources */,
 				8F29A4C0168945710069579B /* POAPinyin.m in Sources */,
 				8F7ECD95169FEA4300724559 /* SettingListView.m in Sources */,
+				8FF0DD0816AD3D9300624203 /* LeveyPopListView.m in Sources */,
+				8FF0DD0916AD3D9300624203 /* LeveyPopListViewCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

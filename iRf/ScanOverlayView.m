@@ -68,9 +68,9 @@
 //    newframe.size.height = frame.size.height - 54;  //减去底部工具栏高度
 //    newframe.size.width = frame.size.width;
 //    //获取当前电池条的方向
-    UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
-    if (UIInterfaceOrientationIsLandscape(orientation)) {
-        
+//    UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
+//    if (UIInterfaceOrientationIsLandscape(orientation)) {
+    
         
 //        newframe.size.height = frame.size.width - 31;
 //        newframe.size.width = frame.size.height;
@@ -80,7 +80,7 @@
 //        y = newframe.size.height /  2 ;
         
 //        linewidth = linewidth * 2;
-    }
+//    }
 //
 //    if (self.frame.size.height != newframe.size.height || self.frame.size.width!= newframe.size.width) {
 //        self.frame = newframe;

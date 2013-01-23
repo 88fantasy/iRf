@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 
-@protocol RgListSearchViewDelegate 
+@protocol RgListSearchViewDelegate <NSObject>
 //回调函数 
 -(void)searchCallBack:(NSDictionary *)_fields; 
 @end

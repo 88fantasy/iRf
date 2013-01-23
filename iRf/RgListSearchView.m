@@ -186,7 +186,7 @@
     }
     
     [self.navigationController popViewControllerAnimated:YES];
-    if (self.rgListSearchViewDelegate!=nil) { 
+    if (self.rgListSearchViewDelegate && [self.rgListSearchViewDelegate respondsToSelector:@selector(searchCallBack:)]) {
         //调用回调函数 
         [self.rgListSearchViewDelegate searchCallBack:searchFields]; 
     } 

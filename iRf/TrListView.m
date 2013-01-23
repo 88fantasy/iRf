@@ -22,7 +22,7 @@ static NSString *kObjKey = @"obj";
 
 @synthesize menuList,refreshButtonItem,activityView,activityIndicator;
 @synthesize tablelistView,filteredListContent, savedSearchTerm, savedScopeButtonIndex, searchWasActive;
-@synthesize titleSegmentIndex;
+@synthesize titleSegmentIndex,titleArray,titleBtn;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -63,6 +63,8 @@ static NSString *kObjKey = @"obj";
     [tablelistView release];
     [filteredListContent release];
     [menuList release];
+    [titleArray release];
+    [titleBtn release];
     [super dealloc];
 }
 
@@ -142,19 +144,27 @@ static NSString *kObjKey = @"obj";
     
     //增加未维护客户码和货位的过滤项
     
-    NSArray *segmentTextContent = [NSArray arrayWithObjects:@"全部",@"无客户码", @"无货位",nil];
-	UISegmentedControl *segmentedControl = [[UISegmentedControl alloc] initWithItems:segmentTextContent];
-	segmentedControl.selectedSegmentIndex = 0;
-	segmentedControl.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-	segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
-//	segmentedControl.frame = CGRectMake(0, 0, 400, kCustomButtonHeight);
-	[segmentedControl addTarget:self action:@selector(switchSegment:) forControlEvents:UIControlEventValueChanged];
-	
-//	defaultTintColor = [segmentedControl.tintColor retain];	// keep track of this for later
+    self.titleArray = [NSArray arrayWithObjects:@"全部",@"无客户码", @"无货位", @"无基本码",nil];
+    titleSegmentIndex = 0;
+//	UISegmentedControl *segmentedControl = [[UISegmentedControl alloc] initWithItems:segmentTextContent];
+//	segmentedControl.selectedSegmentIndex = 0;
+//	segmentedControl.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+//	segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
+////	segmentedControl.frame = CGRectMake(0, 0, 400, kCustomButtonHeight);
+//	[segmentedControl addTarget:self action:@selector(switchSegment:) forControlEvents:UIControlEventValueChanged];
+//	
+////	defaultTintColor = [segmentedControl.tintColor retain];	// keep track of this for later
+//    
+//	self.navigationItem.titleView = segmentedControl;
+//	[segmentedControl release];
     
-	self.navigationItem.titleView = segmentedControl;
-	[segmentedControl release];
-    
+    self.titleBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.titleBtn setTitle:@"全部▾" forState:UIControlStateNormal];    
+    [self.titleBtn addTarget:self action:@selector(showConditionList) forControlEvents:UIControlEventTouchUpInside];
+    self.titleBtn.frame = CGRectMake(0, 0, 200, 31);
+    [self.titleBtn setCenter:self.navigationItem.titleView.center];
+    self.navigationItem.titleView = self.titleBtn;
+//    [testbtn release];
 	
 	// restore search settings if they were saved in didReceiveMemoryWarning.
     if (self.savedSearchTerm)
@@ -182,6 +192,8 @@ static NSString *kObjKey = @"obj";
     self.refreshButtonItem = nil;
     self.activityIndicator = nil;
     self.tablelistView = nil;
+    self.titleArray = nil;
+    self.titleBtn = nil;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
@@ -207,12 +219,21 @@ static NSString *kObjKey = @"obj";
     if (titleSegmentIndex == TrListTitleSegAll) {
         row = [list objectAtIndex:indexPath.row];
     }
-    else if (titleSegmentIndex == TrListTitleSegNoCusid){
+    else {
+        NSString *key = nil;
+        if (titleSegmentIndex == TrListTitleSegNoCusid){
+            key = @"cusgdsid";
+        }
+        else if (titleSegmentIndex == TrListTitleSegNoLocno){
+            key = @"locno";        }
+        else if (titleSegmentIndex == TrListTitleSegNoBasecode){
+            key = @"basecode";
+        }
         for (int i=0,j=list.count; i<j; i++) {
             NSDictionary *tmprow = [list objectAtIndex:i];
             NSDictionary *obj = [tmprow objectForKey:kObjKey];
-            NSString *cusgdsid = [obj objectForKey:@"cusgdsid"];
-            if ([@"" isEqualToString:cusgdsid]) {
+            NSString *value = [obj objectForKey:key];
+            if (value == nil || [@"" isEqualToString:value]) {
                 if (indexPath.row == count) {
                     row = tmprow;
                     break;
@@ -221,21 +242,6 @@ static NSString *kObjKey = @"obj";
             }
         }
     }
-    else if (titleSegmentIndex == TrListTitleSegNoLocno){
-        for (int i=0,j=list.count; i<j; i++) {
-            NSDictionary *tmprow = [list objectAtIndex:i];
-            NSDictionary *obj = [tmprow objectForKey:kObjKey];
-            NSString *locno = [obj objectForKey:@"locno"];
-            if ([@"" isEqualToString:locno]) {
-                if (indexPath.row == count) {
-                    row = tmprow;
-                    break;
-                }
-                count++;
-            }
-        }
-    }
-    
     return row;
 }
 
@@ -255,24 +261,25 @@ static NSString *kObjKey = @"obj";
     if (titleSegmentIndex == TrListTitleSegAll) {
         count =  [list count];
     }
-    else if (titleSegmentIndex == TrListTitleSegNoCusid){
+    else{
+        NSString *key = nil;
+        if (titleSegmentIndex == TrListTitleSegNoCusid){
+            key = @"cusgdsid";
+        }
+        else if (titleSegmentIndex == TrListTitleSegNoLocno){
+            key = @"locno";        }
+        else if (titleSegmentIndex == TrListTitleSegNoBasecode){
+            key = @"basecode";
+        }
         for (int i=0,j=list.count; i<j; i++) {
             NSDictionary *obj = [[list objectAtIndex:i] objectForKey:kObjKey];
-            NSString *cusgdsid = [obj objectForKey:@"cusgdsid"];
-            if ([@"" isEqualToString:cusgdsid]) {
+            NSString *value = [obj objectForKey:key];
+            if (value == nil || [@"" isEqualToString:value]) {
                 count++;
             }
         }
     }
-    else if (titleSegmentIndex == TrListTitleSegNoLocno){
-        for (int i=0,j=list.count; i<j; i++) {
-            NSDictionary *obj = [[list objectAtIndex:i] objectForKey:kObjKey];
-            NSString *locno = [obj objectForKey:@"locno"];
-            if ([@"" isEqualToString:locno]) {
-                count++;
-            }
-        }
-    }
+    self.navigationItem.prompt = [NSString stringWithFormat:@"货品对应关系(%d)",count] ;
     return count;
 }
 
@@ -652,6 +659,32 @@ static NSString *kObjKey = @"obj";
 	UISegmentedControl *segmentedControl = (UISegmentedControl *)sender;
 	titleSegmentIndex =  segmentedControl.selectedSegmentIndex;
     [self.tablelistView reloadData];
+}
+
+
+#pragma mark -
+#pragma mark - LeveyPopListViewDelegate
+
+- (void) showConditionList
+{
+    LeveyPopListView *lplv = [[LeveyPopListView alloc] initWithTitle:@"请选择筛选条件..." options:self.titleArray];
+    lplv.delegate = self;
+    [lplv showInView:self.view animated:YES];
+    [lplv release];
+    [self.titleBtn setEnabled:NO];
+}
+
+- (void)leveyPopListView:(LeveyPopListView *)popListView didSelectedIndex:(NSInteger)anIndex
+{
+    titleSegmentIndex =  anIndex;
+    [self.titleBtn setTitle:[NSString stringWithFormat:@"%@▾",[self.titleArray objectAtIndex:anIndex]] forState:UIControlStateNormal];
+    [self.tablelistView reloadData];
+    [self.titleBtn setEnabled:YES];
+}
+
+- (void)leveyPopListViewDidCancel
+{
+    [self.titleBtn setEnabled:YES];
 }
 
 @end

@@ -175,7 +175,7 @@ enum {
                               rglistView, kViewControllerKey,
                               @"kccx.png",iconKey,
 							  nil]];
-    TrListView *trListView = [[[TrListView alloc]initWithNibName:@"TrListView" bundle:nil] retain];
+    TrListView *trListView = [[TrListView alloc]initWithNibName:@"TrListView" bundle:nil];
     
     [self.menuList addObject:[NSDictionary dictionaryWithObjectsAndKeys:
                               @"货品对应关系", kTitleKey,
@@ -195,7 +195,7 @@ enum {
     
     [scanview release];
     [rglistView release];
-    [trListView release];
+//    [trListView release];  //清除prompt时会调用release
     [rgGroupListView release];
     if (!IsInternet) {
         
@@ -233,11 +233,6 @@ enum {
 	NSIndexPath *tableSelection = [self.tableView indexPathForSelectedRow];
 	[self.tableView deselectRowAtIndexPath:tableSelection animated:NO];
     
-    
-}
-
-- (void)viewDidAppear:(BOOL)animated
-{
     [self reloadMain];
 }
 
