@@ -17,7 +17,7 @@
 #import "MedicineReqListView.h"
 #import "RgGroupListView.h"
 #import "SettingListView.h"
-
+#import "BasecodeStockList.h"
 
 static NSString *kCellIdentifier = @"MyIdentifier";
 static NSString *kTitleKey = @"title";
@@ -26,6 +26,20 @@ static NSString *kViewControllerKey = @"viewController";
 static NSString *iconKey = @"iconfile";
 
 
+@interface UIViewController (UINavigationControllerSwipeBackItem)
+
+- (void)swipeBackView:(UISwipeGestureRecognizer *)recognizer;
+
+@end
+
+@implementation UIViewController (UINavigationControllerSwipeBackItem)
+
+- (void)swipeBackView:(UISwipeGestureRecognizer *)recognizer
+{
+    [self.navigationController popToRootViewControllerAnimated:YES];
+}
+
+@end
 
 enum {
     SyncAlert = 100001,
@@ -38,7 +52,7 @@ enum {
 
 @implementation RootViewController
 
-@synthesize menuList,userfield,pwdfield,activityIndicator,activityView,goalBarView,goalBar;
+@synthesize menuList,userfield,pwdfield,goalBarView,goalBar;
 
 
 + (bool) isSync {
@@ -116,12 +130,15 @@ enum {
 {
     [super viewDidLoad];
 
+    
+    self.navigationController.delegate = self;
+    
     // 新版本检查
     NSDictionary *appinfo = [[NSBundle mainBundle] infoDictionary] ;
     
     NSLog(@"%@",appinfo);
     
-    NSString *version = [appinfo objectForKey:(NSString *)kCFBundleVersionKey];
+    NSString *version = [appinfo objectForKey:@"CFBundleShortVersionString"];//(NSString *)kCFBundleVersionKey];
     
     NSString *urlString =[NSString stringWithFormat:@"http://%@/phoneapp/ios/iRf.php?newestver=%@",host,version];
     
@@ -144,6 +161,7 @@ enum {
     [self reloadMain];
     
 	[self confirmUser];
+    
 }
 
 - (void) reloadMain
@@ -195,11 +213,12 @@ enum {
     
     [scanview release];
     [rglistView release];
+    
 //    [trListView release];  //清除prompt时会调用release
+//    NSLog(@"trListView retain count : %d",[trListView retainCount]);
     [rgGroupListView release];
     if (!IsInternet) {
         
-        //        if (!IsPad) {
         StockAdjustView *stockAdjustView = [[StockAdjustView alloc]initWithNibName:@"StockAdjustView" bundle:nil];
         
         [self.menuList addObject:[NSDictionary dictionaryWithObjectsAndKeys:
@@ -209,7 +228,6 @@ enum {
                                   @"kctz.png",iconKey,
                                   nil]];
         [stockAdjustView release];
-        //        }
         
         MedicineReqListView *medicineReqListView = [[MedicineReqListView alloc] initWithNibName:@"MedicineReqListView" bundle:nil];
         [self.menuList addObject:[NSDictionary dictionaryWithObjectsAndKeys:
@@ -219,6 +237,15 @@ enum {
                                   @"yfly.png",iconKey,
                                   nil]];
         [medicineReqListView release];
+        
+        BasecodeStockList *basecodeStockList = [[BasecodeStockList alloc]initWithStyle:UITableViewStylePlain];
+        [self.menuList addObject:[NSDictionary dictionaryWithObjectsAndKeys:
+                                  @"库存查询(零售条码)", kTitleKey,
+                                  @"通过扫描货品零售条码来查询当前库存", kExplainKey,
+                                  basecodeStockList, kViewControllerKey,
+                                  @"kccx.png",iconKey,
+                                  nil]];
+        [basecodeStockList release];
     }
     
     [self.tableView reloadData];
@@ -294,8 +321,6 @@ enum {
 	self.menuList = nil;
 	self.userfield = nil;
 	self.pwdfield = nil;
-    self.activityIndicator = nil;
-    self.activityView = nil;
     self.goalBar = nil;
     self.goalBarView = nil;
 }
@@ -307,8 +332,6 @@ enum {
     [menuList release];
 	[userfield release];
 	[pwdfield release];
-    [activityIndicator release];
-    [activityView release];
     [goalBar release];
     [goalBarView release];
 	[super dealloc];
@@ -341,52 +364,8 @@ enum {
         }
     }
 }
-
-//- (void)alertViewCancel:(UIAlertView *)alertView {
-//	NSLog(@"cancel");
-//}
-
-
-
-
-//显示等待进度条
-- (void) displayActiveIndicatorView
-{
-    //    self.navigationItem.rightBarButtonItem = nil;
-    if (activityView==nil){
-        activityView = [[UIAlertView alloc] initWithTitle:nil
-                                                  message: NSLocalizedString(@"Loading...",@"Loading...")
-                                                 delegate: self
-                                        cancelButtonTitle: nil
-                                        otherButtonTitles: nil];
-        
-        activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-        activityIndicator.frame = CGRectMake(120.f, 48.0f, 38.0f, 38.0f);
-        [activityView addSubview:activityIndicator];
-    }
-    [activityIndicator startAnimating];
-    [activityView show];
-    
-}
-
-//取消等待进度条
-- (void) dismissActiveIndicatorView
-{
-    if (activityView)
-    {
-        [activityIndicator stopAnimating];
-        [activityView dismissWithClickedButtonIndex:0 animated:YES];
-    }
-}
-
-- (void) alert:(NSString*)title msg:(NSString*)msg {
-    // open an alert with just an OK button
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:msg
-                                                   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
-    [alert show];
-    [alert release];
-}
-
+#pragma mark -
+#pragma mark 同步信息
 - (IBAction)syncAction:(id)sender {
     NSString *msg;
     
@@ -412,7 +391,12 @@ enum {
 
 - (void) getAllRg{
     
-    [self displayActiveIndicatorView];
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.tableView animated:YES];
+    // Set determinate mode
+	hud.mode = MBProgressHUDModeIndeterminate;
+	hud.labelText = @"Loading";
+    hud.removeFromSuperViewOnHide = YES;
+    [hud show:YES];
     
     iRfRgService* service = [iRfRgService service];
     NSDictionary *setting = [CommonUtil getSettings];
@@ -492,7 +476,7 @@ enum {
                         FMResultSet *rs = [db executeQuery:@"select count(*) from SCM_RG"];
                         if ([rs next]) {
                             int count = [rs intForColumnIndex:0];
-                            NSLog(@"%d",count);
+//                            NSLog(@"%d",count);
                             [self.navigationItem.rightBarButtonItem
                                             setTitle:[rs stringForColumnIndex:0]];
                             [CommonUtil alert:@"提示"
@@ -512,16 +496,17 @@ enum {
                 if ([msg isKindOfClass:[NSNull class]]) {
                     msg = @"空指针";
                 }
-                [self alert:NSLocalizedString(@"Error", @"Error") msg:msg];
+                [CommonUtil alert:NSLocalizedString(@"Error", @"Error") msg:msg];
             }
             
         }
     }
-    [self dismissActiveIndicatorView];
-    
+
+    [MBProgressHUD hideHUDForView:self.tableView animated:YES];
 }
 
-
+#pragma mark -
+#pragma mark 进度条
 //显示等待进度条
 - (void) displayGoalBarView:(int) percent {
     if (goalBarView==nil){
@@ -551,6 +536,8 @@ enum {
     }
 }
 
+#pragma mark -
+#pragma mark  批量收货
 - (void)confirmRg {
     if ([RootViewController isSync]) {
         FMDatabase *db = [DbUtil retConnectionForResource:@"iRf" ofType:@"rdb"];
@@ -618,60 +605,58 @@ enum {
 		[alert release];
 	}
     
-    
-	// Do something with the NSString* result
-    NSString* result = (NSString*)value;
-	NSLog(@"doRg returned the value: %@", result);
-    
-    SBJsonParser *parser = [[SBJsonParser alloc] init];
-    id retObj = [parser objectWithString:result];
-    NSLog(@"%@",retObj);
-    [parser release];
-    
-    doneDoRgCoount ++;
-    if (doneDoRgCoount >= notDoRgCount) {
-        [self dismissGoalBarView];
-    }
     else {
-        [self displayGoalBarView: doneDoRgCoount * 100 / notDoRgCount ];
-    }
-    
-    if (retObj != nil) {
-        NSDictionary *ret = (NSDictionary*)retObj;
-        NSString *retflag = (NSString*) [ret objectForKey:kRetFlagKey];
+        // Do something with the NSString* result
+        NSString* result = (NSString*)value;
+        NSLog(@"doRg returned the value: %@", result);
         
-        if ([retflag boolValue]==YES) {
-            NSDictionary *msg = (NSDictionary*) [ret objectForKey:kMsgKey];
-            NSString *spdid = (NSString*) [msg objectForKey:@"spdid"];
-            if ([RootViewController isSync]) {
-                FMDatabase *db = [DbUtil retConnectionForResource:@"iRf" ofType:@"rdb"];
-                if(db != nil) {
-                    [db executeUpdate:@"update scm_rg set rgdate = datetime('now') where spdid = ?",spdid];
-                    [db close];
+        SBJsonParser *parser = [[SBJsonParser alloc] init];
+        id retObj = [parser objectWithString:result];
+        NSLog(@"%@",retObj);
+        [parser release];
+        
+        doneDoRgCoount ++;
+        if (doneDoRgCoount >= notDoRgCount) {
+            [self dismissGoalBarView];
+        }
+        else {
+            [self displayGoalBarView: doneDoRgCoount * 100 / notDoRgCount ];
+        }
+        
+        if (retObj != nil) {
+            NSDictionary *ret = (NSDictionary*)retObj;
+            NSString *retflag = (NSString*) [ret objectForKey:kRetFlagKey];
+            
+            if ([retflag boolValue]==YES) {
+                NSDictionary *msg = (NSDictionary*) [ret objectForKey:kMsgKey];
+                NSString *spdid = (NSString*) [msg objectForKey:@"spdid"];
+                if ([RootViewController isSync]) {
+                    FMDatabase *db = [DbUtil retConnectionForResource:@"iRf" ofType:@"rdb"];
+                    if(db != nil) {
+                        [db executeUpdate:@"update scm_rg set rgdate = datetime('now') where spdid = ?",spdid];
+                        [db close];
+                    }
                 }
+                
+                //            if (self.scanViewDelegate!=nil) {
+                //                //调用回调函数
+                //                [self.scanViewDelegate confirmCallBack:YES values:values];
+                //            }
+                //            [self.navigationController popViewControllerAnimated:YES];
+            }
+            else{
+                NSString *msg = (NSString*) [ret objectForKey:kMsgKey];
+                if ([msg isKindOfClass:[NSNull class]]) {
+                    msg = @"空指针";
+                }
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", @"Error")
+                                                                message: msg
+                                                               delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+                [alert show];
+                [alert release];
             }
             
-            //            if (self.scanViewDelegate!=nil) {
-            //                //调用回调函数
-            //                [self.scanViewDelegate confirmCallBack:YES values:values];
-            //            }
-            //            [self.navigationController popViewControllerAnimated:YES];
         }
-        else{
-            NSString *msg = (NSString*) [ret objectForKey:kMsgKey];
-            if ([msg isKindOfClass:[NSNull class]]) {
-                msg = @"空指针";
-            }
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", @"Error")
-                                                            message: msg
-                                                           delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
-            [alert show];
-            [alert release];
-        }
-        
-    }
-    else{
-        
     }
 }
 
@@ -680,7 +665,7 @@ enum {
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
 {
-    NSMutableString *result = [[NSMutableString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    NSString *result = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 
     NSLog(@"Version check result string is :%@",result);
     
@@ -719,6 +704,23 @@ enum {
     SettingListView *settingView = [[SettingListView alloc] initWithStyle:UITableViewStyleGrouped];
     [[self navigationController] pushViewController:settingView animated:YES];
     [settingView release];
+}
+
+#pragma mark -
+#pragma mark UINavigationControllerDelegate
+
+- (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated
+{
+    if (![self isKindOfClass:[viewController class]]) {
+        //增加滑动手势操作
+        UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:viewController action:@selector(swipeBackView:)];
+        [swipeGesture setDirection:UISwipeGestureRecognizerDirectionLeft]; //左划
+        [swipeGesture setNumberOfTouchesRequired:2];//双指操作有效
+//        [swipeGesture setDelegate:self];
+        [viewController.view addGestureRecognizer:swipeGesture];
+        [swipeGesture release];
+    }
+   
 }
 
 @end

@@ -12,7 +12,7 @@
 #import "TrView.h"
 #import "POAPinyin.h"
 
-static NSString *kCellIdentifier = @"MyIdentifier";
+static NSString *kCellIdentifier = @"TrListViewIdentifier";
 static NSString *kTitleKey = @"title";
 static NSString *kExplainKey = @"explanation";
 static NSString *kObjKey = @"obj";
@@ -20,8 +20,8 @@ static NSString *kObjKey = @"obj";
 
 @implementation TrListView
 
-@synthesize menuList,refreshButtonItem,activityView,activityIndicator;
-@synthesize tablelistView,filteredListContent, savedSearchTerm, savedScopeButtonIndex, searchWasActive;
+@synthesize menuList,refreshButtonItem;
+@synthesize filteredListContent, savedSearchTerm, savedScopeButtonIndex, searchWasActive;
 @synthesize titleSegmentIndex,titleArray,titleBtn;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -31,42 +31,37 @@ static NSString *kObjKey = @"obj";
         // Custom initialization
         self.navigationItem.prompt = @"货品对应关系";
         
-        if (_refreshHeaderView == nil) {
-            self.tablelistView  = (UITableView*)self.view;
-            EGORefreshTableHeaderView *view = [[EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0.0f, 0.0f - self.view.bounds.size.height, self.view.frame.size.width, self.view.bounds.size.height)];
-            view.delegate = self;
-            [self.view addSubview:view];
-            _refreshHeaderView = view;
-            [view release];
-            
+        if (GetSystemVersion >= 6.0){
+            UIRefreshControl *refresh = [[UIRefreshControl alloc] init];
+            refresh.tintColor = [UIColor lightGrayColor];
+            refresh.attributedTitle = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Pull down to refresh...", @"Pull down to refresh status")] ;
+            [refresh addTarget:self action:@selector(refreshView:) forControlEvents:UIControlEventValueChanged];
+            self.refreshControl = refresh;
+        }
+        else {
+            if (_refreshHeaderView == nil) {
+                EGORefreshTableHeaderView *view = [[EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0.0f, 0.0f - self.view.bounds.size.height, self.view.frame.size.width, self.view.bounds.size.height)];
+                view.delegate = self;
+                [self.view addSubview:view];
+                _refreshHeaderView = view;
+                
+            }
+            //  update the last update date
+            [_refreshHeaderView refreshLastUpdatedDate];
         }
         
         if (self.refreshButtonItem == nil) {
-            self.refreshButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh                                                                          target:self action:@selector(scrollToRefresh:)];
+            self.refreshButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh                                                                          target:self action:@selector(getTrGds)];
             
         }
         
         self.navigationItem.rightBarButtonItem = self.refreshButtonItem;
-        
-        //  update the last update date
-        [_refreshHeaderView refreshLastUpdatedDate];
+
     }
     return self;
 }
 
-- (void)dealloc
-{
-    _refreshHeaderView=nil; 
-    [refreshButtonItem release];
-    [activityView release];
-    [activityIndicator release];
-    [tablelistView release];
-    [filteredListContent release];
-    [menuList release];
-    [titleArray release];
-    [titleBtn release];
-    [super dealloc];
-}
+
 
 - (void)didReceiveMemoryWarning
 {
@@ -81,56 +76,12 @@ static NSString *kObjKey = @"obj";
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:msg
                                                    delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
     [alert show];	
-    [alert release];
 }
 
-//显示等待进度条
-- (void) displayActiveIndicatorView
-{
-    //    self.navigationItem.rightBarButtonItem = nil;
-    if (activityView==nil){        
-        activityView = [[UIAlertView alloc] initWithTitle:nil 
-                                                  message: NSLocalizedString(@"Loading...",@"Loading...")
-                                                 delegate: self
-                                        cancelButtonTitle: nil
-                                        otherButtonTitles: nil];
-        
-        activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-        activityIndicator.frame = CGRectMake(120.f, 48.0f, 38.0f, 38.0f);
-        [activityView addSubview:activityIndicator];
-    }
-    [activityIndicator startAnimating];
-    [activityView show];
-    
-}
 
-//取消等待进度条
-- (void) dismissActiveIndicatorView
-{
-    if (activityView)
-    {
-        [activityIndicator stopAnimating];
-        [activityView dismissWithClickedButtonIndex:0 animated:YES];
-    }
-}
-
-- (void) getTrGds{
-    
-    [self displayActiveIndicatorView];
-    
-    iRfRgService* service = [iRfRgService service];
-    NSDictionary *setting = [CommonUtil getSettings];
-    NSString *username = [setting objectForKey:kSettingUserKey];
-    NSString *password = [setting objectForKey:kSettingPwdKey];
-    
-    [service getTrGds:self action:@selector(getTrGdsHandler:) 
-             username: username 
-             password: password
-             page:0];
-    
-}
 
 #pragma mark - View lifecycle
+
 
 - (void)viewDidLoad
 {
@@ -146,17 +97,6 @@ static NSString *kObjKey = @"obj";
     
     self.titleArray = [NSArray arrayWithObjects:@"全部",@"无客户码", @"无货位", @"无基本码",nil];
     titleSegmentIndex = 0;
-//	UISegmentedControl *segmentedControl = [[UISegmentedControl alloc] initWithItems:segmentTextContent];
-//	segmentedControl.selectedSegmentIndex = 0;
-//	segmentedControl.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-//	segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
-////	segmentedControl.frame = CGRectMake(0, 0, 400, kCustomButtonHeight);
-//	[segmentedControl addTarget:self action:@selector(switchSegment:) forControlEvents:UIControlEventValueChanged];
-//	
-////	defaultTintColor = [segmentedControl.tintColor retain];	// keep track of this for later
-//    
-//	self.navigationItem.titleView = segmentedControl;
-//	[segmentedControl release];
     
     self.titleBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.titleBtn setTitle:@"全部▾" forState:UIControlStateNormal];    
@@ -176,25 +116,10 @@ static NSString *kObjKey = @"obj";
         self.savedSearchTerm = nil;
     }
 	self.searchDisplayController.searchBar.placeholder = NSLocalizedString(@"Search", @"Search");
-	[self.tablelistView reloadData];
+	[self.tableView reloadData];
     
 }
 
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-    self.filteredListContent = nil;
-    self.menuList = nil;
-    _refreshHeaderView = nil;
-    self.activityView = nil;
-    self.refreshButtonItem = nil;
-    self.activityIndicator = nil;
-    self.tablelistView = nil;
-    self.titleArray = nil;
-    self.titleBtn = nil;
-}
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     //填写你需要锁定的方向参数
@@ -290,7 +215,7 @@ static NSString *kObjKey = @"obj";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:[row objectForKey:kCellIdentifier]];
 	if (cell == nil)
 	{
-		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:[row objectForKey:kCellIdentifier]] autorelease];
+		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:[row objectForKey:kCellIdentifier]] ;
 		cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 	}
 	
@@ -314,7 +239,6 @@ static NSString *kObjKey = @"obj";
         backgrdView.backgroundColor = [UIColor whiteColor];
     }
     cell.backgroundView = backgrdView;
-    [backgrdView release];
     return cell;
 }
 
@@ -357,14 +281,6 @@ static NSString *kObjKey = @"obj";
  }
  */
 
-#pragma mark -
-#pragma mark ScanView delegate
-//-(void)confirmCallBack:(BOOL )_confirm  values:(NSDictionary *)_obj{
-//    NSUInteger index = [self.objs indexOfObject:_obj];
-//    NSDictionary *obj = [self.objs objectAtIndex:index];
-//    [obj setValue:@"1" forKey:@"rgflag"];
-//    [obj release];
-//}
 
 #pragma mark - Table view delegate
 
@@ -385,16 +301,15 @@ static NSString *kObjKey = @"obj";
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    if (!_firstloaded) {
-        [self getTrGds];
-        _firstloaded = YES;
-    }
+    [super viewWillAppear:animated];
+        
+    [self getTrGds];
     
 	// this UIViewController is about to re-appear, make sure we remove the current selection in our table view
-	NSIndexPath *tableSelection = [self.tablelistView indexPathForSelectedRow];
-	[self.tablelistView deselectRowAtIndexPath:tableSelection animated:YES];
+	NSIndexPath *tableSelection = [self.tableView indexPathForSelectedRow];
+	[self.tableView deselectRowAtIndexPath:tableSelection animated:YES];
     
-    [self.tablelistView reloadData];
+    [self.tableView reloadData];
     
 }
 
@@ -404,6 +319,35 @@ static NSString *kObjKey = @"obj";
     self.searchWasActive = [self.searchDisplayController isActive];
     self.savedSearchTerm = [self.searchDisplayController.searchBar text];
     self.savedScopeButtonIndex = [self.searchDisplayController.searchBar selectedScopeButtonIndex];
+    
+}
+
+#pragma mark -
+#pragma mark - TrGds
+
+- (void) getTrGds{
+    
+    if (self.refreshButtonItem) {
+        self.refreshButtonItem.enabled = NO;
+    }
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.tableView animated:YES];
+    // Set determinate mode
+	hud.mode = MBProgressHUDModeIndeterminate;
+	hud.labelText = @"Loading";
+    hud.removeFromSuperViewOnHide = YES;
+    [hud show:YES];
+    
+    
+    iRfRgService* service = [iRfRgService service];
+    NSDictionary *setting = [CommonUtil getSettings];
+    NSString *username = [setting objectForKey:kSettingUserKey];
+    NSString *password = [setting objectForKey:kSettingPwdKey];
+    
+    [service getTrGds:self action:@selector(getTrGdsHandler:)
+             username: username
+             password: password
+                 page:0];
+    
 }
 
 // Handle the response from getRg.
@@ -418,7 +362,6 @@ static NSString *kObjKey = @"obj";
                                                         message: [result localizedFailureReason]
 													   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
 		[alert show];	
-		[alert release];
 	}
     
 	// Handle faults
@@ -429,7 +372,6 @@ static NSString *kObjKey = @"obj";
                                                         message: [result faultString]
 													   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
 		[alert show];	
-		[alert release];
 	}				
     
     
@@ -444,7 +386,6 @@ static NSString *kObjKey = @"obj";
         SBJsonParser *parser = [[SBJsonParser alloc] init];
         id json = [parser objectWithString:result];
         
-        [parser release];
         
         if (json != nil) {
             NSDictionary *ret = (NSDictionary*)json;
@@ -481,8 +422,6 @@ static NSString *kObjKey = @"obj";
                     
                     self.filteredListContent = [NSMutableArray arrayWithCapacity:[self.menuList count]];
                     
-                    [self.tablelistView reloadData];
-                    [self doneLoadingTableViewData];
                 }
                 
             }
@@ -499,8 +438,12 @@ static NSString *kObjKey = @"obj";
             
         }
     }
-    [self dismissActiveIndicatorView];
-    
+    [MBProgressHUD hideHUDForView:self.tableView animated:YES];
+    if (self.refreshButtonItem) {
+        self.refreshButtonItem.enabled = YES;
+    }
+    [self.tableView reloadData];
+    [self doneLoadingTableViewData];
 }
 
 
@@ -520,7 +463,19 @@ static NSString *kObjKey = @"obj";
     
     //  model should call this when its done loading
     _reloading = NO;
-    [_refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:self.tablelistView];
+    
+    if (GetSystemVersion >= 6.0){
+        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+        [formatter setDateFormat:@"MMM d, h:mm:ss a"];
+        NSString *lastUpdated = [NSString stringWithFormat:@"%@ on %@",NSLocalizedString(@"Last Updated", @"Last Updated"), [formatter stringFromDate:[NSDate date]]];
+        self.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:lastUpdated] ;
+        
+        
+        [self.refreshControl endRefreshing];
+    }
+    else {
+        [_refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:self.tableView];
+    }
     
 }
 
@@ -565,11 +520,6 @@ static NSString *kObjKey = @"obj";
     
     return [NSDate date]; // should return date data source was last changed
     
-}
-
-- (IBAction) scrollToRefresh:(id)sender{
-    
-    [self getTrGds];
 }
 
 
@@ -624,7 +574,6 @@ static NSString *kObjKey = @"obj";
         }
         
 	}
-    [searchKey release];
 }
 
 
@@ -650,17 +599,6 @@ static NSString *kObjKey = @"obj";
     return YES;
 }
 
-#pragma mark -
-#pragma mark  titleview segment action
-
-- (IBAction)switchSegment:(id)sender
-{
-	// The segmented control was clicked, handle it here
-	UISegmentedControl *segmentedControl = (UISegmentedControl *)sender;
-	titleSegmentIndex =  segmentedControl.selectedSegmentIndex;
-    [self.tablelistView reloadData];
-}
-
 
 #pragma mark -
 #pragma mark - LeveyPopListViewDelegate
@@ -670,7 +608,6 @@ static NSString *kObjKey = @"obj";
     LeveyPopListView *lplv = [[LeveyPopListView alloc] initWithTitle:@"请选择筛选条件..." options:self.titleArray];
     lplv.delegate = self;
     [lplv showInView:self.view animated:YES];
-    [lplv release];
     [self.titleBtn setEnabled:NO];
 }
 
@@ -678,13 +615,28 @@ static NSString *kObjKey = @"obj";
 {
     titleSegmentIndex =  anIndex;
     [self.titleBtn setTitle:[NSString stringWithFormat:@"%@▾",[self.titleArray objectAtIndex:anIndex]] forState:UIControlStateNormal];
-    [self.tablelistView reloadData];
+    [self.tableView reloadData];
     [self.titleBtn setEnabled:YES];
 }
 
 - (void)leveyPopListViewDidCancel
 {
     [self.titleBtn setEnabled:YES];
+}
+
+#pragma mark -
+#pragma mark - refresh handle
+
+-(void)refreshView:(UIRefreshControl *)refresh
+{
+    if (refresh.refreshing) {
+        refresh.attributedTitle = [[NSAttributedString alloc]initWithString:NSLocalizedString(@"Loading...", @"Loading Status")] ;
+        
+        [self getTrGds];
+        
+        [self performSelector:@selector(doneLoadingTableViewData) withObject:nil afterDelay:2];
+        
+    }
 }
 
 @end

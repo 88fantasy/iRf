@@ -16,14 +16,9 @@
     
     EGORefreshTableHeaderView *_refreshHeaderView; 
     BOOL _reloading;
-    BOOL _firstloaded;
-    UIAlertView *activityView;
-    UIActivityIndicatorView *activityIndicator;
 }
 
-@property (nonatomic, retain) NSMutableArray *dataList;
-@property (nonatomic, retain) UIAlertView *activityView;
-@property (nonatomic, retain) UIActivityIndicatorView *activityIndicator;
+@property (nonatomic, strong) NSMutableArray *dataList;
 
 - (void)reloadTableViewDataSource; 
 - (void)doneLoadingTableViewData;

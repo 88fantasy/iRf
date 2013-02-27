@@ -20,7 +20,6 @@ static NSDictionary *settingData;
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:msg
                                                    delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
     [alert show];
-    [alert release];
 }
 
 + (NSString*) getSettingPath
@@ -64,7 +63,6 @@ static NSDictionary *settingData;
         }
         else {
             NSLog(@"error = %@",error);
-            [error release];
         }
     }
     

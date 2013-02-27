@@ -89,7 +89,7 @@ static NSString *kExplainKey = @"explanation";
     // present and release the controller
     [self presentModalViewController: reader
 							animated: YES];
-    [reader release];
+    
 }
 
 - (void) imagePickerController: (UIImagePickerController*) reader
@@ -166,7 +166,7 @@ static NSString *kExplainKey = @"explanation";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:[self.codeList objectAtIndex:indexPath.row]];
 	if (cell == nil)
 	{
-		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:[self.codeList objectAtIndex:indexPath.row] ] autorelease];
+		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:[self.codeList objectAtIndex:indexPath.row] ] ;
 		cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 	}
 	

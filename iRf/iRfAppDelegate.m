@@ -10,6 +10,7 @@
 
 #import "RootViewController.h"
 #import "iRfRgService.h"
+#import "SBJson.h"
 
 @implementation iRfAppDelegate
 
@@ -34,8 +35,7 @@
 		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"连接服务器出现错误" 
                                                         message:@"请检查是否已连上互联网"
 													   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
-		[alert show];	
-		[alert release];
+		[alert show];
 		return NO;
 	}
 	else {
@@ -120,17 +120,6 @@
     // Saves changes in the application's managed object context before the application terminates.
     [self saveContext];
 }
-
-- (void)dealloc
-{
-    [_window release];
-    [__managedObjectContext release];
-    [__managedObjectModel release];
-    [__persistentStoreCoordinator release];
-    [_navigationController release];
-    [super dealloc];
-}
-
 
 - (void)saveContext
 {

@@ -14,20 +14,13 @@
 #import "RgListView.h"
 #import "RootViewController.h"
 #import "ScanOverlayView.h"
+#import "MBProgressHUD.h"
 
 
 @implementation ScanView
 
-@synthesize resultImage, resultText,vswitch,activityView,activityIndicator;
+@synthesize resultImage, resultText,vswitch;
 @synthesize _reader;
-
-- (void) alert:(NSString*)title msg:(NSString*)msg {
-    // open an alert with just an OK button
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:msg
-                                                   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
-    [alert show];	
-    [alert release];
-}
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -41,12 +34,6 @@
         // Custom initialization
         
 //        //增加滑动手势操作
-        UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeView:)];
-//        [swipeGesture setDirection:UISwipeGestureRecognizerDirectionLeft]; //左划
-        [swipeGesture setNumberOfTouchesRequired:2];//双指操作有效
-        [swipeGesture setDelegate:self];
-        [self.view addGestureRecognizer:swipeGesture];
-        [swipeGesture release];
         
 //        UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panView:)];
 //        [panGesture setMaximumNumberOfTouches:2];
@@ -55,28 +42,15 @@
 //        
 //        [panGesture release];
         
-//        ScanOverlayView *over = [[ScanOverlayView alloc]initWithFrame:GetScreenSize];
-//        [self.view addSubview:over];
-//        [over release];
-        
-        
         // ADD: present a barcode reader that scans from the camera feed
         _reader = [ZBarReaderViewController new];
         _reader.readerDelegate = self;
-        [self setOverView];
+        [_reader addScanLineOverlay];
+        
     }
     return self;
 }
 
-- (void) dealloc {
-    [resultImage release];
-    [resultText release];
-	[vswitch release];
-    [activityView release];
-    [activityIndicator release];
-    [_reader release];
-    [super dealloc];
-}
 
 - (void)didReceiveMemoryWarning
 {
@@ -100,19 +74,6 @@
         rect.size.height = 60;
         self.resultText.frame = rect;
     }
-}
-
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-    self.resultImage = nil;
-    self.resultText = nil;
-	self.vswitch = nil;
-    self.activityView = nil;
-    self.activityIndicator = nil;
-    self._reader = nil;
 }
 
 #pragma mark 纵向旋转控制
@@ -160,13 +121,6 @@
 
 #pragma mark scan and handles
 
-- (void) setOverView
-{
-    ScanOverlayView *over = [[ScanOverlayView alloc]initWithFrame:GetScreenSize];
-    [_reader setCameraOverlayView: over];
-    [over release];
-}
-
 - (IBAction) scanButtonTapped
 {
     // present and release the controller
@@ -210,39 +164,15 @@
     
 }
 
-//显示等待进度条
-- (void) displayActiveIndicatorView
-{
-    //    self.navigationItem.rightBarButtonItem = nil;
-    if (activityView==nil){        
-        activityView = [[UIAlertView alloc] initWithTitle:nil 
-                                                  message: NSLocalizedString(@"Loading...",@"Loading")
-                                                 delegate: self
-                                        cancelButtonTitle: nil
-                                        otherButtonTitles: nil];
-        
-        activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-        activityIndicator.frame = CGRectMake(120.f, 48.0f, 38.0f, 38.0f);
-        [activityView addSubview:activityIndicator];
-    }
-    [activityIndicator startAnimating];
-    [activityView show];
-    
-}
-
-//取消等待进度条
-- (void) dismissActiveIndicatorView
-{
-    if (activityView)
-    {
-        [activityIndicator stopAnimating];
-        [activityView dismissWithClickedButtonIndex:0 animated:YES];
-    }
-}
 
 - (IBAction) searchButtonTapped {
 	
-    [self displayActiveIndicatorView];
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    // Set determinate mode
+	hud.mode = MBProgressHUDModeIndeterminate;
+	hud.labelText = @"Loading";
+    hud.removeFromSuperViewOnHide = YES;
+    [hud show:YES];
     
     if ([RootViewController isSync] ) {
         FMDatabase *db = [DbUtil retConnectionForResource:@"iRf" ofType:@"rdb"];
@@ -274,7 +204,7 @@
             [self showRg:rows];
         }
         
-        [self dismissActiveIndicatorView];
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
     }
     else {
         iRfRgService* service = [iRfRgService service];
@@ -306,7 +236,6 @@
                                                         message: [result localizedFailureReason]
 													   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
 		[alert show];	
-		[alert release];
 	}
     
 	// Handle faults
@@ -317,7 +246,6 @@
                                                         message: [result faultString]
 													   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
 		[alert show];	
-		[alert release];
 	}				
     
     else{
@@ -331,7 +259,6 @@
         SBJsonParser *parser = [[SBJsonParser alloc] init];
         id json = [parser objectWithString:result];
         
-        [parser release];
         
         if (json != nil) {
             NSDictionary *ret = (NSDictionary*)json;
@@ -347,7 +274,7 @@
                 if ([msg isKindOfClass:[NSNull class]]) {
                     msg = @"空指针";
                 }
-                [self alert:NSLocalizedString(@"Error",@"Error") msg:msg];
+                [CommonUtil alert:NSLocalizedString(@"Error",@"Error") msg:msg];
             }
             
         }
@@ -355,13 +282,13 @@
             
         }
     }
-    [self dismissActiveIndicatorView];
+    [MBProgressHUD hideHUDForView:self.view animated:YES];
 }
 
 -(void) showRg:(NSArray*)rows{
     NSUInteger count = [rows count];
     if (count <1) {
-        [self alert:@"提示" msg:@"找不到此收货号"];
+        [CommonUtil alert:@"提示" msg:@"找不到此收货号"];
     }
     else{
         if (count == 1) {
@@ -369,7 +296,7 @@
             RgView *rgView = [[RgView alloc] initWithNibName:@"RgView" bundle:nil values:obj ];
             //                    rgView.scanViewDelegate = self;
             [self.navigationController pushViewController:rgView animated:YES];
-            [rgView release];
+            
         }
         else{
             
@@ -377,7 +304,6 @@
                                                                  objs:rows ];
             [self.navigationController pushViewController:rgListView animated:YES];
             
-            [rgListView release];
             
         }
         
@@ -400,12 +326,6 @@
 //    
 //    return YES;
 //}
-
-- (void)swipeView:(UISwipeGestureRecognizer *)recognizer
-{
-//    CGPoint location = [recognizer locationInView:self.view];
-	[self.navigationController popToRootViewControllerAnimated:YES];
-}
 
 //- (void)panView:(UIPanGestureRecognizer *)gestureRecognizer{
 //    

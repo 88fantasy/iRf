@@ -19,8 +19,6 @@
 	UISwitch *orgswitch;
     UISwitch *toswitch;
     UITableView *stocktableview;
-    UIAlertView *activityView;
-    UIActivityIndicatorView *activityIndicator;
     uint txtindex;
     UIScrollView *scrollView;
     NSMutableArray *stockList;
@@ -32,22 +30,21 @@
     NSString *nohouseflag;
 }
 
-@property (nonatomic, retain) IBOutlet UITextField *orglocno;
-@property (nonatomic, retain) IBOutlet UITextField *tolocno;
-@property (nonatomic, retain) IBOutlet UITextField *goodsqty;
-@property (nonatomic, retain) IBOutlet UISwitch *orgswitch;
-@property (nonatomic, retain) IBOutlet UISwitch *toswitch;
-@property (nonatomic, retain) IBOutlet UITableView *stocktableview;
-@property (nonatomic, retain) UIAlertView *activityView;
-@property (nonatomic, retain) UIActivityIndicatorView *activityIndicator;
-@property (nonatomic, retain) IBOutlet UIScrollView *scrollView;
-@property (nonatomic, retain) NSMutableArray *stockList;
-@property (nonatomic, retain) NSArray *baseCodeList;
-@property (nonatomic, retain) NSArray *venders;
-@property (nonatomic, retain) UIPickerView *venderPickerView;
-@property (nonatomic, retain) NSDictionary *vender;
-@property (nonatomic, retain) NSString *defaultflag;
-@property (nonatomic, retain) NSString *nohouseflag;
+@property (nonatomic, strong) IBOutlet UITextField *orglocno;
+@property (nonatomic, strong) IBOutlet UITextField *tolocno;
+@property (nonatomic, strong) IBOutlet UITextField *goodsqty;
+@property (nonatomic, strong) IBOutlet UISwitch *orgswitch;
+@property (nonatomic, strong) IBOutlet UISwitch *toswitch;
+@property (nonatomic, strong) IBOutlet UITableView *stocktableview;
+
+@property (nonatomic, strong) IBOutlet UIScrollView *scrollView;
+@property (nonatomic, strong) NSMutableArray *stockList;
+@property (nonatomic, strong) NSArray *baseCodeList;
+@property (nonatomic, strong) NSArray *venders;
+@property (nonatomic, strong) UIPickerView *venderPickerView;
+@property (nonatomic, strong) NSDictionary *vender;
+@property (nonatomic, strong) NSString *defaultflag;
+@property (nonatomic, strong) NSString *nohouseflag;
 
 - (IBAction) orgButtonTapped;
 - (IBAction) toButtonTapped;

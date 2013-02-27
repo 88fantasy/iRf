@@ -44,38 +44,6 @@
    
 }
 
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-    self.scrollView = nil;
-    self.goodsname = nil;
-    self.prodarea = nil;
-    self.lotno = nil;
-    self.invno = nil;
-    self.startdate = nil;
-    self.enddate = nil;
-    self.goodspy = nil;
-    self.finButton = nil;
-    self.tmp = nil;
-}
-
-- (void) dealloc{
-
-    [scrollView release];
-    [goodsname release];
-    [prodarea release];
-    [lotno release];
-    [invno release];
-    [startdate release];
-    [enddate release];
-    [goodspy release];
-    [finButton release];
-    [tmp release];
-    [super dealloc];
-}
-
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     // Return YES for supported orientations
@@ -124,10 +92,8 @@
                                    nil];
             [numberToolbar sizeToFit];
             textField.inputAccessoryView = numberToolbar;
-            [numberToolbar release];
         }
         
-        [datePicker release];
     }
     
 	return YES;
@@ -197,6 +163,5 @@
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateFormat:@"yyyy-MM-dd"];
     self.tmp.text = [formatter stringFromDate:sender.date];
-    [formatter release];
 }
 @end

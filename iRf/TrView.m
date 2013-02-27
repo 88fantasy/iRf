@@ -34,24 +34,11 @@ typedef NS_OPTIONS(NSUInteger, TrViewType) {
         self.title = @"货品对应关系明细";
         UIBarButtonItem *saveButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemSave target:self action:@selector(confirmTr:)];
         self.navigationItem.rightBarButtonItem = saveButton;
-        [saveButton release];
     }
     self.values = obj;
     return self;
 }
 
-- (void)dealloc
-{
-    [super dealloc];
-    [ugoodsid release];
-    [goodsname release];
-    [goodstype release];
-    [tradename release];
-    [factno release];
-    [goodsunit release];
-    [cusgdsid release];
-    [multi release];
-}
 
 - (void)didReceiveMemoryWarning
 {
@@ -83,26 +70,6 @@ typedef NS_OPTIONS(NSUInteger, TrViewType) {
     self.basecode.text = (NSString*) [values objectForKey:@"basecode"];
 }
 
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-    
-    self.ugoodsid = nil ;
-    self.goodsname = nil ;
-    self.goodstype = nil ;
-    self.tradename = nil ;
-    self.factno = nil ;
-    self.goodsunit = nil ;
-    self.cusgdsid = nil ;
-    self.multi = nil ;
-    self.companyname = nil;
-    self.locbtn = nil;
-    self.locno = nil;
-    self.basebtn = nil;
-    self.basecode = nil;
-}
 
 #pragma mark 纵向旋转控制
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -132,7 +99,6 @@ typedef NS_OPTIONS(NSUInteger, TrViewType) {
                                                         message: @"客户货品码不能为空"
                                                        delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
         [alert show];	
-        [alert release];
         return;
     }
     
@@ -251,8 +217,6 @@ typedef NS_OPTIONS(NSUInteger, TrViewType) {
                                                         message: [result localizedFailureReason]
 													   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
 		[alert show];	
-		[alert release];
-		return;
 	}
     
 	// Handle faults
@@ -263,51 +227,48 @@ typedef NS_OPTIONS(NSUInteger, TrViewType) {
                                                         message: [result faultString]
 													   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
 		[alert show];	
-		[alert release];
-		return;
 	}				
     
-    
-	// Do something with the NSString* result
-    NSString* result = (NSString*)value;
-	NSLog(@"doRg returned the value: %@", result);
-    
-    SBJsonParser *parser = [[SBJsonParser alloc] init];
-    id retObj = [parser objectWithString:result];
-    NSLog(@"%@",retObj);
-    [parser release];
-    
-    if (retObj != nil) {
-        NSDictionary *ret = (NSDictionary*)retObj;
-        NSString *retflag = (NSString*) [ret objectForKey:kRetFlagKey];
+    else {
+        // Do something with the NSString* result
+        NSString* result = (NSString*)value;
+        NSLog(@"doRg returned the value: %@", result);
         
-        if ([retflag boolValue]==YES) {
-            [values setValue:self.cusgdsid.text forKey:@"cusgdsid"];
-//            if (self.scanViewDelegate!=nil) { 
-//                //调用回调函数 
-//                [self.scanViewDelegate confirmCallBack:YES values:values]; 
-//            } 
-            [self.navigationController popViewControllerAnimated:YES];
+        SBJsonParser *parser = [[SBJsonParser alloc] init];
+        id retObj = [parser objectWithString:result];
+        NSLog(@"%@",retObj);
+        
+        if (retObj != nil) {
+            NSDictionary *ret = (NSDictionary*)retObj;
+            NSString *retflag = (NSString*) [ret objectForKey:kRetFlagKey];
+            
+            if ([retflag boolValue]==YES) {
+                [values setValue:self.cusgdsid.text forKey:@"cusgdsid"];
+    //            if (self.scanViewDelegate!=nil) { 
+    //                //调用回调函数 
+    //                [self.scanViewDelegate confirmCallBack:YES values:values]; 
+    //            } 
+                [self.navigationController popViewControllerAnimated:YES];
+            }
+            else{
+                NSString *msg = (NSString*) [ret objectForKey:kMsgKey];
+                if ([msg isKindOfClass:[NSNull class]]) {
+                    msg = @"空指针";
+                }
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", @"Error")
+                                                                message: msg
+                                                               delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+                [alert show];	
+            }
+            
         }
         else{
-            NSString *msg = (NSString*) [ret objectForKey:kMsgKey];
-            if ([msg isKindOfClass:[NSNull class]]) {
-                msg = @"空指针";
-            }
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", @"Error")
-                                                            message: msg
-                                                           delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
-            [alert show];	
-            [alert release];
+            
         }
-        
-    }
-    else{
-        
     }
 }
 
-#pragma mark - 
+#pragma mark -
 #pragma mark UITextFieldDelegate 
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
@@ -369,7 +330,6 @@ typedef NS_OPTIONS(NSUInteger, TrViewType) {
     // present and release the controller
     [self presentModalViewController: reader
 							animated: YES];
-    [reader release];
 }
 
 - (void) imagePickerController: (UIImagePickerController*) reader

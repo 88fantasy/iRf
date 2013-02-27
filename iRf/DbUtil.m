@@ -43,7 +43,6 @@
                             message:[@"无法打开数据库:"stringByAppendingString:filename]
                            delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
         [alert show];
-        [alert release];
     }
     return db;
 }
@@ -79,7 +78,6 @@
                               cancelButtonTitle:@"OK"
                               otherButtonTitles: nil];
         [alert show];
-        [alert release];
     }
     
     return db;

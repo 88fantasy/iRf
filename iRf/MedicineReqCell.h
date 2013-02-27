@@ -21,13 +21,13 @@
     NSMutableDictionary *data;
 }
 
-@property (nonatomic,retain) IBOutlet UILabel *goodsname;
-@property (nonatomic,retain) IBOutlet UILabel *goodstype;
-@property (nonatomic,retain) IBOutlet UILabel *locno;
-@property (nonatomic,retain) IBOutlet UILabel *lotno;
-@property (nonatomic,retain) IBOutlet UILabel *goodsqty;
-@property (nonatomic,retain) IBOutlet UILabel *houserealqty;
-@property (nonatomic,retain) IBOutlet UITextField *opqty;
-@property (nonatomic,retain) NSMutableDictionary *data;
+@property (nonatomic,strong) IBOutlet UILabel *goodsname;
+@property (nonatomic,strong) IBOutlet UILabel *goodstype;
+@property (nonatomic,strong) IBOutlet UILabel *locno;
+@property (nonatomic,strong) IBOutlet UILabel *lotno;
+@property (nonatomic,strong) IBOutlet UILabel *goodsqty;
+@property (nonatomic,strong) IBOutlet UILabel *houserealqty;
+@property (nonatomic,strong) IBOutlet UITextField *opqty;
+@property (nonatomic,strong) NSMutableDictionary *data;
 
 @end

@@ -14,14 +14,11 @@
 static bool syncflag = NO;
 
 @interface RootViewController : UITableViewController
-<UIAlertViewDelegate,NSURLConnectionDataDelegate>
+<UIAlertViewDelegate,NSURLConnectionDataDelegate,UINavigationControllerDelegate>
 {
     NSMutableArray *menuList;
 	UITextField *userfield;
 	UITextField *pwdfield;
-	
-	UIAlertView *activityView;
-    UIActivityIndicatorView *activityIndicator;
     
     UIAlertView *goalBarView;
     KDGoalBar *goalBar;
@@ -33,9 +30,6 @@ static bool syncflag = NO;
 @property (nonatomic, retain) NSMutableArray *menuList;
 @property (nonatomic, retain) UITextField *userfield;
 @property (nonatomic, retain) UITextField *pwdfield;
-
-@property (nonatomic, retain) UIAlertView *activityView;
-@property (nonatomic, retain) UIActivityIndicatorView *activityIndicator;
 
 @property (nonatomic, retain) UIAlertView *goalBarView;
 @property (nonatomic, retain) KDGoalBar *goalBar;

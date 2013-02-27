@@ -19,8 +19,6 @@
     EGORefreshTableHeaderView *_refreshHeaderView;
     BOOL _reloading;
     
-    UIAlertView *activityView;
-    UIActivityIndicatorView *activityIndicator;
     
     NSDictionary *searchObj;
     
@@ -28,11 +26,9 @@
     int detailFontSize;
 }
 
-@property (nonatomic, retain) NSMutableArray *menuList;
-@property (nonatomic, retain) NSArray *objs;
-@property (nonatomic, retain) UIAlertView *activityView;
-@property (nonatomic, retain) UIActivityIndicatorView *activityIndicator;
-@property (nonatomic, retain) NSDictionary *searchObj;
+@property (nonatomic, strong) NSMutableArray *menuList;
+@property (nonatomic, strong) NSArray *objs;
+@property (nonatomic, strong) NSDictionary *searchObj;
 
 
 - (void)reloadTableViewDataSource;

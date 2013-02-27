@@ -16,18 +16,14 @@
     UIImageView *resultImage;
     UITextField *resultText;
 	UISwitch *vswitch;
-    UIAlertView *activityView;
-    UIActivityIndicatorView *activityIndicator;
     
     ZBarReaderViewController *_reader;
 }
-@property (nonatomic, retain) IBOutlet UIImageView *resultImage;
-@property (nonatomic, retain) IBOutlet UITextField *resultText;
-@property (nonatomic, retain) IBOutlet UISwitch *vswitch;
-@property (nonatomic, retain) UIAlertView *activityView;
-@property (nonatomic, retain) UIActivityIndicatorView *activityIndicator;
+@property (nonatomic, strong) IBOutlet UIImageView *resultImage;
+@property (nonatomic, strong) IBOutlet UITextField *resultText;
+@property (nonatomic, strong) IBOutlet UISwitch *vswitch;
 
-@property (nonatomic, retain) ZBarReaderViewController *_reader;
+@property (nonatomic, strong) ZBarReaderViewController *_reader;
 
 - (IBAction) scanButtonTapped;
 - (IBAction) searchButtonTapped;

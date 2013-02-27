@@ -9,6 +9,7 @@
 #import "iRfRgService.h"
 #import "SBJson.h"
 #import "RgGroupListView.h"
+#import "MBProgressHUD.h"
 
 @interface RgGroupListView ()
 
@@ -18,7 +19,7 @@ static NSString *kCellIdentifier = @"MyIdentifier";
 
 
 @implementation RgGroupListView
-@synthesize menuList,objs,activityView,activityIndicator,searchObj;
+@synthesize menuList,objs,searchObj;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -27,18 +28,24 @@ static NSString *kCellIdentifier = @"MyIdentifier";
         // Custom initialization
         self.title = @"收货汇总查询";
         
-        if (_refreshHeaderView == nil) {
-            
-            EGORefreshTableHeaderView *view = [[EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0.0f, 0.0f - self.tableView.bounds.size.height, self.view.frame.size.width, self.tableView.bounds.size.height)];
-            view.delegate = self;
-            [self.tableView addSubview:view];
-            _refreshHeaderView = view;
-            [view release];
-            
+        if (GetSystemVersion >= 6.0){
+            UIRefreshControl *refresh = [[UIRefreshControl alloc] init];
+            refresh.tintColor = [UIColor lightGrayColor];
+            refresh.attributedTitle = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Pull down to refresh...", @"Pull down to refresh status")] ;
+            [refresh addTarget:self action:@selector(refreshView:) forControlEvents:UIControlEventValueChanged];
+            self.refreshControl = refresh;
         }
-        
-        //  update the last update date
-        [_refreshHeaderView refreshLastUpdatedDate];
+        else {
+            if (_refreshHeaderView == nil) {
+                EGORefreshTableHeaderView *view = [[EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0.0f, 0.0f - self.view.bounds.size.height, self.view.frame.size.width, self.view.bounds.size.height)];
+                view.delegate = self;
+                [self.view addSubview:view];
+                _refreshHeaderView = view;
+                
+            }
+            //  update the last update date
+            [_refreshHeaderView refreshLastUpdatedDate];
+        }
     }
     return self;
 }
@@ -62,32 +69,7 @@ static NSString *kCellIdentifier = @"MyIdentifier";
     
     [self.navigationItem setRightBarButtonItems:[NSArray arrayWithObjects: searchbtn,actionbtn,nil] animated:YES];
     
-    [searchbtn release];
-    [actionbtn release];
     
-}
-
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-    self.menuList = nil;
-    self.objs = nil;
-    _refreshHeaderView = nil;
-    self.activityView = nil;
-    self.activityIndicator = nil;
-}
-
-- (void)dealloc
-{
-    searchObj = nil;
-    _refreshHeaderView=nil;
-    [activityView release];
-    [activityIndicator release];
-    [searchObj release];
-    [menuList release];
-    [super dealloc];
 }
 
 - (void)didReceiveMemoryWarning
@@ -181,7 +163,7 @@ static NSString *kCellIdentifier = @"MyIdentifier";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:[[self.objs objectAtIndex:indexPath.row] objectForKey:kCellIdentifier]];
 	if (cell == nil)
 	{
-		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:[[self.objs objectAtIndex:indexPath.row] objectForKey:kCellIdentifier]] autorelease];
+		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:[[self.objs objectAtIndex:indexPath.row] objectForKey:kCellIdentifier]] ;
 		cell.accessoryType = UITableViewCellAccessoryNone;
 	}
 	
@@ -297,36 +279,6 @@ static NSString *kCellIdentifier = @"MyIdentifier";
 }
 
 
-//显示等待进度条
-- (void) displayActiveIndicatorView
-{
-    //    self.navigationItem.rightBarButtonItem = nil;
-    if (activityView==nil){
-        activityView = [[UIAlertView alloc] initWithTitle:nil
-                                                  message: NSLocalizedString(@"Loading...",@"Loading...")
-                                                 delegate: self
-                                        cancelButtonTitle: nil
-                                        otherButtonTitles: nil];
-        
-        activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-        activityIndicator.frame = CGRectMake(120.f, 48.0f, 38.0f, 38.0f);
-        [activityView addSubview:activityIndicator];
-    }
-    [activityIndicator startAnimating];
-    [activityView show];
-    
-}
-
-//取消等待进度条
-- (void) dismissActiveIndicatorView
-{
-    if (activityView)
-    {
-        [activityIndicator stopAnimating];
-        [activityView dismissWithClickedButtonIndex:0 animated:YES];
-    }
-}
-
 - (void) reload {
     
     self.menuList = [NSMutableArray array];
@@ -390,7 +342,18 @@ static NSString *kCellIdentifier = @"MyIdentifier";
     
     //  model should call this when its done loading
     _reloading = NO;
-    [_refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:self.tableView];
+    if (GetSystemVersion >= 6.0){
+        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+        [formatter setDateFormat:@"MMM d, h:mm:ss a"];
+        NSString *lastUpdated = [NSString stringWithFormat:@"%@ on %@",NSLocalizedString(@"Last Updated", @"Last Updated"), [formatter stringFromDate:[NSDate date]]];
+        self.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:lastUpdated] ;
+        
+        
+        [self.refreshControl endRefreshing];
+    }
+    else {
+        [_refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:self.tableView];
+    }
     
 }
 
@@ -467,7 +430,6 @@ static NSString *kCellIdentifier = @"MyIdentifier";
     rsv.startdate.text = [self.searchObj objectForKey:@"startdate"];
     rsv.enddate.text = [self.searchObj objectForKey:@"enddate"];
     
-    [rsv release];
 }
 
 -(void)searchCallBack:(NSDictionary *)_fields{
@@ -480,7 +442,12 @@ static NSString *kCellIdentifier = @"MyIdentifier";
 
 - (void) getAllRgGroup{
     
-    [self displayActiveIndicatorView];
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.tableView animated:YES];
+    // Set determinate mode
+	hud.mode = MBProgressHUDModeIndeterminate;
+	hud.labelText = @"Loading";
+    hud.removeFromSuperViewOnHide = YES;
+    [hud show:YES];
     
    
     iRfRgService* service = [iRfRgService service];
@@ -500,7 +467,7 @@ static NSString *kCellIdentifier = @"MyIdentifier";
 // Handle the response from getRg.
 
 - (void) getAllRgGroupHandler: (id) value {
-    [self dismissActiveIndicatorView];
+    
 	// Handle errors
 	if([value isKindOfClass:[NSError class]]) {
 		NSLog(@"%@", value);
@@ -509,7 +476,6 @@ static NSString *kCellIdentifier = @"MyIdentifier";
                                                         message: [result localizedFailureReason]
 													   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
 		[alert show];
-		[alert release];
 	}
     
 	// Handle faults
@@ -520,7 +486,6 @@ static NSString *kCellIdentifier = @"MyIdentifier";
                                                         message: [result faultString]
 													   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
 		[alert show];
-		[alert release];
 	}
     
     
@@ -535,7 +500,6 @@ static NSString *kCellIdentifier = @"MyIdentifier";
         SBJsonParser *parser = [[SBJsonParser alloc] init];
         id json = [parser objectWithString:result];
         
-        [parser release];
         
         if (json != nil) {
             NSDictionary *ret = (NSDictionary*)json;
@@ -559,7 +523,7 @@ static NSString *kCellIdentifier = @"MyIdentifier";
             
         }
     }
-    
+    [MBProgressHUD hideHUDForView:self.tableView animated:YES];
 }
 
 #pragma mark -
@@ -568,6 +532,21 @@ static NSString *kCellIdentifier = @"MyIdentifier";
 - (void) groupAction
 {
     
+}
+
+#pragma mark -
+#pragma mark - refresh handle
+
+-(void)refreshView:(UIRefreshControl *)refresh
+{
+    if (refresh.refreshing) {
+        refresh.attributedTitle = [[NSAttributedString alloc]initWithString:NSLocalizedString(@"Loading...", @"Loading Status")] ;
+        
+        [self getAllRgGroup];
+        
+        [self performSelector:@selector(doneLoadingTableViewData) withObject:nil afterDelay:2];
+        
+    }
 }
 
 @end

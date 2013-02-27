@@ -30,22 +30,22 @@
     NSUInteger scanType;
 }
 
-@property (nonatomic, retain) IBOutlet UIScrollView *scrollView;
-@property (nonatomic, retain) IBOutlet UITextField *ugoodsid;
-@property (nonatomic, retain) IBOutlet UITextField *goodsname;
-@property (nonatomic, retain) IBOutlet UITextField *goodstype;
-@property (nonatomic, retain) IBOutlet UITextField *tradename;
-@property (nonatomic, retain) IBOutlet UITextField *factno;
-@property (nonatomic, retain) IBOutlet UITextField *goodsunit;
-@property (nonatomic, retain) IBOutlet UITextField *cusgdsid;
-@property (nonatomic, retain) IBOutlet UITextField *multi;
-@property (nonatomic, retain) IBOutlet UITextField *companyname;
-@property (nonatomic, retain) IBOutlet UIButton *locbtn;
-@property (nonatomic, retain) IBOutlet UITextField *locno;
-@property (nonatomic, retain) IBOutlet UIButton *basebtn;
-@property (nonatomic, retain) IBOutlet UITextField *basecode;
+@property (nonatomic, strong) IBOutlet UIScrollView *scrollView;
+@property (nonatomic, strong) IBOutlet UITextField *ugoodsid;
+@property (nonatomic, strong) IBOutlet UITextField *goodsname;
+@property (nonatomic, strong) IBOutlet UITextField *goodstype;
+@property (nonatomic, strong) IBOutlet UITextField *tradename;
+@property (nonatomic, strong) IBOutlet UITextField *factno;
+@property (nonatomic, strong) IBOutlet UITextField *goodsunit;
+@property (nonatomic, strong) IBOutlet UITextField *cusgdsid;
+@property (nonatomic, strong) IBOutlet UITextField *multi;
+@property (nonatomic, strong) IBOutlet UITextField *companyname;
+@property (nonatomic, strong) IBOutlet UIButton *locbtn;
+@property (nonatomic, strong) IBOutlet UITextField *locno;
+@property (nonatomic, strong) IBOutlet UIButton *basebtn;
+@property (nonatomic, strong) IBOutlet UITextField *basecode;
 
-@property (nonatomic, retain) IBOutlet NSDictionary *values;
+@property (nonatomic, strong) IBOutlet NSDictionary *values;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil values:(NSDictionary*)obj ;
 

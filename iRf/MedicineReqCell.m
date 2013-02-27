@@ -36,7 +36,7 @@
                                nil];
         [numberToolbar sizeToFit];
         self.opqty.inputAccessoryView = numberToolbar;
-        [numberToolbar release];
+        
     }
 }
 
@@ -60,7 +60,6 @@
     if ([self.opqty.text intValue]>[self.goodsqty.text intValue]) {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", @"Error") message:@"输入数量不可以大于该货位总库存" delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
         [alert show];	
-        [alert release];
         return NO;
     }
     else {

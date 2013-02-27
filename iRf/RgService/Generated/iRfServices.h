@@ -20,10 +20,10 @@ iRfRgService* rgService;
 +(iRfServices*)serviceWithServer:(NSString*)serverName;
 
 @property (nonatomic) BOOL logging;
-@property (nonatomic, retain) NSString* server;
-@property (nonatomic, retain) NSString* defaultServer;
+@property (nonatomic, strong) NSString* server;
+@property (nonatomic, strong) NSString* defaultServer;
 
-@property (nonatomic, retain, readonly) iRfRgService* rgService;
+@property (nonatomic, strong, readonly) iRfRgService* rgService;
 
 @end
 			

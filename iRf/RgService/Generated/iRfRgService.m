@@ -21,14 +21,14 @@
 		{
             NSDictionary *settingData = [CommonUtil getSettings];
             if (IsInternet) {
-                self.serviceUrl = @"http://125.88.8.28/gzmpcscm3/services/RgService";
+                self.serviceUrl = homeurl;
 //                self.serviceUrl = @"http://192.168.200.237:8070/gzmpcscm3/services/RgService";
             }
             else{
                 NSString *serverurl = [settingData objectForKey:kSettingServerKey];
                 NSRange range = [serverurl rangeOfString:@"/" options:NSCaseInsensitiveSearch];
                 if (range.length == 0) {
-                    serverurl = [NSString stringWithFormat:@"%@/gzmpcscm3/services/RgService",serverurl];
+                    serverurl = [NSString stringWithFormat:@"%@/hscm/services/RgService",serverurl];
                 }
                 NSRange range2 = [serverurl rangeOfString:@"http://" options:NSCaseInsensitiveSearch];
                 if (range2.length == 0) {

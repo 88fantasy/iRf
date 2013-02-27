@@ -139,3 +139,14 @@
 }
 
 @end
+
+
+@implementation ZBarReaderViewController (ZBarReaderViewControllerScanLineOverlayView)
+
+-(void)addScanLineOverlay
+{
+    ScanOverlayView *over = [[ScanOverlayView alloc]initWithFrame:GetScreenSize];
+    [self setCameraOverlayView: over];
+}
+
+@end

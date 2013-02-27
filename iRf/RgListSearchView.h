@@ -34,19 +34,19 @@
     id<RgListSearchViewDelegate> rgListSearchViewDelegate;
 }
 
-@property (nonatomic, retain) IBOutlet UIScrollView *scrollView;
-@property (nonatomic, retain) IBOutlet UITextField *goodsname;
-@property (nonatomic, retain) IBOutlet UITextField *prodarea;
-@property (nonatomic, retain) IBOutlet UITextField *lotno;
-@property (nonatomic, retain) IBOutlet UITextField *invno;
-@property (nonatomic, retain) IBOutlet UITextField *startdate;
-@property (nonatomic, retain) IBOutlet UITextField *enddate;
-@property (nonatomic, retain) IBOutlet UITextField *goodspy;
-@property (nonatomic, retain) IBOutlet UISegmentedControl *rgflag;
+@property (nonatomic, strong) IBOutlet UIScrollView *scrollView;
+@property (nonatomic, strong) IBOutlet UITextField *goodsname;
+@property (nonatomic, strong) IBOutlet UITextField *prodarea;
+@property (nonatomic, strong) IBOutlet UITextField *lotno;
+@property (nonatomic, strong) IBOutlet UITextField *invno;
+@property (nonatomic, strong) IBOutlet UITextField *startdate;
+@property (nonatomic, strong) IBOutlet UITextField *enddate;
+@property (nonatomic, strong) IBOutlet UITextField *goodspy;
+@property (nonatomic, strong) IBOutlet UISegmentedControl *rgflag;
 
-@property (nonatomic, retain) IBOutlet UIBarButtonItem *finButton;
-@property (nonatomic, retain) IBOutlet UITextField *tmp;
-@property (nonatomic,retain) id<RgListSearchViewDelegate>  rgListSearchViewDelegate;
+@property (nonatomic, strong) IBOutlet UIBarButtonItem *finButton;
+@property (nonatomic, strong) IBOutlet UITextField *tmp;
+@property (nonatomic,strong) id<RgListSearchViewDelegate>  rgListSearchViewDelegate;
 
 
 - (IBAction) finSearch:(id)sender;

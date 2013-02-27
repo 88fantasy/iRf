@@ -12,8 +12,9 @@
 #import "RgView.h"
 #import "RootViewController.h"
 #import "DbUtil.h"
+#import "MBProgressHUD.h"
 
-static NSString *kCellIdentifier = @"MyIdentifier";
+static NSString *kCellIdentifier = @"RgListViewIdentifier";
 static NSString *kTitleKey = @"title";
 static NSString *kExplainKey = @"explanation";
 //static NSString *kViewControllerKey = @"viewController";
@@ -21,7 +22,7 @@ static NSString *kObjKey = @"obj";
 
 @implementation RgListView
 
-@synthesize menuList,objs,refreshButtonItem,activityView,activityIndicator,searchObj;
+@synthesize menuList,objs,refreshButtonItem,searchObj;
 @synthesize goalBar,goalBarView;
 
 
@@ -31,21 +32,26 @@ static NSString *kObjKey = @"obj";
     if (self) {
         // Custom initialization
         self.title = @"收货明细列表";
-     
-        _firstload = YES;
-        canReload = YES;
-        if (_refreshHeaderView == nil) {
-            
-            EGORefreshTableHeaderView *view = [[EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0.0f, 0.0f - self.tableView.bounds.size.height, self.view.frame.size.width, self.tableView.bounds.size.height)];
-            view.delegate = self;
-            [self.tableView addSubview:view];
-            _refreshHeaderView = view;
-            [view release];
-            
-        }
         
-        //  update the last update date
-        [_refreshHeaderView refreshLastUpdatedDate];
+        canReload = YES;
+        if (GetSystemVersion >= 6.0){
+            UIRefreshControl *refresh = [[UIRefreshControl alloc] init];
+            refresh.tintColor = [UIColor lightGrayColor];
+            refresh.attributedTitle = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Pull down to refresh...", @"Pull down to refresh status")] ;
+            [refresh addTarget:self action:@selector(refreshView:) forControlEvents:UIControlEventValueChanged];
+            self.refreshControl = refresh;
+        }
+        else {
+            if (_refreshHeaderView == nil) {
+                EGORefreshTableHeaderView *view = [[EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0.0f, 0.0f - self.view.bounds.size.height, self.view.frame.size.width, self.view.bounds.size.height)];
+                view.delegate = self;
+                [self.view addSubview:view];
+                _refreshHeaderView = view;
+                
+            }
+            //  update the last update date
+            [_refreshHeaderView refreshLastUpdatedDate];
+        }
     }
     return self;
 }
@@ -55,7 +61,6 @@ static NSString *kObjKey = @"obj";
     self = [super initWithStyle:style];
     if (self) {
         // Custom initialization
-        _firstload = NO;
         canReload = NO;
         self.objs = _arrays;
         
@@ -63,17 +68,6 @@ static NSString *kObjKey = @"obj";
     return self;
 }
 
-- (void)dealloc
-{
-    searchObj = nil;
-    _refreshHeaderView=nil;
-    [refreshButtonItem release];
-    [activityView release];
-    [activityIndicator release];
-    [searchObj release];
-    [menuList release];
-    [super dealloc];
-}
 
 - (void)didReceiveMemoryWarning
 {
@@ -88,42 +82,17 @@ static NSString *kObjKey = @"obj";
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:msg
                                                    delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
     [alert show];
-    [alert release];
 }
 
-//显示等待进度条
-- (void) displayActiveIndicatorView
-{
-    //    self.navigationItem.rightBarButtonItem = nil;
-    if (activityView==nil){
-        activityView = [[UIAlertView alloc] initWithTitle:nil
-                                                  message: NSLocalizedString(@"Loading...",@"Loading...")
-                                                 delegate: self
-                                        cancelButtonTitle: nil
-                                        otherButtonTitles: nil];
-        
-        activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-        activityIndicator.frame = CGRectMake(120.f, 48.0f, 38.0f, 38.0f);
-        [activityView addSubview:activityIndicator];
-    }
-    [activityIndicator startAnimating];
-    [activityView show];
-    
-}
-
-//取消等待进度条
-- (void) dismissActiveIndicatorView
-{
-    if (activityView)
-    {
-        [activityIndicator stopAnimating];
-        [activityView dismissWithClickedButtonIndex:0 animated:YES];
-    }
-}
 
 - (void) getAllRg{
     
-    [self displayActiveIndicatorView];
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.tableView animated:YES];
+    // Set determinate mode
+	hud.mode = MBProgressHUDModeIndeterminate;
+	hud.labelText = @"Loading";
+    hud.removeFromSuperViewOnHide = YES;
+    [hud show:YES];
     
     if ([RootViewController isSync] ) {
         FMDatabase *db = [DbUtil retConnectionForResource:@"iRf" ofType:@"rdb"];
@@ -197,7 +166,7 @@ static NSString *kObjKey = @"obj";
             [self reload];
         }
         
-        [self dismissActiveIndicatorView];
+        [MBProgressHUD hideHUDForView:self.tableView animated:YES];
     }
     else{
         iRfRgService* service = [iRfRgService service];
@@ -227,9 +196,6 @@ static NSString *kObjKey = @"obj";
         UIBarButtonItem *batchbtn = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemOrganize                                                                          target:self action:@selector(batchMode)];
         
         [self.navigationItem setRightBarButtonItems:[NSArray arrayWithObjects: searchbtn,batchbtn,nil] animated:YES];
-        
-        [searchbtn release];
-        [batchbtn release];
     }
 }
 
@@ -252,7 +218,7 @@ static NSString *kObjKey = @"obj";
     NSDateFormatter *df = [[NSDateFormatter alloc] init];
     [df setDateFormat:@"yyyy-MM-dd"];
     NSString *yesterday = [df stringFromDate:[NSDate dateWithTimeIntervalSinceNow:- 24 * 60 * 60 * 1]]  ;
-    [df release];
+
     self.searchObj = [NSDictionary dictionaryWithObjectsAndKeys:
                       @"0",@"rgflag",
                       yesterday,@"startdate",
@@ -268,9 +234,7 @@ static NSString *kObjKey = @"obj";
     self.menuList = nil;
     self.objs = nil;
     _refreshHeaderView = nil;
-    self.activityView = nil;
     self.refreshButtonItem = nil;
-    self.activityIndicator = nil;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
@@ -308,7 +272,7 @@ static NSString *kObjKey = @"obj";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:[[self.menuList objectAtIndex:indexPath.row] objectForKey:kCellIdentifier]];
 	if (cell == nil)
 	{
-		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:[[self.menuList objectAtIndex:indexPath.row] objectForKey:kCellIdentifier]] autorelease];
+		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:[[self.menuList objectAtIndex:indexPath.row] objectForKey:kCellIdentifier]] ;
 		cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 	}
 	
@@ -333,7 +297,7 @@ static NSString *kObjKey = @"obj";
         backgrdView.backgroundColor = [UIColor whiteColor];
     }
     cell.backgroundView = backgrdView;
-    [backgrdView release];
+    
     return cell;
 }
 
@@ -407,9 +371,8 @@ static NSString *kObjKey = @"obj";
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    if (canReload && _firstload ) {
+    if (canReload  ) {
         [self getAllRg];
-        _firstload = NO;
     }
 	// this UIViewController is about to re-appear, make sure we remove the current selection in our table view
 	NSIndexPath *tableSelection = [self.tableView indexPathForSelectedRow];
@@ -432,7 +395,6 @@ static NSString *kObjKey = @"obj";
                                                         message: [result localizedFailureReason]
 													   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
 		[alert show];
-		[alert release];
 	}
     
 	// Handle faults
@@ -443,7 +405,6 @@ static NSString *kObjKey = @"obj";
                                                         message: [result faultString]
 													   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
 		[alert show];
-		[alert release];
 	}
     
     
@@ -458,7 +419,6 @@ static NSString *kObjKey = @"obj";
         SBJsonParser *parser = [[SBJsonParser alloc] init];
         id json = [parser objectWithString:result];
         
-        [parser release];
         
         if (json != nil) {
             NSDictionary *ret = (NSDictionary*)json;
@@ -483,7 +443,7 @@ static NSString *kObjKey = @"obj";
         }
     }
     if (canReload) {
-        [self dismissActiveIndicatorView];
+        [MBProgressHUD hideHUDForView:self.tableView animated:YES];
     }
     
 }
@@ -566,7 +526,18 @@ static NSString *kObjKey = @"obj";
     
     //  model should call this when its done loading
     _reloading = NO;
-    [_refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:self.tableView];
+    if (GetSystemVersion >= 6.0){
+        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+        [formatter setDateFormat:@"MMM d, h:mm:ss a"];
+        NSString *lastUpdated = [NSString stringWithFormat:@"%@ on %@",NSLocalizedString(@"Last Updated", @"Last Updated"), [formatter stringFromDate:[NSDate date]]];
+        self.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:lastUpdated] ;
+        
+        
+        [self.refreshControl endRefreshing];
+    }
+    else {
+        [_refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:self.tableView];
+    }
     
 }
 
@@ -654,7 +625,6 @@ static NSString *kObjKey = @"obj";
         [rsv.rgflag setSelectedSegmentIndex:1];
     }
     
-    [rsv release];
 }
 
 -(void)searchCallBack:(NSDictionary *)_fields{
@@ -678,8 +648,6 @@ static NSString *kObjKey = @"obj";
     
     [self.navigationItem setRightBarButtonItems:[NSArray arrayWithObjects: confirmbtn,cancelbtn,nil] animated:YES];
     
-    [cancelbtn release];
-    [confirmbtn release];
     if (!self.editing) {
         [self setEditing:YES animated:YES];
     }
@@ -695,7 +663,6 @@ static NSString *kObjKey = @"obj";
                                           destructiveButtonTitle:@"批量收货"
                                                otherButtonTitles:nil, nil];
         [as showFromBarButtonItem:sender animated:YES];
-        [as release];
     }
     
 }
@@ -761,7 +728,6 @@ static NSString *kObjKey = @"obj";
                                                         message: [result localizedFailureReason]
 													   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
 		[alert show];
-		[alert release];
 	}
     
 	// Handle faults
@@ -772,60 +738,58 @@ static NSString *kObjKey = @"obj";
                                                         message: [result faultString]
 													   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
 		[alert show];
-		[alert release];
 	}
     
-    
-	// Do something with the NSString* result
-    NSString* result = (NSString*)value;
-	NSLog(@"doRg returned the value: %@", result);
-    
-    SBJsonParser *parser = [[SBJsonParser alloc] init];
-    id retObj = [parser objectWithString:result];
-    NSLog(@"%@",retObj);
-    [parser release];
-    
-    doneDoRgCoount ++;
-    if (doneDoRgCoount >= notDoRgCount) {
-        [self dismissGoalBarView];
-        [self reloadTableViewDataSource];
-    }
     else {
-        int percent = doneDoRgCoount * 100 / notDoRgCount ;
-        [self displayGoalBarView:percent];
-    }
-    
-    if (retObj != nil) {
-        NSDictionary *ret = (NSDictionary*)retObj;
-        NSString *retflag = (NSString*) [ret objectForKey:kRetFlagKey];
+        // Do something with the NSString* result
+        NSString* result = (NSString*)value;
+        NSLog(@"doRg returned the value: %@", result);
         
-        if ([retflag boolValue]==YES) {
-            NSDictionary *msg = (NSDictionary*) [ret objectForKey:kMsgKey];
-            NSString *spdid = (NSString*) [msg objectForKey:@"spdid"];
-            if ([RootViewController isSync]) {
-                FMDatabase *db = [DbUtil retConnectionForResource:@"iRf" ofType:@"rdb"];
-                if(db != nil) {
-                    [db executeUpdate:@"update scm_rg set rgdate = datetime('now') where spdid = ?",spdid];
-                    [db close];
+        SBJsonParser *parser = [[SBJsonParser alloc] init];
+        id retObj = [parser objectWithString:result];
+        NSLog(@"%@",retObj);
+        
+        doneDoRgCoount ++;
+        if (doneDoRgCoount >= notDoRgCount) {
+            [self dismissGoalBarView];
+            [self reloadTableViewDataSource];
+        }
+        else {
+            int percent = doneDoRgCoount * 100 / notDoRgCount ;
+            [self displayGoalBarView:percent];
+        }
+        
+        if (retObj != nil) {
+            NSDictionary *ret = (NSDictionary*)retObj;
+            NSString *retflag = (NSString*) [ret objectForKey:kRetFlagKey];
+            
+            if ([retflag boolValue]==YES) {
+                NSDictionary *msg = (NSDictionary*) [ret objectForKey:kMsgKey];
+                NSString *spdid = (NSString*) [msg objectForKey:@"spdid"];
+                if ([RootViewController isSync]) {
+                    FMDatabase *db = [DbUtil retConnectionForResource:@"iRf" ofType:@"rdb"];
+                    if(db != nil) {
+                        [db executeUpdate:@"update scm_rg set rgdate = datetime('now') where spdid = ?",spdid];
+                        [db close];
+                    }
                 }
+                
+            }
+            else{
+                NSString *msg = (NSString*) [ret objectForKey:kMsgKey];
+                if ([msg isKindOfClass:[NSNull class]]) {
+                    msg = @"空指针";
+                }
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", @"Error")
+                                                                message: msg
+                                                               delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+                [alert show];
             }
             
         }
         else{
-            NSString *msg = (NSString*) [ret objectForKey:kMsgKey];
-            if ([msg isKindOfClass:[NSNull class]]) {
-                msg = @"空指针";
-            }
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", @"Error")
-                                                            message: msg
-                                                           delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
-            [alert show];
-            [alert release];
+            
         }
-        
-    }
-    else{
-        
     }
 }
 
@@ -862,4 +826,20 @@ static NSString *kObjKey = @"obj";
         [goalBarView dismissWithClickedButtonIndex:0 animated:YES];
     }
 }
+
+#pragma mark -
+#pragma mark - refresh handle
+
+-(void)refreshView:(UIRefreshControl *)refresh
+{
+    if (refresh.refreshing) {
+        refresh.attributedTitle = [[NSAttributedString alloc]initWithString:NSLocalizedString(@"Loading...", @"Loading Status")] ;
+        
+        [self getAllRg];
+        
+        [self performSelector:@selector(doneLoadingTableViewData) withObject:nil afterDelay:2];
+        
+    }
+}
+
 @end

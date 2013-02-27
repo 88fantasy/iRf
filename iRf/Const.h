@@ -11,6 +11,7 @@
 
 
 static NSString *base = @"http://www.gzmpc.com/gzmpcscm3";
+static NSString *homeurl = @"http://125.88.8.28/gzmpcscm3/services/RgService";
 static NSString *host = @"www.gzmpc.com";
 static NSString *kRetFlagKey = @"ret";
 static NSString *kMsgKey = @"msg";

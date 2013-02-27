@@ -19,3 +19,10 @@
 -(void)drawInContext:(CGContextRef)context;
 
 @end
+
+
+@interface ZBarReaderViewController (ZBarReaderViewControllerScanLineOverlayView)
+
+-(void)addScanLineOverlay;
+
+@end

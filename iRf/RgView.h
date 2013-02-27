@@ -46,28 +46,28 @@
     int doneDoRgCoount;
 }
 
-@property (nonatomic, retain) IBOutlet UIScrollView *scrollView;
-@property (nonatomic, retain) IBOutlet UITextField *invno;
-@property (nonatomic, retain) IBOutlet UITextField *goodsname;
-@property (nonatomic, retain) IBOutlet UITextField *goodstype;
-@property (nonatomic, retain) IBOutlet UITextField *factoryname;
-@property (nonatomic, retain) IBOutlet UITextField *goodsprice;
-@property (nonatomic, retain) IBOutlet UITextField *goodsunit;
-@property (nonatomic, retain) IBOutlet UITextField *lotno;
-@property (nonatomic, retain) IBOutlet UITextField *packsize;
-@property (nonatomic, retain) IBOutlet UITextField *validto;
-@property (nonatomic, retain) IBOutlet UITextField *orgrow;
-@property (nonatomic, retain) IBOutlet UITextField *goodsqty;
-@property (nonatomic, retain) IBOutlet UITextField *rgqty;
-@property (nonatomic, retain) IBOutlet UITextField *locno;
-@property (nonatomic, retain) IBOutlet UITextField *socompanyname;
-@property (nonatomic, retain) IBOutlet UITextField *vendername;
-@property (nonatomic, retain) IBOutlet NSString *spdid;
-@property (nonatomic, retain) IBOutlet NSDictionary *values;
-//@property (nonatomic,retain) id<ScanViewDelegate>  scanViewDelegate;
+@property (nonatomic, strong) IBOutlet UIScrollView *scrollView;
+@property (nonatomic, strong) IBOutlet UITextField *invno;
+@property (nonatomic, strong) IBOutlet UITextField *goodsname;
+@property (nonatomic, strong) IBOutlet UITextField *goodstype;
+@property (nonatomic, strong) IBOutlet UITextField *factoryname;
+@property (nonatomic, strong) IBOutlet UITextField *goodsprice;
+@property (nonatomic, strong) IBOutlet UITextField *goodsunit;
+@property (nonatomic, strong) IBOutlet UITextField *lotno;
+@property (nonatomic, strong) IBOutlet UITextField *packsize;
+@property (nonatomic, strong) IBOutlet UITextField *validto;
+@property (nonatomic, strong) IBOutlet UITextField *orgrow;
+@property (nonatomic, strong) IBOutlet UITextField *goodsqty;
+@property (nonatomic, strong) IBOutlet UITextField *rgqty;
+@property (nonatomic, strong) IBOutlet UITextField *locno;
+@property (nonatomic, strong) IBOutlet UITextField *socompanyname;
+@property (nonatomic, strong) IBOutlet UITextField *vendername;
+@property (nonatomic, strong) IBOutlet NSString *spdid;
+@property (nonatomic, strong) IBOutlet NSDictionary *values;
+//@property (nonatomic,strong) id<ScanViewDelegate>  scanViewDelegate;
 
-@property (nonatomic, retain) UIAlertView *goalBarView;
-@property (nonatomic, retain) KDGoalBar *goalBar;
+@property (nonatomic, strong) UIAlertView *goalBarView;
+@property (nonatomic, strong) KDGoalBar *goalBar;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil values:(NSDictionary*)obj ;
 

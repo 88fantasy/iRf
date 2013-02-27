@@ -50,12 +50,12 @@
             if ([ RootViewController isSync]) {
                 UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(showActionSeet)];
                 self.navigationItem.rightBarButtonItem = addButton;
-                [addButton release];
+
             }
             else {
                 UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithTitle:@"确认收货" style:UIBarButtonItemStyleBordered target:self action:@selector(confirmRg)];
                 self.navigationItem.rightBarButtonItem = addButton;
-                [addButton release];
+
             }
             
         }
@@ -65,27 +65,6 @@
     return self;
 }
 
-- (void)dealloc
-{
-    [super dealloc];
-    [invno release];
-    [goodsname release];
-    [goodstype release];
-    [factoryname release];
-    [goodsprice release];
-    [goodsunit release];
-    [lotno release];
-    [packsize release];
-    [validto release];
-    [orgrow release];
-    [goodsqty release];
-    [rgqty release];
-    [locno release];
-    [socompanyname release];
-    [vendername release];
-    [spdid release];
-    [values release];
-}
 
 - (void)didReceiveMemoryWarning
 {
@@ -235,8 +214,6 @@
                                                         message: [result localizedFailureReason]
 													   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
 		[alert show];
-		[alert release];
-		return;
 	}
     
 	// Handle faults
@@ -247,58 +224,55 @@
                                                         message: [result faultString]
 													   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
 		[alert show];
-		[alert release];
-		return;
 	}
     
-    
-	// Do something with the NSString* result
-    NSString* result = (NSString*)value;
-	NSLog(@"doRg returned the value: %@", result);
-    
-    SBJsonParser *parser = [[SBJsonParser alloc] init];
-    id retObj = [parser objectWithString:result];
-    NSLog(@"%@",retObj);
-    [parser release];
-    
-    if (retObj != nil) {
-        NSDictionary *ret = (NSDictionary*)retObj;
-        NSString *retflag = (NSString*) [ret objectForKey:kRetFlagKey];
+    else {
+        // Do something with the NSString* result
+        NSString* result = (NSString*)value;
+        NSLog(@"doRg returned the value: %@", result);
         
-        if ([retflag boolValue]==YES) {
-            [values setValue:@"1" forKey:@"rgflag"];
-            //            NSDictionary *msg = (NSDictionary*) [ret objectForKey:kMsgKey];
-            //            NSString *sid = (NSString*) [msg objectForKey:@"spdid"];
+        SBJsonParser *parser = [[SBJsonParser alloc] init];
+        id retObj = [parser objectWithString:result];
+        NSLog(@"%@",retObj);
+        
+        if (retObj != nil) {
+            NSDictionary *ret = (NSDictionary*)retObj;
+            NSString *retflag = (NSString*) [ret objectForKey:kRetFlagKey];
             
-            if ([RootViewController isSync]) {
-                FMDatabase *db = [DbUtil retConnectionForResource:@"iRf" ofType:@"rdb"];
-                if(db != nil) {
-                    [db executeUpdate:@"update scm_rg set rgdate = datetime('now') where spdid = ?",self.spdid];
-                    [db close];
+            if ([retflag boolValue]==YES) {
+                [values setValue:@"1" forKey:@"rgflag"];
+                //            NSDictionary *msg = (NSDictionary*) [ret objectForKey:kMsgKey];
+                //            NSString *sid = (NSString*) [msg objectForKey:@"spdid"];
+                
+                if ([RootViewController isSync]) {
+                    FMDatabase *db = [DbUtil retConnectionForResource:@"iRf" ofType:@"rdb"];
+                    if(db != nil) {
+                        [db executeUpdate:@"update scm_rg set rgdate = datetime('now') where spdid = ?",self.spdid];
+                        [db close];
+                    }
                 }
+                
+                //            if (self.scanViewDelegate!=nil) {
+                //                //调用回调函数
+                //                [self.scanViewDelegate confirmCallBack:YES values:values];
+                //            }
+                //            [self.navigationController popViewControllerAnimated:YES];
+            }
+            else{
+                NSString *msg = (NSString*) [ret objectForKey:kMsgKey];
+                if ([msg isKindOfClass:[NSNull class]]) {
+                    msg = @"空指针";
+                }
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", @"Error")
+                                                                message: msg
+                                                               delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+                [alert show];
             }
             
-            //            if (self.scanViewDelegate!=nil) {
-            //                //调用回调函数
-            //                [self.scanViewDelegate confirmCallBack:YES values:values];
-            //            }
-            //            [self.navigationController popViewControllerAnimated:YES];
         }
         else{
-            NSString *msg = (NSString*) [ret objectForKey:kMsgKey];
-            if ([msg isKindOfClass:[NSNull class]]) {
-                msg = @"空指针";
-            }
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", @"Error")
-                                                            message: msg
-                                                           delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
-            [alert show];
-            [alert release];
+            
         }
-        
-    }
-    else{
-        
     }
 }
 
@@ -339,7 +313,6 @@
     // present and release the controller
     [self presentModalViewController: reader
 							animated: YES];
-    [reader release];
 }
 
 - (void) imagePickerController: (UIImagePickerController*) reader
@@ -374,7 +347,6 @@
                                       destructiveButtonTitle:@"确认收货"
                                            otherButtonTitles:@"全部收货", nil];
     [as showInView:self.view];
-    [as release];
     
 }
 
@@ -457,7 +429,6 @@
                                                         message: [result localizedFailureReason]
 													   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
 		[alert show];
-		[alert release];
 	}
     
 	// Handle faults
@@ -468,60 +439,58 @@
                                                         message: [result faultString]
 													   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
 		[alert show];
-		[alert release];
 	}
     
-    
-	// Do something with the NSString* result
-    NSString* result = (NSString*)value;
-	NSLog(@"doRg returned the value: %@", result);
-    
-    SBJsonParser *parser = [[SBJsonParser alloc] init];
-    id retObj = [parser objectWithString:result];
-    NSLog(@"%@",retObj);
-    [parser release];
-    
-    doneDoRgCoount ++;
-    if (doneDoRgCoount >= notDoRgCount) {
-        [self dismissGoalBarView];
-        [self.navigationController popViewControllerAnimated:YES];
-    }
     else {
-        int percent = doneDoRgCoount * 100 / notDoRgCount ;
-        [self displayGoalBarView:percent];
-    }
-    
-    if (retObj != nil) {
-        NSDictionary *ret = (NSDictionary*)retObj;
-        NSString *retflag = (NSString*) [ret objectForKey:kRetFlagKey];
+        // Do something with the NSString* result
+        NSString* result = (NSString*)value;
+        NSLog(@"doRg returned the value: %@", result);
         
-        if ([retflag boolValue]==YES) {
-            NSDictionary *msg = (NSDictionary*) [ret objectForKey:kMsgKey];
-            NSString *idv = (NSString*) [msg objectForKey:@"spdid"];
-            if ([RootViewController isSync]) {
-                FMDatabase *db = [DbUtil retConnectionForResource:@"iRf" ofType:@"rdb"];
-                if(db != nil) {
-                    [db executeUpdate:@"update scm_rg set rgdate = datetime('now') where spdid = ?",idv];
-                    [db close];
+        SBJsonParser *parser = [[SBJsonParser alloc] init];
+        id retObj = [parser objectWithString:result];
+        NSLog(@"%@",retObj);
+        
+        doneDoRgCoount ++;
+        if (doneDoRgCoount >= notDoRgCount) {
+            [self dismissGoalBarView];
+            [self.navigationController popViewControllerAnimated:YES];
+        }
+        else {
+            int percent = doneDoRgCoount * 100 / notDoRgCount ;
+            [self displayGoalBarView:percent];
+        }
+        
+        if (retObj != nil) {
+            NSDictionary *ret = (NSDictionary*)retObj;
+            NSString *retflag = (NSString*) [ret objectForKey:kRetFlagKey];
+            
+            if ([retflag boolValue]==YES) {
+                NSDictionary *msg = (NSDictionary*) [ret objectForKey:kMsgKey];
+                NSString *idv = (NSString*) [msg objectForKey:@"spdid"];
+                if ([RootViewController isSync]) {
+                    FMDatabase *db = [DbUtil retConnectionForResource:@"iRf" ofType:@"rdb"];
+                    if(db != nil) {
+                        [db executeUpdate:@"update scm_rg set rgdate = datetime('now') where spdid = ?",idv];
+                        [db close];
+                    }
                 }
+                
+            }
+            else{
+                NSString *msg = (NSString*) [ret objectForKey:kMsgKey];
+                if ([msg isKindOfClass:[NSNull class]]) {
+                    msg = @"空指针";
+                }
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", @"Error")
+                                                                message: msg
+                                                               delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+                [alert show];
             }
             
         }
         else{
-            NSString *msg = (NSString*) [ret objectForKey:kMsgKey];
-            if ([msg isKindOfClass:[NSNull class]]) {
-                msg = @"空指针";
-            }
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", @"Error")
-                                                            message: msg
-                                                           delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
-            [alert show];
-            [alert release];
+            
         }
-        
-    }
-    else{
-        
     }
 }
 

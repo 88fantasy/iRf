@@ -10,6 +10,7 @@
 #import "iRfRgService.h"
 #import "SBJson.h"
 #import "MedicineReqCell.h"
+#import "MBProgressHUD.h"
 
 static NSString *kCellIdentifier = @"MedicineReqCellIdentifier";
 static NSString *kTitleKey = @"title";
@@ -18,7 +19,7 @@ static NSString *kObjKey = @"obj";
 
 @implementation MedicineReqListView
 
-@synthesize dataList,activityView,activityIndicator;
+@synthesize dataList;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -44,19 +45,26 @@ static NSString *kObjKey = @"obj";
     
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Apply",@"Apply") style:UIBarButtonItemStyleBordered target:self action:@selector(reqConfirm)];
     self.navigationItem.rightBarButtonItem = addButton;
-    [addButton release];
     
-    if (_refreshHeaderView == nil) {
-        EGORefreshTableHeaderView *view = [[EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0.0f, 0.0f - self.view.bounds.size.height, self.view.frame.size.width, self.view.bounds.size.height)];
-        view.delegate = self;
-        [self.view addSubview:view];
-        _refreshHeaderView = view;
-        [view release];
-        
+    
+    if (GetSystemVersion >= 6.0){
+        UIRefreshControl *refresh = [[UIRefreshControl alloc] init];
+        refresh.tintColor = [UIColor lightGrayColor];
+        refresh.attributedTitle = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Pull down to refresh...", @"Pull down to refresh status")] ;
+        [refresh addTarget:self action:@selector(refreshView:) forControlEvents:UIControlEventValueChanged];
+        self.refreshControl = refresh;
     }
-    
-    //  update the last update date
-    [_refreshHeaderView refreshLastUpdatedDate];
+    else {
+        if (_refreshHeaderView == nil) {
+            EGORefreshTableHeaderView *view = [[EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0.0f, 0.0f - self.view.bounds.size.height, self.view.frame.size.width, self.view.bounds.size.height)];
+            view.delegate = self;
+            [self.view addSubview:view];
+            _refreshHeaderView = view;
+            
+        }
+        //  update the last update date
+        [_refreshHeaderView refreshLastUpdatedDate];
+    }
 }
 
 
@@ -66,15 +74,18 @@ static NSString *kObjKey = @"obj";
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
     self.dataList = nil;
-    self.activityView = nil;
-    self.activityIndicator = nil;
     
 }
 
 
 - (void) getReqList
 {
-    [self displayActiveIndicatorView];
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.tableView animated:YES];
+    // Set determinate mode
+	hud.mode = MBProgressHUDModeIndeterminate;
+	hud.labelText = @"Loading";
+    hud.removeFromSuperViewOnHide = YES;
+    [hud show:YES];
     
     iRfRgService* service = [iRfRgService service];
     NSDictionary *setting = [CommonUtil getSettings];
@@ -115,7 +126,6 @@ static NSString *kObjKey = @"obj";
         SBJsonParser *parser = [[SBJsonParser alloc] init];
         id json = [parser objectWithString:result];
         
-        [parser release];
         
         if (json != nil) {
             NSDictionary *ret = (NSDictionary*)json;
@@ -157,7 +167,7 @@ static NSString *kObjKey = @"obj";
             
         }
     }
-    [self dismissActiveIndicatorView];
+    [MBProgressHUD hideHUDForView:self.tableView animated:YES];
     
 }
 
@@ -171,7 +181,6 @@ static NSString *kObjKey = @"obj";
                                               otherButtonTitles: NSLocalizedString(@"Apply", @"Apply")
                               ,nil];
         [alert show];	
-        [alert release];
     }
     
     
@@ -180,7 +189,12 @@ static NSString *kObjKey = @"obj";
 - (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if (buttonIndex == 1) {
-        [self displayActiveIndicatorView];
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.tableView animated:YES];
+        // Set determinate mode
+        hud.mode = MBProgressHUDModeIndeterminate;
+        hud.labelText = @"Loading";
+        hud.removeFromSuperViewOnHide = YES;
+        [hud show:YES];
         
         iRfRgService* service = [iRfRgService service];
         NSDictionary *setting = [CommonUtil getSettings];
@@ -189,7 +203,6 @@ static NSString *kObjKey = @"obj";
         
         SBJsonWriter *writer = [[SBJsonWriter alloc] init];
         NSString *jsonArray =[writer stringWithObject:[self.dataList copy]];
-        [writer release];
         
         NSLog(@"%@",jsonArray);
         
@@ -230,15 +243,14 @@ static NSString *kObjKey = @"obj";
         SBJsonParser *parser = [[SBJsonParser alloc] init];
         id json = [parser objectWithString:result];
         
-        [parser release];
         
         if (json != nil) {
             NSDictionary *ret = (NSDictionary*)json;
             NSString *retflag = (NSString*) [ret objectForKey:kRetFlagKey];
             
             if ([retflag boolValue]) {
-                [self alert:NSLocalizedString(@"Info", @"Info") msg:@"操作成功"];
-                _firstloaded = NO;
+//                [self alert:NSLocalizedString(@"Info", @"Info") msg:@"操作成功"];
+                
                 self.dataList = [NSArray array];
                 [self.tableView reloadData];
                 [self.navigationController popViewControllerAnimated:YES];
@@ -256,7 +268,7 @@ static NSString *kObjKey = @"obj";
             
         }
     }
-    [self dismissActiveIndicatorView];
+    [MBProgressHUD hideHUDForView:self.tableView animated:YES];
 }
 
 #pragma mark -
@@ -264,17 +276,7 @@ static NSString *kObjKey = @"obj";
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    if (!_firstloaded) {
-        [self getReqList];
-        _firstloaded = YES;
-    }
-    
-	// this UIViewController is about to re-appear, make sure we remove the current selection in our table view
-	NSIndexPath *tableSelection = [self.tableView indexPathForSelectedRow];
-	[self.tableView deselectRowAtIndexPath:tableSelection animated:YES];
-    
-    [self.tableView reloadData];
-    
+    [self getReqList];
 }
 
 
@@ -303,13 +305,9 @@ static NSString *kObjKey = @"obj";
     NSMutableDictionary *row = [self.dataList objectAtIndex:indexPath.row];
     
     
-    static BOOL nibsRegistered = NO;
-    if (!nibsRegistered) {
-        UINib *nib = [UINib nibWithNibName:IsPad? @"MedicineReqCellHD" :@"MedicineReqCell" 
-                                    bundle:nil];
-        [tableView registerNib:nib forCellReuseIdentifier:kCellIdentifier];
-        nibsRegistered = YES;
-    }
+    UINib *nib = [UINib nibWithNibName:IsPad? @"MedicineReqCellHD" :@"MedicineReqCell" 
+                                bundle:nil];
+    [tableView registerNib:nib forCellReuseIdentifier:kCellIdentifier];
     
     MedicineReqCell *cell = (MedicineReqCell *)[tableView dequeueReusableCellWithIdentifier:kCellIdentifier];
     
@@ -369,37 +367,6 @@ static NSString *kObjKey = @"obj";
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:msg
                                                    delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
     [alert show];	
-    [alert release];
-}
-
-//显示等待进度条
-- (void) displayActiveIndicatorView
-{
-    //    self.navigationItem.rightBarButtonItem = nil;
-    if (activityView==nil){        
-        activityView = [[UIAlertView alloc] initWithTitle:nil 
-                                                  message: NSLocalizedString(@"Loading...",@"Loading...")
-                                                 delegate: self
-                                        cancelButtonTitle: nil
-                                        otherButtonTitles: nil];
-        
-        activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-        activityIndicator.frame = CGRectMake(120.f, 48.0f, 38.0f, 38.0f);
-        [activityView addSubview:activityIndicator];
-    }
-    [activityIndicator startAnimating];
-    [activityView show];
-    
-}
-
-//取消等待进度条
-- (void) dismissActiveIndicatorView
-{
-    if (activityView)
-    {
-        [activityIndicator stopAnimating];
-        [activityView dismissWithClickedButtonIndex:0 animated:YES];
-    }
 }
 
 #pragma mark -
@@ -418,7 +385,19 @@ static NSString *kObjKey = @"obj";
     
     //  model should call this when its done loading
     _reloading = NO;
-    [_refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:self.tableView];
+    if (GetSystemVersion >= 6.0){
+        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+        [formatter setDateFormat:@"MMM d, h:mm:ss a"];
+        NSString *lastUpdated = [NSString stringWithFormat:@"%@ on %@",NSLocalizedString(@"Last Updated", @"Last Updated"), [formatter stringFromDate:[NSDate date]]];
+        self.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:lastUpdated] ;
+        
+        
+        [self.refreshControl endRefreshing];
+    }
+    else {
+        [_refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:self.tableView];
+    }
+
     
 }
 
@@ -458,5 +437,21 @@ static NSString *kObjKey = @"obj";
     return [NSDate date]; // should return date data source was last changed
     
 }
+
+#pragma mark -
+#pragma mark - refresh handle
+
+-(void)refreshView:(UIRefreshControl *)refresh
+{
+    if (refresh.refreshing) {
+        refresh.attributedTitle = [[NSAttributedString alloc]initWithString:NSLocalizedString(@"Loading...", @"Loading Status")] ;
+        
+        [self getReqList];
+        
+        [self performSelector:@selector(doneLoadingTableViewData) withObject:nil afterDelay:2];
+        
+    }
+}
+
 
 @end

@@ -58,13 +58,6 @@
     return self;    
 }
 
-- (void)dealloc
-{
-    [_title release];
-    [_options release];
-    [_tableView release];
-    [super dealloc];
-}
 
 #pragma mark - Private Methods
 - (void)fadeIn
@@ -110,7 +103,7 @@
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentity];
     if (cell ==  nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentity] autorelease];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentity] ;
     }
     cell.backgroundColor = [UIColor clearColor];
     cell.textLabel.textColor = [UIColor whiteColor];

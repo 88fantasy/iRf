@@ -62,27 +62,6 @@ typedef NS_OPTIONS(NSUInteger, SettingListSectionTypeExtraRow) {
     return self;
 }
 
-- (void)dealloc
-{
-    [super dealloc];
-    [self.username release];
-    [self.password release];
-    [self.testBtn release];
-    [self.internet release];
-    [self.server release];
-}
-
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-    self.username = nil;
-    self.password = nil;
-    self.testBtn = nil;
-    self.internet = nil;
-    self.server = nil;
-}
 
 - (void)viewDidLoad
 {
@@ -174,6 +153,11 @@ typedef NS_OPTIONS(NSUInteger, SettingListSectionTypeExtraRow) {
     // Dispose of any resources that can be recreated.
 }
 
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+    //填写你需要锁定的方向参数
+    return UIInterfaceOrientationIsLandscape( interfaceOrientation ) || (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -199,92 +183,80 @@ typedef NS_OPTIONS(NSUInteger, SettingListSectionTypeExtraRow) {
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"SettingDataCell";
+    NSString *CellIdentifier = [NSString stringWithFormat:@"SettingDataCell_%2d%2d",indexPath.section,indexPath.row];
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     
     if (cell == nil)
     {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier] ;
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    }
-    else
-    {
-        // the cell is being recycled, remove old embedded controls
-        UIView *viewToRemove = nil;
-        viewToRemove = [cell.contentView viewWithTag:1];
-        if (viewToRemove)
-            [viewToRemove removeFromSuperview];
-    }
-    
-    cell.textLabel.font = [UIFont systemFontOfSize:kFontSize];
-    
-    
-    if(indexPath.section==SettingListSectionTypeAccount) {
-        if (indexPath.row == SettingListSectionTypeAccountRowUser) {
-            cell.textLabel.text = @"账号";
-            
-            cell.accessoryView = self.username;
-        }
-        else if(indexPath.row == SettingListSectionTypeAccountRowPwd){
-            cell.textLabel.text = @"密码";
-            
-            cell.accessoryView =  self.password;
-        }
-        else if(indexPath.row == SettingListSectionTypeAccountRowTest){
-            [self.testBtn setCenter:cell.center];
-            
-            [cell.contentView addSubview:self.testBtn];
-        }
-    }
-    else if (indexPath.section == SettingListSectionTypeServer){
-        if (indexPath.row == SettingListSectionTypeServerRowInternet) {
-            cell.textLabel.text = @"互联网";
-            
-            cell.accessoryView = self.internet;
-
-        }
-        else if (indexPath.row == SettingListSectionTypeServerRowServerUrl){
-            cell.textLabel.text = @"服务地址";
-            
-            cell.accessoryView = self.server;
-
-        }
-        else if (indexPath.row == SettingListSectionTypeServerRowApns){
-            cell.textLabel.text = @"推送服务";
-            
-            UIRemoteNotificationType rntype = [[UIApplication sharedApplication] enabledRemoteNotificationTypes];
-            
-            CGRect frame = CGRectMake(0, kTopMargin, 27.0, kTextFieldHeight);
-            UISwitch *pns = [[UISwitch alloc] initWithFrame:frame];
-            pns.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin |
-            UIViewAutoresizingFlexibleTopMargin |
-            UIViewAutoresizingFlexibleRightMargin;
-            
-            if (rntype!=UIRemoteNotificationTypeNone) {
-                [pns setOn:YES];
+        
+        cell.textLabel.font = [UIFont systemFontOfSize:kFontSize];
+        
+        
+        if(indexPath.section==SettingListSectionTypeAccount) {
+            if (indexPath.row == SettingListSectionTypeAccountRowUser) {
+                cell.textLabel.text = @"账号";
+                
+                cell.accessoryView = self.username;
             }
-            else{
-                [pns setOn:NO];
+            else if(indexPath.row == SettingListSectionTypeAccountRowPwd){
+                cell.textLabel.text = @"密码";
+                
+                cell.accessoryView =  self.password;
             }
-            
-            [pns addTarget:self action:@selector(doApnsChange:) forControlEvents:UIControlEventValueChanged];
-            
-            cell.accessoryView = pns;
-            
+            else if(indexPath.row == SettingListSectionTypeAccountRowTest){
+                [self.testBtn setCenter:cell.center];
+                
+                [cell.contentView addSubview:self.testBtn];
+            }
+        }
+        else if (indexPath.section == SettingListSectionTypeServer){
+            if (indexPath.row == SettingListSectionTypeServerRowInternet) {
+                cell.textLabel.text = @"互联网";
+                
+                cell.accessoryView = self.internet;
+                
+            }
+            else if (indexPath.row == SettingListSectionTypeServerRowServerUrl){
+                cell.textLabel.text = @"服务地址";
+                
+                cell.accessoryView = self.server;
+                
+            }
+            else if (indexPath.row == SettingListSectionTypeServerRowApns){
+                cell.textLabel.text = @"推送服务";
+                
+                UIRemoteNotificationType rntype = [[UIApplication sharedApplication] enabledRemoteNotificationTypes];
+                
+                CGRect frame = CGRectMake(0, kTopMargin, 27.0, kTextFieldHeight);
+                UISwitch *pns = [[UISwitch alloc] initWithFrame:frame];
+                pns.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin |
+                UIViewAutoresizingFlexibleTopMargin |
+                UIViewAutoresizingFlexibleRightMargin;
+                
+                if (rntype!=UIRemoteNotificationTypeNone) {
+                    [pns setOn:YES];
+                }
+                else{
+                    [pns setOn:NO];
+                }
+                
+                [pns addTarget:self action:@selector(doApnsChange:) forControlEvents:UIControlEventValueChanged];
+                
+                cell.accessoryView = pns;
+                
+            }
+        }
+        else if (indexPath.section == SettingListSectionTypeExtra){
+            if (indexPath.row == SettingListSectionTypeExtraRowVersion) {
+                cell.textLabel.text = @"当前版本";
+                
+                cell.detailTextLabel.text = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
+                
+            }
         }
     }
-    else if (indexPath.section == SettingListSectionTypeExtra){
-        if (indexPath.row == SettingListSectionTypeExtraRowVersion) {
-            cell.textLabel.text = @"当前版本";
-            
-            UILabel *version = [[UILabel alloc] initWithFrame:CGRectMake(0, kTopMargin, 100, kTextFieldHeight)];
-            version.textAlignment = NSTextAlignmentRight;
-            version.text = [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleVersionKey];
-            cell.accessoryView = version;
-            [version release];
-        }
-    }
-    
     
     
     return cell;
@@ -404,30 +376,32 @@ typedef NS_OPTIONS(NSUInteger, SettingListSectionTypeExtraRow) {
         [CommonUtil alert:@"soap连接失败" msg:[result faultString]];
 	}
     
-    
-	// Do something with the NSString* result
-    NSString* result = (NSString*)value;
-	NSLog(@"test returned the value: %@", result);
-    
-    SBJsonParser *parser = [[SBJsonParser alloc] init];
-    id retObj = [parser objectWithString:result];
-    NSLog(@"%@",retObj);
-    [parser release];
-    
-    if (retObj != nil) {
-        NSDictionary *ret = (NSDictionary*)retObj;
-        NSString *retflag = (NSString*) [ret objectForKey:kRetFlagKey];
-        if ([retflag boolValue]==YES) {
-            [self setLoginStatus:YES];
-            [self doSaveSetting];
-            [self apnsService:YES];
-        }
-        NSString *msg = (NSString*) [ret objectForKey:kMsgKey];
-        if ([msg isKindOfClass:[NSNull class]]) {
-            msg = @"空指针";
-        }
-        [CommonUtil alert:NSLocalizedString(@"Info", @"Info") msg:msg];
+    else {
+        // Do something with the NSString* result
+        NSString* result = (NSString*)value;
+        NSLog(@"test returned the value: %@", result);
         
+        SBJsonParser *parser = [[SBJsonParser alloc] init];
+        id retObj = [parser objectWithString:result];
+        NSLog(@"%@",retObj);
+        
+        if (retObj != nil) {
+            NSDictionary *ret = (NSDictionary*)retObj;
+            NSString *retflag = (NSString*) [ret objectForKey:kRetFlagKey];
+            if ([retflag boolValue]==YES) {
+                [self setLoginStatus:YES];
+                [self doSaveSetting];
+    //            if (IsInternet) {
+    //                [self apnsService:YES];
+    //            }
+            }
+            NSString *msg = (NSString*) [ret objectForKey:kMsgKey];
+            if ([msg isKindOfClass:[NSNull class]]) {
+                msg = @"空指针";
+            }
+            [CommonUtil alert:NSLocalizedString(@"Info", @"Info") msg:msg];
+            
+        }
     }
 }
 
@@ -440,6 +414,9 @@ typedef NS_OPTIONS(NSUInteger, SettingListSectionTypeExtraRow) {
 	[textField resignFirstResponder];
     if (textField == self.username) {
         [self.password becomeFirstResponder];
+    }
+    else if (textField == self.password) {
+        [self doAccountTest];
     }
 	return YES;
 }

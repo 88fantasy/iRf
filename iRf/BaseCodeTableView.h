@@ -22,9 +22,9 @@
     id<BaseCodeTableViewDelegate> baseCodeTableViewDelegate;
 }
 
-@property (nonatomic,retain) IBOutlet UITextField *codeinput;
-@property (nonatomic,retain) NSMutableArray *codeList;
+@property (nonatomic,strong) IBOutlet UITextField *codeinput;
+@property (nonatomic,strong) NSMutableArray *codeList;
 @property (nonatomic) NSInteger codenum;
-@property (nonatomic,retain) id<BaseCodeTableViewDelegate>  baseCodeTableViewDelegate;
+@property (nonatomic,strong) id<BaseCodeTableViewDelegate>  baseCodeTableViewDelegate;
 
 @end

@@ -19,11 +19,11 @@
     UITextField *server;
 }
 
-@property (nonatomic,retain) NSMutableDictionary *settingData;
-@property (nonatomic,retain) UITextField *username;
-@property (nonatomic,retain) UITextField *password;
-@property (nonatomic,retain) UIButton *testBtn;
-@property (nonatomic,retain) UISwitch *internet;
-@property (nonatomic,retain) UITextField *server;
+@property (nonatomic,strong) NSMutableDictionary *settingData;
+@property (nonatomic,strong) UITextField *username;
+@property (nonatomic,strong) UITextField *password;
+@property (nonatomic,strong) UIButton *testBtn;
+@property (nonatomic,strong) UISwitch *internet;
+@property (nonatomic,strong) UITextField *server;
 
 @end

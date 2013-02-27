@@ -23,8 +23,6 @@ UIActionSheetDelegate>
     BOOL _reloading;
     
     UIBarButtonItem *refreshButtonItem;
-    UIAlertView *activityView;
-    UIActivityIndicatorView *activityIndicator;
     
     NSDictionary *searchObj;
     
@@ -36,18 +34,17 @@ UIActionSheetDelegate>
     
     int titleFontSize;
     int detailFontSize;
-    BOOL _firstload;
+    
 }
 
-@property (nonatomic, retain) NSMutableArray *menuList;
-@property (nonatomic, retain) NSArray *objs;
-@property (nonatomic, retain) UIBarButtonItem *refreshButtonItem;
-@property (nonatomic, retain) UIAlertView *activityView;
-@property (nonatomic, retain) UIActivityIndicatorView *activityIndicator;
-@property (nonatomic, retain) NSDictionary *searchObj;
+@property (nonatomic, strong) NSMutableArray *menuList;
+@property (nonatomic, strong) NSArray *objs;
+@property (nonatomic, strong) UIBarButtonItem *refreshButtonItem;
 
-@property (nonatomic, retain) UIAlertView *goalBarView;
-@property (nonatomic, retain) KDGoalBar *goalBar;
+@property (nonatomic, strong) NSDictionary *searchObj;
+
+@property (nonatomic, strong) UIAlertView *goalBarView;
+@property (nonatomic, strong) KDGoalBar *goalBar;
 
 
 - (id)initWithStyle:(UITableViewStyle)style objs:(NSArray*)_arrays;

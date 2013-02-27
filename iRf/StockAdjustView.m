@@ -9,6 +9,7 @@
 #import "StockAdjustView.h"
 #import "iRfRgService.h"
 #import "SBJson.h"
+#import "MBProgressHUD.h"
 
 static NSString *kCellIdentifier = @"MyIdentifier";
 static NSString *kTitleKey = @"title";
@@ -24,7 +25,7 @@ typedef NS_ENUM(NSInteger, StockAdjustViewAlertStyle) {
 @implementation StockAdjustView
 
 @synthesize orglocno,tolocno,goodsqty,orgswitch,toswitch,stocktableview;
-@synthesize activityView,activityIndicator,scrollView,stockList,baseCodeList;
+@synthesize scrollView,stockList,baseCodeList;
 @synthesize venders,venderPickerView,vender;
 @synthesize defaultflag,nohouseflag;
 
@@ -41,7 +42,7 @@ typedef NS_ENUM(NSInteger, StockAdjustViewAlertStyle) {
         
         UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Apply",@"Apply") style:UIBarButtonItemStyleBordered target:self action:@selector(confirmAdjust)];
         self.navigationItem.rightBarButtonItem = addButton;
-        [addButton release];
+        
         
         venderPickerView = [[UIPickerView alloc] initWithFrame:CGRectMake(0, 100, 320, 250)];
         venderPickerView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
@@ -75,7 +76,6 @@ typedef NS_ENUM(NSInteger, StockAdjustViewAlertStyle) {
                                nil];
         [numberToolbar sizeToFit];
         self.goodsqty.inputAccessoryView = numberToolbar;
-        [numberToolbar release];
     }
     
     self.baseCodeList = [NSArray array];
@@ -95,27 +95,6 @@ typedef NS_ENUM(NSInteger, StockAdjustViewAlertStyle) {
         self.goodsqty.frame = frame;
         
     }
-}
-
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-    
-    self.orglocno = nil;
-    self.orgswitch = nil;
-    self.tolocno = nil;
-    self.toswitch = nil;
-    self.goodsqty = nil;
-    self.stocktableview = nil;
-    self.activityView = nil;
-    self.activityIndicator = nil;
-    self.stockList = nil;
-    self.baseCodeList = nil;
-    self.venders = nil;
-    self.vender = nil;
-    self.defaultflag = nil;
 }
 
 - (IBAction) orgButtonTapped
@@ -144,7 +123,6 @@ typedef NS_ENUM(NSInteger, StockAdjustViewAlertStyle) {
     
     [self presentModalViewController: reader
 							animated: YES];
-    [reader release];
 }
 
 - (void) imagePickerController: (UIImagePickerController*) reader
@@ -184,7 +162,12 @@ typedef NS_ENUM(NSInteger, StockAdjustViewAlertStyle) {
     NSString *orgtext = [self.orglocno.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     orgtext = [orgtext uppercaseString];
     if ( [orgtext length]>0) {
-        [self displayActiveIndicatorView];
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        // Set determinate mode
+        hud.mode = MBProgressHUDModeIndeterminate;
+        hud.labelText = @"Loading";
+        hud.removeFromSuperViewOnHide = YES;
+        [hud show:YES];
         
         iRfRgService* service = [iRfRgService service];
         NSDictionary *setting = [CommonUtil getSettings];
@@ -227,7 +210,6 @@ typedef NS_ENUM(NSInteger, StockAdjustViewAlertStyle) {
         SBJsonParser *parser = [[SBJsonParser alloc] init];
         id json = [parser objectWithString:result];
         
-        [parser release];
         
         if (json != nil) {
             NSDictionary *ret = (NSDictionary*)json;
@@ -303,7 +285,7 @@ typedef NS_ENUM(NSInteger, StockAdjustViewAlertStyle) {
             
         }
     }
-    [self dismissActiveIndicatorView];
+    [MBProgressHUD hideHUDForView:self.view animated:YES];
     
 }
 
@@ -351,7 +333,6 @@ typedef NS_ENUM(NSInteger, StockAdjustViewAlertStyle) {
                                   nil];
             alert.tag = HouseLocnoStyle;
             [alert show];	
-            [alert release];
         }
         else if ([totext isEqualToString:@"TH"]&&vender == nil) {
             
@@ -374,7 +355,6 @@ typedef NS_ENUM(NSInteger, StockAdjustViewAlertStyle) {
                                       nil];
                 alert.tag = NoHouseStyle;
                 [alert show];
-                [alert release];
             }
             
             iRfRgService* service = [iRfRgService service];
@@ -385,7 +365,12 @@ typedef NS_ENUM(NSInteger, StockAdjustViewAlertStyle) {
             
         }
         else {
-            [self displayActiveIndicatorView];
+            MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+            // Set determinate mode
+            hud.mode = MBProgressHUDModeIndeterminate;
+            hud.labelText = @"Loading";
+            hud.removeFromSuperViewOnHide = YES;
+            [hud show:YES];
             
             NSDictionary *stock = [obj copy];
             basecode = @"";
@@ -418,7 +403,6 @@ typedef NS_ENUM(NSInteger, StockAdjustViewAlertStyle) {
                                     nil];
             SBJsonWriter *writer = [[SBJsonWriter alloc] init];
             NSString *json =[writer stringWithObject:jsonobj];
-            [writer release];
             
             NSLog(@"%@",json);
             
@@ -480,52 +464,50 @@ typedef NS_ENUM(NSInteger, StockAdjustViewAlertStyle) {
         [self alert:@"soap连接失败" msg:[result faultString]];
 	}
     
-	// Do something with the NSString* result
-    
-    NSString* result = (NSString*)value;
-    NSLog(@"%@", result);
-    
-    SBJsonParser *parser = [[SBJsonParser alloc] init];
-    id retObj = [parser objectWithString:result];
-    
-    [parser release];
-    
-    [self dismissActiveIndicatorView];
-    
-    if (retObj != nil) {
-        NSDictionary *ret = (NSDictionary*)retObj;
-        NSString *retflag = (NSString*) [ret objectForKey:kRetFlagKey];
+    else {
+        // Do something with the NSString* result
         
-        if ([retflag boolValue]==YES) {
-            if (self.orgswitch.isOn) {
-                [self getStockList];
-            }
-            else {
-                self.stockList = [NSMutableArray array];
-                self.orglocno.text = @"";
-                [self.stocktableview reloadData];
-                
-            }
-            if (!self.toswitch.isOn) {
-                self.tolocno.text = @"";
-            }
-            self.goodsqty.text = @"";
-            self.baseCodeList = [NSArray array];
+        NSString* result = (NSString*)value;
+        NSLog(@"%@", result);
+        
+        SBJsonParser *parser = [[SBJsonParser alloc] init];
+        id retObj = [parser objectWithString:result];
+        
+        if (retObj != nil) {
+            NSDictionary *ret = (NSDictionary*)retObj;
+            NSString *retflag = (NSString*) [ret objectForKey:kRetFlagKey];
             
-            [self.scrollView setContentOffset:CGPointMake(0, 0) animated:YES];
-        }
-        else{
-            NSString *msg = (NSString*) [ret objectForKey:kMsgKey];
-            if ([msg isKindOfClass:[NSNull class]]) {
-                msg = @"空指针";
+            if ([retflag boolValue]==YES) {
+                if (self.orgswitch.isOn) {
+                    [self getStockList];
+                }
+                else {
+                    self.stockList = [NSMutableArray array];
+                    self.orglocno.text = @"";
+                    [self.stocktableview reloadData];
+                    
+                }
+                if (!self.toswitch.isOn) {
+                    self.tolocno.text = @"";
+                }
+                self.goodsqty.text = @"";
+                self.baseCodeList = [NSArray array];
+                
+                [self.scrollView setContentOffset:CGPointMake(0, 0) animated:YES];
             }
-            [self alert:NSLocalizedString(@"Error",@"Error") msg:msg];
+            else{
+                NSString *msg = (NSString*) [ret objectForKey:kMsgKey];
+                if ([msg isKindOfClass:[NSNull class]]) {
+                    msg = @"空指针";
+                }
+                [self alert:NSLocalizedString(@"Error",@"Error") msg:msg];
+            }
+            self.vender = nil;
+            self.defaultflag = nil;
+            self.nohouseflag = nil;
         }
-        self.vender = nil;
-        self.defaultflag = nil;
-        self.nohouseflag = nil;
     }
-    
+    [MBProgressHUD hideHUDForView:self.view animated:YES];
 }
 #pragma mark - Table view data source
 
@@ -543,7 +525,7 @@ typedef NS_ENUM(NSInteger, StockAdjustViewAlertStyle) {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:[row objectForKey:kCellIdentifier]];
 	if (cell == nil)
 	{
-		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:[row objectForKey:kCellIdentifier]] autorelease];
+		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:[row objectForKey:kCellIdentifier]];
 		cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 	}
 	
@@ -619,38 +601,8 @@ typedef NS_ENUM(NSInteger, StockAdjustViewAlertStyle) {
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:msg
                                                    delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
     [alert show];	
-    [alert release];
 }
 
-//显示等待进度条
-- (void) displayActiveIndicatorView
-{
-    //    self.navigationItem.rightBarButtonItem = nil;
-    if (activityView==nil){        
-        activityView = [[UIAlertView alloc] initWithTitle:nil 
-                                                  message: NSLocalizedString(@"Loading...",@"Loading")
-                                                 delegate: self
-                                        cancelButtonTitle: nil
-                                        otherButtonTitles: nil];
-        
-        activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-        activityIndicator.frame = CGRectMake(120.f, 48.0f, 38.0f, 38.0f);
-        [activityView addSubview:activityIndicator];
-    }
-    [activityIndicator startAnimating];
-    [activityView show];
-    
-}
-
-//取消等待进度条
-- (void) dismissActiveIndicatorView
-{
-    if (activityView)
-    {
-        [activityIndicator stopAnimating];
-        [activityView dismissWithClickedButtonIndex:0 animated:YES];
-    }
-}
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
@@ -712,54 +664,52 @@ typedef NS_ENUM(NSInteger, StockAdjustViewAlertStyle) {
         [self alert:@"soap连接失败" msg:[result faultString]];
 	}
     
-	// Do something with the NSString* result
-    
-    NSString* result = (NSString*)value;
-    NSLog(@"%@", result);
-    
-    SBJsonParser *parser = [[SBJsonParser alloc] init];
-    id retObj = [parser objectWithString:result];
-    
-    [parser release];
-    
-    [self dismissActiveIndicatorView];
-    
-    if (retObj != nil) {
-        NSDictionary *ret = (NSDictionary*)retObj;
-        NSString *retflag = (NSString*) [ret objectForKey:kRetFlagKey];
+    else {
+        // Do something with the NSString* result
         
-        if ([retflag boolValue]==YES) {
+        NSString* result = (NSString*)value;
+        NSLog(@"%@", result);
+        
+        SBJsonParser *parser = [[SBJsonParser alloc] init];
+        id retObj = [parser objectWithString:result];
+        
+        if (retObj != nil) {
+            NSDictionary *ret = (NSDictionary*)retObj;
+            NSString *retflag = (NSString*) [ret objectForKey:kRetFlagKey];
             
-            
-            NSArray *rows = (NSArray*) [ret objectForKey:kMsgKey];
-            NSUInteger count = [rows count];
-            if (count <1) {
-                [self alert:@"提示" msg:@"没有设置供应商"];
+            if ([retflag boolValue]==YES) {
+                
+                
+                NSArray *rows = (NSArray*) [ret objectForKey:kMsgKey];
+                NSUInteger count = [rows count];
+                if (count <1) {
+                    [self alert:@"提示" msg:@"没有设置供应商"];
+                }
+                else{
+                    
+                    self.venders = [rows copy];
+                    
+                    [self.scrollView setContentOffset:CGPointMake(0, 0) animated:YES];
+                    
+                    [self.venderPickerView reloadAllComponents];
+                    [self.venderPickerView setHidden:NO];
+                    [self.venderPickerView selectRow:0 inComponent:0 animated:YES];
+                    [self pickerView:self.venderPickerView didSelectRow:0 inComponent:0];
+                }
+                
+                
             }
             else{
-                
-                self.venders = [rows copy];
-                
-                [self.scrollView setContentOffset:CGPointMake(0, 0) animated:YES];
-                
-                [self.venderPickerView reloadAllComponents];
-                [self.venderPickerView setHidden:NO];
-                [self.venderPickerView selectRow:0 inComponent:0 animated:YES];
-                [self pickerView:self.venderPickerView didSelectRow:0 inComponent:0];
+                NSString *msg = (NSString*) [ret objectForKey:kMsgKey];
+                if ([msg isKindOfClass:[NSNull class]]) {
+                    msg = @"空指针";
+                }
+                [self alert:NSLocalizedString(@"Error",@"Error") msg:msg];
             }
             
-            
         }
-        else{
-            NSString *msg = (NSString*) [ret objectForKey:kMsgKey];
-            if ([msg isKindOfClass:[NSNull class]]) {
-                msg = @"空指针";
-            }
-            [self alert:NSLocalizedString(@"Error",@"Error") msg:msg];
-        }
-        
     }
-
+    [MBProgressHUD hideHUDForView:self.view animated:YES];
 }
 
 @end

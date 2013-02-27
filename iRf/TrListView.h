@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "EGORefreshTableHeaderView.h"
 #import "LeveyPopListView.h"
+#import "MBProgressHUD.h"
 
 typedef NS_ENUM (NSInteger,TrListTitleSeg){
 	TrListTitleSegAll = 0,  //全部
@@ -18,18 +19,15 @@ typedef NS_ENUM (NSInteger,TrListTitleSeg){
 
 };
 
-@interface TrListView : UIViewController
-<UITableViewDelegate,UITableViewDataSource,EGORefreshTableHeaderDelegate
+@interface TrListView : UITableViewController
+<EGORefreshTableHeaderDelegate
 ,UISearchDisplayDelegate, UISearchBarDelegate,LeveyPopListViewDelegate>
 {
     NSMutableArray *menuList;
     
     EGORefreshTableHeaderView *_refreshHeaderView; 
     BOOL _reloading;
-    BOOL _firstloaded;
     UIBarButtonItem *refreshButtonItem;
-    UIAlertView *activityView;
-    UIActivityIndicatorView *activityIndicator;
     
     
     NSString		*savedSearchTerm;
@@ -44,25 +42,21 @@ typedef NS_ENUM (NSInteger,TrListTitleSeg){
     UIButton *titleBtn;
 }
 
-@property (nonatomic, retain) NSMutableArray *menuList;
-@property (nonatomic, retain) UIBarButtonItem *refreshButtonItem;
-@property (nonatomic, retain) UIAlertView *activityView;
-@property (nonatomic, retain) UIActivityIndicatorView *activityIndicator;
-@property (nonatomic, retain) UITableView *tablelistView;
+@property (nonatomic, strong) NSMutableArray *menuList;
+@property (nonatomic, strong) UIBarButtonItem *refreshButtonItem;
 
-@property (nonatomic, retain) NSMutableArray *filteredListContent;
+@property (nonatomic, strong) NSMutableArray *filteredListContent;
 
 @property (nonatomic, copy) NSString *savedSearchTerm;
 @property (nonatomic) NSInteger savedScopeButtonIndex;
 @property (nonatomic) BOOL searchWasActive;
 
 @property (nonatomic) NSInteger titleSegmentIndex;
-@property (nonatomic, retain) NSArray *titleArray;
-@property (nonatomic, retain) UIButton *titleBtn;
+@property (nonatomic, strong) NSArray *titleArray;
+@property (nonatomic, strong) UIButton *titleBtn;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil;
 
-- (IBAction) scrollToRefresh:(id)sender;
 - (void)reloadTableViewDataSource; 
 - (void)doneLoadingTableViewData;
 
