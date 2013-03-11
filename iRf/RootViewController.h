@@ -12,6 +12,7 @@
 #import "KDGoalBar.h"
 
 static bool syncflag = NO;
+#pragma unused ( syncflag )
 
 @interface RootViewController : UITableViewController
 <UIAlertViewDelegate,NSURLConnectionDataDelegate,UINavigationControllerDelegate>

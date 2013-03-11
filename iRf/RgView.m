@@ -217,7 +217,7 @@
 	}
     
 	// Handle faults
-	if([value isKindOfClass:[SoapFault class]]) {
+	else if([value isKindOfClass:[SoapFault class]]) {
 		NSLog(@"%@", value);
         SoapFault * result = (SoapFault*)value;
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"soap连接失败"
@@ -302,9 +302,7 @@
 	
 	
 	
-    //    ZBarImageScanner *scanner = reader.scanner;
-    // TODO: (optional) additional reader configuration here
-	
+    //    ZBarImageScanner *scanner = reader.scanner;	
     // EXAMPLE: disable rarely used I2/5 to improve performance
     //    [scanner setSymbology: ZBAR_I25
     //				   config: ZBAR_CFG_ENABLE
@@ -432,7 +430,7 @@
 	}
     
 	// Handle faults
-	if([value isKindOfClass:[SoapFault class]]) {
+	else if([value isKindOfClass:[SoapFault class]]) {
 		NSLog(@"%@", value);
         SoapFault * result = (SoapFault*)value;
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"soap连接失败"

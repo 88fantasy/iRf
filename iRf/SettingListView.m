@@ -370,7 +370,7 @@ typedef NS_OPTIONS(NSUInteger, SettingListSectionTypeExtraRow) {
     }
     
 	// Handle faults
-	if([value isKindOfClass:[SoapFault class]]) {
+	else if([value isKindOfClass:[SoapFault class]]) {
 		NSLog(@"%@", value);
         SoapFault * result = (SoapFault*)value;
         [CommonUtil alert:@"soap连接失败" msg:[result faultString]];

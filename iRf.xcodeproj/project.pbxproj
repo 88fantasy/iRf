@@ -96,6 +96,7 @@
 		8F98EA92166352CA0088CB89 /* KDBarGraph.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F98EA83166352CA0088CB89 /* KDBarGraph.m */; };
 		8F98EA93166352CA0088CB89 /* KDGoalBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F98EA85166352CA0088CB89 /* KDGoalBar.m */; };
 		8F98EA94166352CA0088CB89 /* KDGoalBarPercentLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F98EA87166352CA0088CB89 /* KDGoalBarPercentLayer.m */; };
+		8F9917A616E5981400610102 /* QRCodeRgReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F9917A516E5981400610102 /* QRCodeRgReader.m */; };
 		8F9A5C5316BF9D3F007AA626 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F9A5C5216BF9D3F007AA626 /* MBProgressHUD.m */; };
 		8FA6637A15AC20570043009C /* 144.png in Resources */ = {isa = PBXBuildFile; fileRef = 8FA6637915AC20570043009C /* 144.png */; };
 		8FCBC888167F00C800EEAC21 /* yfly.png in Resources */ = {isa = PBXBuildFile; fileRef = 8FCBC881167F00C800EEAC21 /* yfly.png */; };
@@ -341,6 +342,8 @@
 		8F98EA85166352CA0088CB89 /* KDGoalBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KDGoalBar.m; sourceTree = "<group>"; };
 		8F98EA86166352CA0088CB89 /* KDGoalBarPercentLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KDGoalBarPercentLayer.h; sourceTree = "<group>"; };
 		8F98EA87166352CA0088CB89 /* KDGoalBarPercentLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KDGoalBarPercentLayer.m; sourceTree = "<group>"; };
+		8F9917A416E5981400610102 /* QRCodeRgReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QRCodeRgReader.h; sourceTree = "<group>"; };
+		8F9917A516E5981400610102 /* QRCodeRgReader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QRCodeRgReader.m; sourceTree = "<group>"; };
 		8F9A5C5116BF9D3F007AA626 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
 		8F9A5C5216BF9D3F007AA626 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
 		8FA6637915AC20570043009C /* 144.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 144.png; sourceTree = "<group>"; };
@@ -762,6 +765,8 @@
 				8F7ECD94169FEA4300724559 /* SettingListView.m */,
 				8FF0DD0E16B0CC6C00624203 /* BasecodeStockList.h */,
 				8FF0DD0F16B0CC6D00624203 /* BasecodeStockList.m */,
+				8F9917A416E5981400610102 /* QRCodeRgReader.h */,
+				8F9917A516E5981400610102 /* QRCodeRgReader.m */,
 			);
 			path = iRf;
 			sourceTree = "<group>";
@@ -1243,6 +1248,7 @@
 				8FF0DD5D16BA20EE00624203 /* SBJsonWriter.m in Sources */,
 				8F9A5C5316BF9D3F007AA626 /* MBProgressHUD.m in Sources */,
 				8FFF63BE16D5BE8C004B7EEB /* RegexKitLite.m in Sources */,
+				8F9917A616E5981400610102 /* QRCodeRgReader.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

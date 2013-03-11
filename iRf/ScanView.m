@@ -90,7 +90,6 @@
 }
 - (NSUInteger)supportedInterfaceOrientations
 {
-//    [self setOverView];
     return UIInterfaceOrientationMaskPortrait;
 }
 - (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
@@ -98,10 +97,7 @@
     return UIInterfaceOrientationPortrait;
 }
 
-- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
-{
-//    [self setOverView];
-}
+
 
 //- (void) viewDidAppear:(BOOL)animated
 //{
@@ -143,6 +139,7 @@
 	
     // EXAMPLE: do something useful with the barcode data
 	
+        
     resultText.text = symbol.data;
     
 	if([vswitch isOn]){
@@ -152,6 +149,7 @@
 		}
 	}
 	
+    
     // EXAMPLE: do something useful with the barcode image
     resultImage.image =
 	[info objectForKey: UIImagePickerControllerOriginalImage];
@@ -160,13 +158,18 @@
     [reader dismissModalViewControllerAnimated: YES];
     
     
-    [self searchButtonTapped];
+//    [self searchButtonTapped];
     
 }
 
 
 - (IBAction) searchButtonTapped {
 	
+    if ([resultText.text length] < 1) {
+        [CommonUtil alert:NSLocalizedString(@"Error",@"Error") msg:@"条码为空,无法查询"];
+        return;
+    }
+    
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     // Set determinate mode
 	hud.mode = MBProgressHUDModeIndeterminate;

@@ -13,9 +13,6 @@
 #import "MBProgressHUD.h"
 
 static NSString *kCellIdentifier = @"MedicineReqCellIdentifier";
-static NSString *kTitleKey = @"title";
-static NSString *kExplainKey = @"explanation";
-static NSString *kObjKey = @"obj";
 
 @implementation MedicineReqListView
 

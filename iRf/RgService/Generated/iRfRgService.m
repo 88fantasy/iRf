@@ -21,7 +21,7 @@
 		{
             NSDictionary *settingData = [CommonUtil getSettings];
             if (IsInternet) {
-                self.serviceUrl = homeurl;
+                self.serviceUrl = kHomeUrl;
 //                self.serviceUrl = @"http://192.168.200.237:8070/gzmpcscm3/services/RgService";
             }
             else{
@@ -395,6 +395,24 @@
 		return _request;
 	}
 
+    /* Returns NSString*.  */
+- (SoapRequest*) doRgBy2DBarcode: (id <SoapDelegate>) handler username: (NSString*) username password: (NSString*) password json: (NSString*) json
+    {
+        return [self doRgBy2DBarcode: handler action: nil username: username password:password json: json];
+    }
+
+- (SoapRequest*) doRgBy2DBarcode: (id) _target action: (SEL) _action username: (NSString*) username password: (NSString*) password json: (NSString*) json
+    {
+        NSMutableArray* _params = [NSMutableArray array];
+        
+        [_params addObject: [[[SoapParameter alloc] initWithValue: username forName: @"username"] autorelease]];
+        [_params addObject: [[[SoapParameter alloc] initWithValue: password forName: @"password"] autorelease]];
+        [_params addObject: [[[SoapParameter alloc] initWithValue: json forName: @"json"] autorelease]];
+        NSString* _envelope = [Soap createEnvelope: @"doRgBy2DBarcode" forNamespace: self.namespace withParameters: _params withHeaders: self.headers];
+        SoapRequest* _request = [SoapRequest create: _target action: _action service: self soapAction: @"" postData: _envelope deserializeTo: @"NSString"];
+        [_request send];
+        return _request;
+    }
 
 @end
 	

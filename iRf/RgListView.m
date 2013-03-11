@@ -77,128 +77,6 @@ static NSString *kObjKey = @"obj";
     // Release any cached data, images, etc that aren't in use.
 }
 
-- (void) alert:(NSString*)title msg:(NSString*)msg {
-    // open an alert with just an OK button
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:msg
-                                                   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
-    [alert show];
-}
-
-
-- (void) getAllRg{
-    
-    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.tableView animated:YES];
-    // Set determinate mode
-	hud.mode = MBProgressHUDModeIndeterminate;
-	hud.labelText = @"Loading";
-    hud.removeFromSuperViewOnHide = YES;
-    [hud show:YES];
-    
-    if ([RootViewController isSync] ) {
-        FMDatabase *db = [DbUtil retConnectionForResource:@"iRf" ofType:@"rdb"];
-        if (db != nil) {
-            
-            NSString *sql = @"select * from scm_rg where 1 = 1";
-            
-            NSString *goodsname = [self.searchObj objectForKey:@"goodsname"];
-            if (![goodsname isEqualToString:@""] && goodsname != nil) {
-                sql = [sql stringByAppendingFormat:@" and goodsname like '%@%%'",goodsname];
-            }
-            NSString *prodarea = [self.searchObj objectForKey:@"prodarea"];
-            if (![prodarea isEqualToString:@""] && prodarea != nil) {
-                sql = [sql stringByAppendingFormat:@" and prodarea like '%@%%'",prodarea];
-            }
-            NSString *lotno = [self.searchObj objectForKey:@"lotno"];
-            if (![lotno isEqualToString:@""] && lotno != nil) {
-                sql = [sql stringByAppendingFormat:@" and lotno like '%@%%'",lotno];
-            }
-            NSString *invno = [self.searchObj objectForKey:@"invno"];
-            if (![invno isEqualToString:@""] && invno != nil) {
-                sql = [sql stringByAppendingFormat:@" and invno like '%@%%'",invno];
-            }
-            NSString *startdate = [self.searchObj objectForKey:@"startdate"];
-            if (![startdate isEqualToString:@""] && startdate != nil) {
-                sql = [sql stringByAppendingFormat:@" and credate >= date('%@')",startdate];
-            }
-            NSString *enddate = [self.searchObj objectForKey:@"enddate"];
-            if (![enddate isEqualToString:@""] && enddate != nil) {
-                sql = [sql stringByAppendingFormat:@" and credate <= date('%@')",enddate];
-            }
-            NSString *goodspy = [self.searchObj objectForKey:@"goodspy"];
-            if (![goodspy isEqualToString:@""] && goodspy != nil) {
-                sql = [sql stringByAppendingFormat:@" and goodspy like '%@%%'",goodspy];
-            }
-            NSString *rgflag = [self.searchObj objectForKey:@"rgflag"];
-            if (![rgflag isEqualToString:@""] && rgflag != nil) {
-                if ([rgflag isEqualToString:@"1"]) {
-                    sql = [sql stringByAppendingFormat:@" and rgflag = 1 "];
-                }
-                else {
-                    sql = [sql stringByAppendingFormat:@" and rgflag in ('',0) "];
-                }
-            }
-            
-            FMResultSet *rs = [db executeQuery:sql];
-            NSMutableArray *rows =  [NSMutableArray array];
-            while ([rs next]) {
-                
-                NSMutableDictionary *row =  [NSMutableDictionary dictionary];
-                
-                for (int i=0; i < [rs columnCount]; i++) {
-                    NSString *key = [rs columnNameForIndex:i];
-                    NSString *value = [rs stringForColumnIndex:i];
-                    
-                    if (value == nil) {
-                        [row setObject:@"" forKey:key];
-                    }
-                    else {
-                        [row setObject:value forKey:key];
-                    }
-                    
-                }
-                
-                [rows addObject: row];
-            }
-            
-            [db close];
-            
-            self.objs = rows;
-            [self reload];
-        }
-        
-        [MBProgressHUD hideHUDForView:self.tableView animated:YES];
-    }
-    else{
-        iRfRgService* service = [iRfRgService service];
-        NSDictionary *setting = [CommonUtil getSettings];
-        NSString *username = [setting objectForKey:kSettingUserKey];
-        NSString *password = [setting objectForKey:kSettingPwdKey];
-        
-        SBJsonWriter *writer = [[SBJsonWriter alloc] init];
-        NSString *json = [writer stringWithObject:self.searchObj];
-        [service getAllRg:self action:@selector(getAllRgHandler:)
-                 username: username
-                 password: password
-                queryjson:json
-         ];
-    }
-}
-
-- (void) resetBarbutton
-{
-    if (self.editing) {
-        [self setEditing:NO animated:YES];
-    }
-    if (canReload) {
-        
-        UIBarButtonItem *searchbtn = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch                                                                          target:self action:@selector(setSearchJson:)];
-        
-        UIBarButtonItem *batchbtn = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemOrganize                                                                          target:self action:@selector(batchMode)];
-        
-        [self.navigationItem setRightBarButtonItems:[NSArray arrayWithObjects: searchbtn,batchbtn,nil] animated:YES];
-    }
-}
-
 #pragma mark - View lifecycle
 
 - (void)viewDidLoad
@@ -215,14 +93,6 @@ static NSString *kObjKey = @"obj";
     
     [self resetBarbutton];
     
-    NSDateFormatter *df = [[NSDateFormatter alloc] init];
-    [df setDateFormat:@"yyyy-MM-dd"];
-    NSString *yesterday = [df stringFromDate:[NSDate dateWithTimeIntervalSinceNow:- 24 * 60 * 60 * 1]]  ;
-
-    self.searchObj = [NSDictionary dictionaryWithObjectsAndKeys:
-                      @"0",@"rgflag",
-                      yesterday,@"startdate",
-                      nil];
     [self reload];
 }
 
@@ -371,7 +241,15 @@ static NSString *kObjKey = @"obj";
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    if (canReload  ) {
+    if (canReload && !self.searchObj) {
+        NSDateFormatter *df = [[NSDateFormatter alloc] init];
+        [df setDateFormat:@"yyyy-MM-dd"];
+        NSString *yesterday = [df stringFromDate:[NSDate dateWithTimeIntervalSinceNow:- 24 * 60 * 60 * 1]]  ;
+        
+        self.searchObj = [NSDictionary dictionaryWithObjectsAndKeys:
+                          @"0",@"rgflag",
+                          yesterday,@"startdate",
+                          nil];
         [self getAllRg];
     }
 	// this UIViewController is about to re-appear, make sure we remove the current selection in our table view
@@ -380,6 +258,123 @@ static NSString *kObjKey = @"obj";
     
     [self.tableView reloadData];
     
+}
+
+#pragma mark -
+#pragma mark getAllRg
+
+- (void) getAllRg{
+    
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.tableView animated:YES];
+    // Set determinate mode
+	hud.mode = MBProgressHUDModeIndeterminate;
+	hud.labelText = @"Loading";
+    hud.removeFromSuperViewOnHide = YES;
+    [hud show:YES];
+    
+    if ([RootViewController isSync] ) {
+        FMDatabase *db = [DbUtil retConnectionForResource:@"iRf" ofType:@"rdb"];
+        if (db != nil) {
+            
+            NSString *sql = @"select * from scm_rg where 1 = 1";
+            
+            NSString *goodsname = [self.searchObj objectForKey:@"goodsname"];
+            if (![goodsname isEqualToString:@""] && goodsname != nil) {
+                sql = [sql stringByAppendingFormat:@" and goodsname like '%@%%'",goodsname];
+            }
+            NSString *prodarea = [self.searchObj objectForKey:@"prodarea"];
+            if (![prodarea isEqualToString:@""] && prodarea != nil) {
+                sql = [sql stringByAppendingFormat:@" and prodarea like '%@%%'",prodarea];
+            }
+            NSString *lotno = [self.searchObj objectForKey:@"lotno"];
+            if (![lotno isEqualToString:@""] && lotno != nil) {
+                sql = [sql stringByAppendingFormat:@" and lotno like '%@%%'",lotno];
+            }
+            NSString *invno = [self.searchObj objectForKey:@"invno"];
+            if (![invno isEqualToString:@""] && invno != nil) {
+                sql = [sql stringByAppendingFormat:@" and invno like '%@%%'",invno];
+            }
+            NSString *startdate = [self.searchObj objectForKey:@"startdate"];
+            if (![startdate isEqualToString:@""] && startdate != nil) {
+                sql = [sql stringByAppendingFormat:@" and credate >= date('%@')",startdate];
+            }
+            NSString *enddate = [self.searchObj objectForKey:@"enddate"];
+            if (![enddate isEqualToString:@""] && enddate != nil) {
+                sql = [sql stringByAppendingFormat:@" and credate <= date('%@')",enddate];
+            }
+            NSString *goodspy = [self.searchObj objectForKey:@"goodspy"];
+            if (![goodspy isEqualToString:@""] && goodspy != nil) {
+                sql = [sql stringByAppendingFormat:@" and goodspy like '%@%%'",goodspy];
+            }
+            NSString *rgflag = [self.searchObj objectForKey:@"rgflag"];
+            if (![rgflag isEqualToString:@""] && rgflag != nil) {
+                if ([rgflag isEqualToString:@"1"]) {
+                    sql = [sql stringByAppendingFormat:@" and rgflag = 1 "];
+                }
+                else {
+                    sql = [sql stringByAppendingFormat:@" and rgflag in ('',0) "];
+                }
+            }
+            
+            FMResultSet *rs = [db executeQuery:sql];
+            NSMutableArray *rows =  [NSMutableArray array];
+            while ([rs next]) {
+                
+                NSMutableDictionary *row =  [NSMutableDictionary dictionary];
+                
+                for (int i=0; i < [rs columnCount]; i++) {
+                    NSString *key = [rs columnNameForIndex:i];
+                    NSString *value = [rs stringForColumnIndex:i];
+                    
+                    if (value == nil) {
+                        [row setObject:@"" forKey:key];
+                    }
+                    else {
+                        [row setObject:value forKey:key];
+                    }
+                    
+                }
+                
+                [rows addObject: row];
+            }
+            
+            [db close];
+            
+            self.objs = rows;
+            [self reload];
+        }
+        
+        [MBProgressHUD hideHUDForView:self.tableView animated:YES];
+    }
+    else{
+        iRfRgService* service = [iRfRgService service];
+        NSDictionary *setting = [CommonUtil getSettings];
+        NSString *username = [setting objectForKey:kSettingUserKey];
+        NSString *password = [setting objectForKey:kSettingPwdKey];
+        
+        SBJsonWriter *writer = [[SBJsonWriter alloc] init];
+        NSString *json = [writer stringWithObject:self.searchObj];
+        [service getAllRg:self action:@selector(getAllRgHandler:)
+                 username: username
+                 password: password
+                queryjson:json
+         ];
+    }
+}
+
+- (void) resetBarbutton
+{
+    if (self.editing) {
+        [self setEditing:NO animated:YES];
+    }
+    if (canReload) {
+        
+        UIBarButtonItem *searchbtn = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch                                                                          target:self action:@selector(setSearchJson:)];
+        
+        UIBarButtonItem *batchbtn = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemOrganize                                                                          target:self action:@selector(batchMode)];
+        
+        [self.navigationItem setRightBarButtonItems:[NSArray arrayWithObjects: searchbtn,batchbtn,nil] animated:YES];
+    }
 }
 
 
@@ -434,7 +429,7 @@ static NSString *kObjKey = @"obj";
                 if ([msg isKindOfClass:[NSNull class]]) {
                     msg = @"空指针";
                 }
-                [self alert:NSLocalizedString(@"Error", @"Error") msg:msg];
+                [CommonUtil alert:NSLocalizedString(@"Error", @"Error") msg:msg];
             }
             
         }
@@ -634,7 +629,7 @@ static NSString *kObjKey = @"obj";
 
 
 #pragma mark - 
-#pragma mark BatchMode Methods
+#pragma mark batchMode Methods
 
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath{
     return UITableViewCellEditingStyleDelete | UITableViewCellEditingStyleInsert;
@@ -664,7 +659,9 @@ static NSString *kObjKey = @"obj";
                                                otherButtonTitles:nil, nil];
         [as showFromBarButtonItem:sender animated:YES];
     }
-    
+    if (self.editing) {
+        [self setEditing:NO animated:YES];
+    }
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
@@ -731,7 +728,7 @@ static NSString *kObjKey = @"obj";
 	}
     
 	// Handle faults
-	if([value isKindOfClass:[SoapFault class]]) {
+	else if([value isKindOfClass:[SoapFault class]]) {
 		NSLog(@"%@", value);
         SoapFault * result = (SoapFault*)value;
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"soap连接失败"
@@ -828,7 +825,7 @@ static NSString *kObjKey = @"obj";
 }
 
 #pragma mark -
-#pragma mark - refresh handle
+#pragma mark refresh handle
 
 -(void)refreshView:(UIRefreshControl *)refresh
 {

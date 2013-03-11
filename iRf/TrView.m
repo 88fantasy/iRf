@@ -220,7 +220,7 @@ typedef NS_OPTIONS(NSUInteger, TrViewType) {
 	}
     
 	// Handle faults
-	if([value isKindOfClass:[SoapFault class]]) {
+	else if([value isKindOfClass:[SoapFault class]]) {
 		NSLog(@"%@", value);
         SoapFault * result = (SoapFault*)value;
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"soap连接失败" 

@@ -28,7 +28,7 @@
 @synthesize devtoken;
 
 + (BOOL)checkHostReachability {
-	Reachability* hostReach = [Reachability reachabilityWithHostName: host] ;
+	Reachability* hostReach = [Reachability reachabilityWithHostName: kHost] ;
 	NetworkStatus netStatus = [hostReach currentReachabilityStatus];
 	if (netStatus == NotReachable ) {
 		// open an alert with just an OK button

@@ -18,10 +18,15 @@
     
     NSString *currentCode;
     NSArray *dataList;
+
+@private
+    NSArray *colors;
+
 }
 
 @property (nonatomic,strong) NSArray *dataList;
 @property (nonatomic,copy) NSString *currentCode;
+@property (nonatomic,strong) NSArray *colors;
 
 - (IBAction) scrollToRefresh:(id)sender;
 - (void)reloadTableViewDataSource;

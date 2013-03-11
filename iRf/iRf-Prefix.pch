@@ -4,8 +4,8 @@
 
 #import <Availability.h>
 
-#ifndef __IPHONE_3_0
-#warning "This project uses features only available in iPhone SDK 3.0 and later."
+#ifndef __IPHONE_5_0
+#warning "This project uses features only available in iPhone SDK 5.0 and later."
 #endif
 
 #ifdef __OBJC__
@@ -20,10 +20,4 @@
 #import "DbUtil.h"
 #import "SBJson.h"
 
-#define IsPad (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)//定义是否是Ipad的宏
-#define fcccf(__x__,__y__) GetPointbyPhoneXandY(__x__,__y__)//为了与ccp用法一致
-#define IsInternet ([[[CommonUtil getSettings] objectForKey:kSettingInternetKey]boolValue])//互联网检查
-#define isIPhone5 ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(640, 1136), [[UIScreen mainScreen] currentMode].size) : NO)  //iphone5分辨率检查
-#define GetScreenSize [[UIScreen mainScreen] bounds]  //获取设备分辨率 返回 CGRect
-#define GetSystemVersion [[[UIDevice currentDevice] systemVersion] floatValue] //返回当前系统版本
 #endif

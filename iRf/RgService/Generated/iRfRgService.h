@@ -87,7 +87,11 @@
 	- (SoapRequest*) queryJSON: (id <SoapDelegate>) handler sql: (NSString*) sql dbname: (NSString*) dbname;
 	- (SoapRequest*) queryJSON: (id) target action: (SEL) action sql: (NSString*) sql dbname: (NSString*) dbname;
 
-		
+    /* Returns NSString*.  */
+- (SoapRequest*) doRgBy2DBarcode: (id <SoapDelegate>) handler username: (NSString*) username password: (NSString*) password json: (NSString*) json;
+
+- (SoapRequest*) doRgBy2DBarcode: (id) _target action: (SEL) _action username: (NSString*) username password: (NSString*) password json: (NSString*) json;
+
 	+ (iRfRgService*) service;
 	+ (iRfRgService*) serviceWithUsername: (NSString*) username andPassword: (NSString*) password;
 @end

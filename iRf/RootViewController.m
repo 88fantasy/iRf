@@ -18,12 +18,13 @@
 #import "RgGroupListView.h"
 #import "SettingListView.h"
 #import "BasecodeStockList.h"
+#import "QRCodeRgReader.h"
 
-static NSString *kCellIdentifier = @"MyIdentifier";
-static NSString *kTitleKey = @"title";
-static NSString *kExplainKey = @"explanation";
-static NSString *kViewControllerKey = @"viewController";
-static NSString *iconKey = @"iconfile";
+static NSString * const kCellIdentifier = @"RootViewControllerIdentifier";
+static NSString * const kTitleKey = @"title";
+static NSString * const kExplainKey = @"explanation";
+static NSString * const kViewControllerKey = @"viewController";
+static NSString * const iconKey = @"iconfile";
 
 
 @interface UIViewController (UINavigationControllerSwipeBackItem)
@@ -140,7 +141,7 @@ enum {
     
     NSString *version = [appinfo objectForKey:@"CFBundleShortVersionString"];//(NSString *)kCFBundleVersionKey];
     
-    NSString *urlString =[NSString stringWithFormat:@"http://%@/phoneapp/ios/iRf.php?newestver=%@",host,version];
+    NSString *urlString =[NSString stringWithFormat:@"http://%@/phoneapp/ios/iRf.php?newestver=%@",kHost,version];
     
     NSMutableURLRequest *request = [[[NSMutableURLRequest alloc] init] autorelease];
     [request setURL:[NSURL URLWithString:urlString]];
@@ -246,6 +247,15 @@ enum {
                                   @"kccx.png",iconKey,
                                   nil]];
         [basecodeStockList release];
+        
+        QRCodeRgReader *qrCodeRgReader = [[QRCodeRgReader alloc]initWithStyle:UITableViewStylePlain];
+        [self.menuList addObject:[NSDictionary dictionaryWithObjectsAndKeys:
+                                  @"二维码收货", kTitleKey,
+                                  @"通过扫描二维码识别收货数据", kExplainKey,
+                                  qrCodeRgReader, kViewControllerKey,
+                                  @"kccx.png",iconKey,
+                                  nil]];
+        [qrCodeRgReader release];
     }
     
     [self.tableView reloadData];
@@ -359,7 +369,7 @@ enum {
     }
     else if ([alertView tag] == VersionAlert) {
         if(buttonIndex == 1) {
-            NSString *appurl = [NSString stringWithFormat:@"itms-services:///?action=download-manifest&url=http://%@/phoneapp/ios/iRf.php",host];
+            NSString *appurl = [NSString stringWithFormat:@"itms-services:///?action=download-manifest&url=http://%@/phoneapp/ios/iRf.php",kHost];
             [[UIApplication sharedApplication] openURL:[NSURL URLWithString:appurl]]; 
         }
     }
@@ -595,7 +605,7 @@ enum {
     }
     
 	// Handle faults
-	if([value isKindOfClass:[SoapFault class]]) {
+	else if([value isKindOfClass:[SoapFault class]]) {
 		NSLog(@"%@", value);
         SoapFault * result = (SoapFault*)value;
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"soap连接失败"
@@ -665,13 +675,14 @@ enum {
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
 {
-    NSString *result = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    NSString *result = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
 
     NSLog(@"Version check result string is :%@",result);
     
     SBJsonParser *parser = [[SBJsonParser alloc] init];
     id retObj = [parser objectWithString:result];
     [parser release];
+    
     if (retObj != nil) {
         NSLog(@"%@",retObj);
         NSDictionary *versionobj = (NSDictionary *)retObj;

@@ -17,6 +17,7 @@
 @implementation BasecodeStockList
 
 @synthesize currentCode,dataList;
+@synthesize colors;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -42,7 +43,19 @@
             }
         }
         
-        
+        colors = [NSArray arrayWithObjects:
+                  UIColorFromRGB(0x4096EE),
+                  UIColorFromRGB(0x36A667),
+                  UIColorFromRGB(0xE37164),
+                  UIColorFromRGB(0xE3D9C1),
+                  UIColorFromRGB(0xB48A6B),
+                  UIColorFromRGB(0x0070C3),
+                  UIColorFromRGB(0xF4D2CD),
+                  UIColorFromRGB(0x007D43),
+                  UIColorFromRGB(0xC7E0CE),
+                  UIColorFromRGB(0xB5493F),
+                  UIColorFromRGB(0x786B40)
+                  , nil];
     }
     return self;
 }
@@ -69,9 +82,9 @@
 
 -(void)viewDidAppear:(BOOL)animated
 {
-    if (self.currentCode == nil) {
-        [self scanAction:nil];
-    }
+//    if (self.currentCode == nil) {
+//        [self scanAction:nil];
+//    }
 }
 
 
@@ -405,159 +418,173 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCellIdentifier];
 	if (cell == nil)
 	{
-		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:kCellIdentifier] ;
+		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kCellIdentifier] ;
 		cell.accessoryType = UITableViewCellAccessoryNone;
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         
-        NSArray *rows = [[self.dataList objectAtIndex:indexPath.section] objectForKey:@"array"];
         
-        CGRect rect = [[UIScreen mainScreen] bounds];
-        float width = rect.size.width;
-        
-        if (indexPath.row == 0) {
-            NSMutableArray *array = [NSMutableArray array];
-            for (unsigned i = 0,j = [rows count]; i<j; i++) {
-                NSDictionary *row = [rows objectAtIndex:i];
-                if ([@"1" isEqualToString:[row objectForKey:@"gp"] ]) {
-                    [array addObject:row];
-                }
+    }
+    
+    NSArray *subviews = cell.contentView.subviews;
+    for ( UIView *subview in subviews) {
+        [subview removeFromSuperview];
+    }
+    [cell.contentView setContentMode:UIViewContentModeCenter];
+    
+    NSArray *rows = [[self.dataList objectAtIndex:indexPath.section] objectForKey:@"array"];
+    
+    CGRect rect = [[UIScreen mainScreen] bounds];
+    float width = rect.size.width;
+    
+    if (indexPath.row == 0) {
+        NSMutableArray *array = [NSMutableArray array];
+        for (unsigned i = 0,j = [rows count]; i<j; i++) {
+            NSDictionary *row = [rows objectAtIndex:i];
+            if ([@"1" isEqualToString:[row objectForKey:@"gp"] ]) {
+                [array addObject:row];
             }
-            
-            
-            PCPieChart *pieChart = [[PCPieChart alloc] initWithFrame:CGRectMake(width/2, 0 ,width,CELLHEIGHT)];
-            [pieChart setAutoresizingMask:UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin];
-            [pieChart setDiameter:width/2];
-            [pieChart setSameColorLabel:YES];
-            
-            pieChart.titleFont = [UIFont fontWithName:@"HelveticaNeue-Bold" size:18];
-            if (IsPad) {
-                pieChart.titleFont = [UIFont fontWithName:@"HelveticaNeue-Bold" size:25];
-                pieChart.percentageFont = [UIFont fontWithName:@"HelveticaNeue-Bold" size:45];
-            }
-            
-            
-            NSMutableArray *components = [NSMutableArray array];
-            for (int i=0; i<[array count]; i++)
-            {
-                NSDictionary *item = [array objectAtIndex:i];
-                NSString *title = [NSString stringWithFormat:@"%@\n%@%@",
-                                   [item objectForKey:@"storagename"],
-                                   [item objectForKey:@"goodsqty"],
-                                   [item objectForKey:@"goodsunit"]
-                                   ];
-                
-                PCPieComponent *component = [PCPieComponent pieComponentWithTitle:title value:[[item objectForKey:@"baseqty"] floatValue]];
-                [components addObject:component];
-                
-                if (i==0)
-                {
-                    [component setColour:PCColorYellow];
-                }
-                else if (i==1)
-                {
-                    [component setColour:PCColorGreen];
-                }
-                else if (i==2)
-                {
-                    [component setColour:PCColorOrange];
-                }
-                else if (i==3)
-                {
-                    [component setColour:PCColorRed];
-                }
-                else if (i==4)
-                {
-                    [component setColour:PCColorBlue];
-                }
-            }
-            [pieChart setComponents:components];
-            //        [pieChart setBackgroundColor:[UIColor grayColor]];
-            [cell.contentView addSubview: pieChart];
         }
-        else if (indexPath.row == 1){
+        
+        PCPieChart *pieChart = [[PCPieChart alloc] initWithFrame:CGRectMake(0, 0 ,width,CELLHEIGHT)];
+        [pieChart setAutoresizingMask:UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin];
+        [pieChart setDiameter:width/2];
+        [pieChart setSameColorLabel:YES];
+        
+        pieChart.titleFont = [UIFont fontWithName:@"HelveticaNeue-Bold" size:18];
+        if (IsPad) {
+            pieChart.titleFont = [UIFont fontWithName:@"HelveticaNeue-Bold" size:25];
+            pieChart.percentageFont = [UIFont fontWithName:@"HelveticaNeue-Bold" size:45];
+        }
+        
+        
+        NSMutableArray *components = [NSMutableArray array];
+        for (int i=0; i<[array count]; i++)
+        {
+            NSDictionary *item = [array objectAtIndex:i];
+            NSString *title = [NSString stringWithFormat:@"%@\n%@%@",
+                               [item objectForKey:@"storagename"],
+                               [item objectForKey:@"goodsqty"],
+                               [item objectForKey:@"goodsunit"]
+                               ];
             
-            PCLineChartView *_lineChartView = [[PCLineChartView alloc] initWithFrame:CGRectMake(0,10,width,CELLHEIGHT-20)];
-            [_lineChartView setAutoresizingMask:UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin];
+            PCPieComponent *component = [PCPieComponent pieComponentWithTitle:title value:[[item objectForKey:@"baseqty"] floatValue]];
+            [components addObject:component];
             
-            _lineChartView.autoscaleYAxis = YES;
-            _lineChartView.legendFont = [UIFont boldSystemFontOfSize:16];
-            
-            NSDateComponents *datecomponents = [[NSCalendar currentCalendar] components:NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
-            NSInteger year = [datecomponents year];
-            NSInteger month = [datecomponents month];
-            
-            NSMutableArray *x_labels =  [NSMutableArray array];
-            
-            for (int i = 3; i >= 0 ; i--) {
-                NSInteger x = month - i;
-                if (x > 0) {
-                    [x_labels addObject:[NSString stringWithFormat:@"%d-%02d",year,x]];
-                }
-                else {
-                    [x_labels addObject:[NSString stringWithFormat:@"%d-%02d",year-1,x+12]];
-                }
+            if (i<colors.count) {
+                UIColor *color = [colors objectAtIndex:i];
+                [component setColour:color];
             }
             
-            
-            NSMutableArray *components = [NSMutableArray array];
-            
-            NSMutableArray *inpoint = [NSMutableArray array];
-            float insum = 0;
-            for (int i = 0,j = [x_labels count]; i < j ; i++) {
-                NSString *xLabel = [x_labels objectAtIndex:i];
-                float rowsum = 0;
-                for (unsigned m=0,n=[rows count]; m<n; m++) {
-                    NSDictionary *row = [rows objectAtIndex:m];
-                    if ([xLabel isEqualToString:[row objectForKey:@"storagename"]]
-                        && [@"2" isEqualToString:[row objectForKey:@"gp"]]
-                        ) {
-                        rowsum += [[row objectForKey:@"baseqty"] floatValue];
-                    }
-                }
-                [inpoint addObject:[NSString stringWithFormat:@"%f",rowsum]];
-                insum += rowsum;
+//            if (i==0)
+//            {
+//                [component setColour:PCColorYellow];
+//            }
+//            else if (i==1)
+//            {
+//                [component setColour:PCColorGreen];
+//            }
+//            else if (i==2)
+//            {
+//                [component setColour:PCColorOrange];
+//            }
+//            else if (i==3)
+//            {
+//                [component setColour:PCColorRed];
+//            }
+//            else if (i==4)
+//            {
+//                [component setColour:PCColorBlue];
+//            }
+        }
+        [pieChart setComponents:components];
+        //        [pieChart setBackgroundColor:[UIColor grayColor]];
+        [cell.contentView addSubview: pieChart];
+    }
+    else if (indexPath.row == 1){
+        
+        PCLineChartView *_lineChartView = [[PCLineChartView alloc] initWithFrame:CGRectMake(0,10,width,CELLHEIGHT-20)];
+        [_lineChartView setAutoresizingMask:UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin];
+        
+        _lineChartView.autoscaleYAxis = YES;
+        _lineChartView.legendFont = [UIFont boldSystemFontOfSize:16];
+        
+        NSDateComponents *datecomponents = [[NSCalendar currentCalendar] components:NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
+        NSInteger year = [datecomponents year];
+        NSInteger month = [datecomponents month];
+        
+        NSMutableArray *x_labels =  [NSMutableArray array];
+        
+        for (int i = 3; i >= 0 ; i--) {
+            NSInteger x = month - i;
+            if (x > 0) {
+                [x_labels addObject:[NSString stringWithFormat:@"%d-%02d",year,x]];
             }
-            
-            PCLineChartViewComponent *incomponent = [[PCLineChartViewComponent alloc] init];
-            [incomponent setTitle:[NSString stringWithFormat:@"%.0f",insum]];
-            
-            [incomponent setPoints:inpoint];
+            else {
+                [x_labels addObject:[NSString stringWithFormat:@"%d-%02d",year-1,x+12]];
+            }
+        }
+        
+        
+        NSMutableArray *components = [NSMutableArray array];
+        
+        NSMutableArray *inpoint = [NSMutableArray array];
+        float insum = 0;
+        for (int i = 0,j = [x_labels count]; i < j ; i++) {
+            NSString *xLabel = [x_labels objectAtIndex:i];
+            float rowsum = 0;
+            for (unsigned m=0,n=[rows count]; m<n; m++) {
+                NSDictionary *row = [rows objectAtIndex:m];
+                if ([xLabel isEqualToString:[row objectForKey:@"storagename"]]
+                    && [@"2" isEqualToString:[row objectForKey:@"gp"]]
+                    ) {
+                    rowsum += [[row objectForKey:@"baseqty"] floatValue];
+                }
+            }
+            [inpoint addObject:[NSString stringWithFormat:@"%f",rowsum]];
+            insum += rowsum;
+        }
+        
+        PCLineChartViewComponent *incomponent = [[PCLineChartViewComponent alloc] init];
+        [incomponent setTitle:[NSString stringWithFormat:@"%.0f",insum]];
+        
+        [incomponent setPoints:inpoint];
 //            [incomponent setShouldLabelValues:YES];
-            [incomponent setColour:PCColorGreen];
-            [components addObject:incomponent];
-            
-            
-            NSMutableArray *outpoint = [NSMutableArray array];
-            float outsum = 0;
-            for (int i = 0,j = [x_labels count]; i < j ; i++) {
-                NSString *xLabel = [x_labels objectAtIndex:i];
-                float rowsum = 0;
-                for (unsigned m=0,n=[rows count]; m<n; m++) {
-                    NSDictionary *row = [rows objectAtIndex:m];
-                    if ([xLabel isEqualToString:[row objectForKey:@"storagename"]]
-                        && [@"3" isEqualToString:[row objectForKey:@"gp"]]
-                        ) {
-                        rowsum += [[row objectForKey:@"baseqty"] floatValue];
-                    }
+        [incomponent setColour:PCColorGreen];
+        [components addObject:incomponent];
+        
+        
+        NSMutableArray *outpoint = [NSMutableArray array];
+        float outsum = 0;
+        for (int i = 0,j = [x_labels count]; i < j ; i++) {
+            NSString *xLabel = [x_labels objectAtIndex:i];
+            float rowsum = 0;
+            for (unsigned m=0,n=[rows count]; m<n; m++) {
+                NSDictionary *row = [rows objectAtIndex:m];
+                if ([xLabel isEqualToString:[row objectForKey:@"storagename"]]
+                    && [@"3" isEqualToString:[row objectForKey:@"gp"]]
+                    ) {
+                    rowsum += [[row objectForKey:@"baseqty"] floatValue];
                 }
-                [outpoint addObject:[NSString stringWithFormat:@"%f",rowsum]];
-                outsum += rowsum;
             }
-            PCLineChartViewComponent *outcomponent = [[PCLineChartViewComponent alloc] init];
-            [outcomponent setTitle:[NSString stringWithFormat:@"%.0f",outsum]];
-            [outcomponent setPoints:outpoint];
-//            [outcomponent setShouldLabelValues:YES];
-            [outcomponent setColour:PCColorBlue];
-            [components addObject:outcomponent];
-            
-            float max = insum > outsum ? insum : outsum;
-            unsigned interval = max / 100  + 1 ;
-            _lineChartView.maxValue = interval * 100;
-            
-            [_lineChartView setComponents:components];
-            [_lineChartView setXLabels:x_labels];
-            [cell.contentView addSubview: _lineChartView];
+            [outpoint addObject:[NSString stringWithFormat:@"%f",rowsum]];
+            outsum += rowsum;
         }
-	}
+        PCLineChartViewComponent *outcomponent = [[PCLineChartViewComponent alloc] init];
+        [outcomponent setTitle:[NSString stringWithFormat:@"%.0f",outsum]];
+        [outcomponent setPoints:outpoint];
+//            [outcomponent setShouldLabelValues:YES];
+        [outcomponent setColour:PCColorBlue];
+        [components addObject:outcomponent];
+        
+        float max = insum > outsum ? insum : outsum;
+        unsigned interval = max / 100  + 1 ;
+        _lineChartView.maxValue = interval * 100;
+        
+        [_lineChartView setComponents:components];
+        [_lineChartView setXLabels:x_labels];
+        [cell.contentView addSubview: _lineChartView];
+    }
+	
 	
     return cell;
 }

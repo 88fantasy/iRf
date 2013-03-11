@@ -7,9 +7,6 @@
 //
 
 #import "BaseCodeTableView.h"
-static NSString *kCellIdentifier = @"MyIdentifier";
-static NSString *kTitleKey = @"title";
-static NSString *kExplainKey = @"explanation";
 
 @implementation BaseCodeTableView
 
