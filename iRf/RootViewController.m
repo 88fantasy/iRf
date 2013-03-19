@@ -19,6 +19,8 @@
 #import "SettingListView.h"
 #import "BasecodeStockList.h"
 #import "QRCodeRgReader.h"
+#import "LoanTableView.h"
+#import "MBProgressHUD.h"
 
 static NSString * const kCellIdentifier = @"RootViewControllerIdentifier";
 static NSString * const kTitleKey = @"title";
@@ -258,6 +260,15 @@ enum {
         [qrCodeRgReader release];
     }
     
+    LoanTableView *loanTableView = [[LoanTableView alloc]initWithStyle:UITableViewStylePlain];
+    [self.menuList addObject:[NSDictionary dictionaryWithObjectsAndKeys:
+                              @"换货管理", kTitleKey,
+                              @"允许操作借出还入单", kExplainKey,
+                              loanTableView, kViewControllerKey,
+                              @"kccx.png",iconKey,
+                              nil]];
+    [loanTableView release];
+    
     [self.tableView reloadData];
 }
 
@@ -401,12 +412,12 @@ enum {
 
 - (void) getAllRg{
     
-    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.tableView animated:YES];
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
     // Set determinate mode
 	hud.mode = MBProgressHUDModeIndeterminate;
 	hud.labelText = @"Loading";
     hud.removeFromSuperViewOnHide = YES;
-    [hud show:YES];
+    
     
     iRfRgService* service = [iRfRgService service];
     NSDictionary *setting = [CommonUtil getSettings];
@@ -512,7 +523,7 @@ enum {
         }
     }
 
-    [MBProgressHUD hideHUDForView:self.tableView animated:YES];
+    [MBProgressHUD hideHUDForView:self.navigationController.view animated:YES];
 }
 
 #pragma mark -

@@ -77,12 +77,12 @@ static NSString *kCellIdentifier = @"MedicineReqCellIdentifier";
 
 - (void) getReqList
 {
-    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.tableView animated:YES];
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
     // Set determinate mode
 	hud.mode = MBProgressHUDModeIndeterminate;
 	hud.labelText = @"Loading";
     hud.removeFromSuperViewOnHide = YES;
-    [hud show:YES];
+    
     
     iRfRgService* service = [iRfRgService service];
     NSDictionary *setting = [CommonUtil getSettings];
@@ -164,7 +164,7 @@ static NSString *kCellIdentifier = @"MedicineReqCellIdentifier";
             
         }
     }
-    [MBProgressHUD hideHUDForView:self.tableView animated:YES];
+    [MBProgressHUD hideHUDForView:self.navigationController.view animated:YES];
     
 }
 
@@ -186,12 +186,11 @@ static NSString *kCellIdentifier = @"MedicineReqCellIdentifier";
 - (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if (buttonIndex == 1) {
-        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.tableView animated:YES];
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
         // Set determinate mode
         hud.mode = MBProgressHUDModeIndeterminate;
         hud.labelText = @"Loading";
         hud.removeFromSuperViewOnHide = YES;
-        [hud show:YES];
         
         iRfRgService* service = [iRfRgService service];
         NSDictionary *setting = [CommonUtil getSettings];
@@ -265,7 +264,7 @@ static NSString *kCellIdentifier = @"MedicineReqCellIdentifier";
             
         }
     }
-    [MBProgressHUD hideHUDForView:self.tableView animated:YES];
+    [MBProgressHUD hideHUDForView:self.navigationController.view animated:YES];
 }
 
 #pragma mark -

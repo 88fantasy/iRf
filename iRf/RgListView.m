@@ -265,12 +265,12 @@ static NSString *kObjKey = @"obj";
 
 - (void) getAllRg{
     
-    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.tableView animated:YES];
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
     // Set determinate mode
 	hud.mode = MBProgressHUDModeIndeterminate;
 	hud.labelText = @"Loading";
     hud.removeFromSuperViewOnHide = YES;
-    [hud show:YES];
+    
     
     if ([RootViewController isSync] ) {
         FMDatabase *db = [DbUtil retConnectionForResource:@"iRf" ofType:@"rdb"];
@@ -344,7 +344,7 @@ static NSString *kObjKey = @"obj";
             [self reload];
         }
         
-        [MBProgressHUD hideHUDForView:self.tableView animated:YES];
+        [MBProgressHUD hideHUDForView:self.navigationController.view animated:YES];
     }
     else{
         iRfRgService* service = [iRfRgService service];
@@ -438,7 +438,7 @@ static NSString *kObjKey = @"obj";
         }
     }
     if (canReload) {
-        [MBProgressHUD hideHUDForView:self.tableView animated:YES];
+        [MBProgressHUD hideHUDForView:self.navigationController.view animated:YES];
     }
     
 }

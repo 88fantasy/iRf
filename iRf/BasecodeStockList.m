@@ -11,6 +11,7 @@
 #import "SBJson.h"
 #import "PCPieChart.h"
 #import "PCLineChartView.h"
+#import "MBProgressHUD.h"
 
 #define CELLHEIGHT (IsPad? 440.0:220.0)
 
@@ -99,63 +100,51 @@
     return UIInterfaceOrientationIsLandscape( interfaceOrientation ) || (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
-
-
-
-//#pragma mark - Table view delegate
-//
-//- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-//{
-//    // Navigation logic may go here. Create and push another view controller.
-//    /*
-//     <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
-//     // ...
-//     // Pass the selected object to the new view controller.
-//     [self.navigationController pushViewController:detailViewController animated:YES];
-//     [detailViewController release];
-//     */
-//}
+- (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView
+{
+    NSMutableArray *array = [NSMutableArray array];
+    for (int i=0,j = self.dataList.count; i<j; i++) {
+        NSString *hisgdsid = [[self.dataList objectAtIndex:i] objectForKey:@"hisgdsid"];
+        NSString *title = [hisgdsid substringToIndex:3];
+        if (![array containsObject:title]) {
+            [array addObject:title];
+        }
+    }
+    return array;
+}
+- (NSInteger)tableView:(UITableView *)tableView sectionForSectionIndexTitle:(NSString *)title atIndex:(NSInteger)index
+{
+    for (int i=0,j = self.dataList.count; i<j; i++) {
+        NSString *hisgdsid = [[self.dataList objectAtIndex:i] objectForKey:@"hisgdsid"];
+        NSString *datatitle = [hisgdsid substringToIndex:3];
+        if ([title isEqualToString: datatitle]) {
+            return i;
+        }
+    }
+    return 0;
+}
 
 #pragma mark -
 #pragma mark  getStock handle
 
 - (void) getStock
 {
-    NSString *sql = [NSString stringWithFormat: @"select *   from (select 1 gp,b.hisgdsid,b.goodsname,(select dd_value   from sys_datadictionary x  where x.dd_key = 'STORAGENAME'    and dd_id = a.storagename) storagename,decode(a.downgraded, 0, b.goodsunit, b.downgradeunit) goodsunit,round(decode(a.downgraded,       0,       a.goodsqty,       a.goodsqty /       decode(nvl(b.downgradeqty, 1),     0,     1,     nvl(b.downgradeqty, 1))),2) baseqty,a.goodsqty  from hscm_stock_sum a, hscm_goods b where a.hisgdsid = b.hisgdsid union all select decode(a1.iotypedtl, '11', 2, '21', 3),b1.hisgdsid,max(c1.goodsname),to_char(a1.credate,'yyyy-mm'),max(c1.goodsunit),round(sum((case    when nvl(b1.downgraded, 0) = 0 then     b1.goodsqty    else  b1.goodsqty / c1.downgradeqty end))),0  from hscm_inout_doc a1, hscm_inout_dtl b1, hscm_goods c1 where a1.inoutid = b1.inoutid   and b1.completed = 1   and a1.iotypedtl in (11, 21)   and b1.hisgdsid = c1.hisgdsid   and getusemm(a1.credate) >= getusemm(sysdate) - 4 group by b1.hisgdsid, a1.iotypedtl,to_char(a1.credate,'yyyy-mm'))  where hisgdsid in (select edis_hisgdsid from edis_goods_translate where barcode = '%@')", self.currentCode];
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
+	hud.labelText = @"Loading";
+    
+    NSString *sql = [NSString stringWithFormat: @"select *   from (select 1 gp,b.hisgdsid,b.goodsname,(select dd_value   from sys_datadictionary x  where x.dd_key = 'STORAGENAME'    and dd_id = a.storagename) storagename,decode(a.downgraded, 0, b.goodsunit, b.downgradeunit) goodsunit,round(decode(a.downgraded,       0,       a.goodsqty,       a.goodsqty /       decode(nvl(b.downgradeqty, 1),     0,     1,     nvl(b.downgradeqty, 1))),2) baseqty,a.goodsqty  from hscm_stock_sum a, hscm_goods b where a.hisgdsid = b.hisgdsid union all select decode(a1.iotypedtl, '11', 2, '21', 3),b1.hisgdsid,max(c1.goodsname),to_char(a1.credate,'yyyy-mm'),max(c1.goodsunit),round(sum((case    when nvl(b1.downgraded, 0) = 0 then     b1.goodsqty    else  b1.goodsqty / c1.downgradeqty end))),0  from hscm_inout_doc a1, hscm_inout_dtl b1, hscm_goods c1 where a1.inoutid = b1.inoutid   and b1.completed = 1   and a1.iotypedtl in (11, 21)   and b1.hisgdsid = c1.hisgdsid   and getusemm(a1.credate) >= getusemm(sysdate) - 4 group by b1.hisgdsid, a1.iotypedtl,to_char(a1.credate,'yyyy-mm'))  where 1 = 1 "];
+    
+    if (self.currentCode) {
+        sql = [sql stringByAppendingFormat:@" hisgdsid in (select edis_hisgdsid from edis_goods_translate where barcode = '%@')", self.currentCode];
+    }
+    
+    sql = [sql stringByAppendingString:@" order by hisgdsid , gp asc"];
+    
 //    NSString *sql = @"select *   from (select 1 gp,b.hisgdsid,b.goodsname,(select dd_value   from sys_datadictionary x  where x.dd_key = 'STORAGENAME'    and dd_id = a.storagename) storagename,decode(a.downgraded, 0, b.goodsunit, b.downgradeunit) goodsunit,round(decode(a.downgraded,       0,       a.goodsqty,       a.goodsqty /       decode(nvl(b.downgradeqty, 1),     0,     1,     nvl(b.downgradeqty, 1))),2) baseqty,a.goodsqty  from hscm_stock_sum a, hscm_goods b where a.hisgdsid = b.hisgdsid union all select decode(a1.iotypedtl, '11', 2, '21', 3),b1.hisgdsid,max(c1.goodsname),to_char(a1.credate,'yyyy-mm'),max(c1.goodsunit),round(sum((case    when nvl(b1.downgraded, 0) = 0 then     b1.goodsqty    else  b1.goodsqty / c1.downgradeqty end))),0  from hscm_inout_doc a1, hscm_inout_dtl b1, hscm_goods c1 where a1.inoutid = b1.inoutid   and b1.completed = 1   and a1.iotypedtl in (11, 21)   and b1.hisgdsid = c1.hisgdsid   and getusemm(a1.credate) >= getusemm(sysdate) - 4 group by b1.hisgdsid, a1.iotypedtl,to_char(a1.credate,'yyyy-mm'))  where hisgdsid in ('100500T0010','130924')";
     
     iRfRgService *service = [iRfRgService service];
     [service queryJSON:self action:@selector(getStockHandle:) sql:sql
                 dbname:nil];
-    
-    
-//    NSArray *array = [NSArray arrayWithObjects:
-//                      [NSDictionary dictionaryWithObjectsAndKeys:
-//                       @"1111",@"hisgdsid",
-//                       @"测试",@"goodsname",
-//                       @"库1",@"storagename",
-//                       @"45",@"goodsqty"
-//                       , nil],
-//                      [NSDictionary dictionaryWithObjectsAndKeys:
-//                       @"1111",@"hisgdsid",
-//                       @"测试",@"goodsname",
-//                       @"库3",@"storagename",
-//                       @"22",@"goodsqty"
-//                       , nil],
-//                      [NSDictionary dictionaryWithObjectsAndKeys:
-//                       @"1111",@"hisgdsid",
-//                       @"测试",@"goodsname",
-//                       @"库3",@"storagename",
-//                       @"111",@"goodsqty"
-//                       , nil]
-//                      , nil];
-//    SBJsonWriter *writer = [[SBJsonWriter alloc] init];
-//    NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
-//                          @"true",kRetFlagKey,
-//                          array,kMsgKey
-//                          , nil];
-//    id value = [writer stringWithObject:dict];
-//    [self getStockHandle:value];
     
 }
 
@@ -195,9 +184,12 @@
             
             if ([result count]==0) {
                 [CommonUtil alert:NSLocalizedString(@"Info", @"Info")
-                                                msg:[NSString stringWithFormat:@"没有找到此条码[%@]",self.currentCode]];
+                                                msg:@"没有找到库存信息"];
             }
+            
+            
             for (int i=0,j=[result count]; i<j; i++) {
+                
                 NSDictionary *resultrow = [result objectAtIndex:i];
                 NSString *hisgdsid = [resultrow objectForKey:@"hisgdsid"];
                 NSString *goodsname = [resultrow objectForKey:@"goodsname"];
@@ -233,6 +225,7 @@
         
     }
     [self.tableView reloadData];
+    [MBProgressHUD hideHUDForView:self.navigationController.view animated:YES];
 }
 
 #pragma mark -
@@ -284,7 +277,7 @@
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *) reader
 {
     [reader dismissModalViewControllerAnimated: YES];
-    if (self.currentCode == nil) {
+    if (self.dataList.count < 1) {
         [self.navigationController popViewControllerAnimated:YES];
     }
 }

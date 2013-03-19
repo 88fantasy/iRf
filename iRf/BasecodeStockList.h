@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "EGORefreshTableHeaderView.h"
+#import "DataSetRequest.h"
 
 @interface BasecodeStockList : UITableViewController
 <EGORefreshTableHeaderDelegate,ZBarReaderDelegate>
@@ -16,11 +17,11 @@
     EGORefreshTableHeaderView *_refreshHeaderView;
     BOOL _reloading;
     
-    NSString *currentCode;
+    DataSetRequest *request;
     NSArray *dataList;
-
-@private
-    NSArray *colors;
+    
+    
+    @private NSArray *colors;
 
 }
 

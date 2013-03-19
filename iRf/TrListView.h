@@ -9,7 +9,6 @@
 #import <UIKit/UIKit.h>
 #import "EGORefreshTableHeaderView.h"
 #import "LeveyPopListView.h"
-#import "MBProgressHUD.h"
 
 typedef NS_ENUM (NSInteger,TrListTitleSeg){
 	TrListTitleSegAll = 0,  //全部

@@ -12,7 +12,7 @@
 
 #define kLeftMargin		110.0
 #define kTopMargin   8.0
-#define kTextFieldWidth		180.0
+#define kTextFieldWidth	  IsPad? 360.0:180.0
 #define kTextFieldHeight		30.0
 #define kFontSize   20.0
 #define kSwitchLeftMargin 233.0
@@ -123,7 +123,7 @@ typedef NS_OPTIONS(NSUInteger, SettingListSectionTypeExtraRow) {
         [self.internet setOn:NO];
     }
     
-    [self.internet addTarget:self action:@selector(doSaveSetting) forControlEvents:UIControlEventValueChanged];
+    [self.internet addTarget:self action:@selector(doSaveSetting:) forControlEvents:UIControlEventValueChanged];
     
     self.server = [self genTextField];
     self.server.text = [self.settingData objectForKey:kSettingServerKey];
@@ -306,8 +306,12 @@ typedef NS_OPTIONS(NSUInteger, SettingListSectionTypeExtraRow) {
 #pragma mark -
 #pragma mark - doSaveSetting Handle
 
-- (void) doSaveSetting
+- (void) doSaveSetting:(id)sender
 {
+    if (sender == self.internet) {
+        [self setLoginStatus:NO];
+    }
+    
     NSMutableDictionary *newSetting = [NSMutableDictionary dictionary];
     if (self.testBtn.tag == SettingListTestBtnTypeLogout) {
         [newSetting setObject:self.username.text forKey:kSettingUserKey];
@@ -325,14 +329,6 @@ typedef NS_OPTIONS(NSUInteger, SettingListSectionTypeExtraRow) {
     }
     if (self.server.text!=nil) {
         NSString *serverurl = self.server.text;
-//        NSRange range = [serverurl rangeOfString:@"/" options:NSCaseInsensitiveSearch];
-//        if (range.length == 0) {
-//            serverurl = [NSString stringWithFormat:@"%@/gzmpcscm3/services/RgService",serverurl];
-//        }
-//        NSRange range2 = [serverurl rangeOfString:@"http://" options:NSCaseInsensitiveSearch];
-//        if (range2.length == 0) {
-//            serverurl = [NSString stringWithFormat:@"http://%@",serverurl];
-//        }
         [newSetting setObject:serverurl forKey:kSettingServerKey];
     }
     
@@ -350,13 +346,23 @@ typedef NS_OPTIONS(NSUInteger, SettingListSectionTypeExtraRow) {
         NSString *user = self.username.text;
         NSString *pass = self.password.text;
         if (user != nil && ![@"" isEqualToString:user] && pass != nil && ![@"" isEqualToString:pass]) {
-            iRfRgService *service = [iRfRgService service];
-            [service test:self action:@selector(testHandle:) username:user password:pass];
+            
+            if (self.internet.on) {
+                iRfRgService *service = [iRfRgService service];
+                [service test:self action:@selector(testHandle:) username:user password:pass];
+            }
+            else {
+                NSHTTPCookie *cookies = [CommonUtil getSessionByUsername:user password:pass];
+                if (cookies != nil) {
+                    [self loginSuccess];
+                }
+            }
+            
         }
     }
     else {
         [self setLoginStatus:NO];
-        [self doSaveSetting];
+        [self doSaveSetting:self.testBtn];
     }
     
 }
@@ -389,11 +395,7 @@ typedef NS_OPTIONS(NSUInteger, SettingListSectionTypeExtraRow) {
             NSDictionary *ret = (NSDictionary*)retObj;
             NSString *retflag = (NSString*) [ret objectForKey:kRetFlagKey];
             if ([retflag boolValue]==YES) {
-                [self setLoginStatus:YES];
-                [self doSaveSetting];
-    //            if (IsInternet) {
-    //                [self apnsService:YES];
-    //            }
+                [self loginSuccess];
             }
             NSString *msg = (NSString*) [ret objectForKey:kMsgKey];
             if ([msg isKindOfClass:[NSNull class]]) {
@@ -403,6 +405,12 @@ typedef NS_OPTIONS(NSUInteger, SettingListSectionTypeExtraRow) {
             
         }
     }
+}
+
+-(void)loginSuccess
+{
+    [self setLoginStatus:YES];
+    [self doSaveSetting:nil];
 }
 
 #pragma mark -
@@ -428,7 +436,7 @@ typedef NS_OPTIONS(NSUInteger, SettingListSectionTypeExtraRow) {
 
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
-    [self doSaveSetting];
+    [self doSaveSetting:textField];
 }
 
 #pragma mark -

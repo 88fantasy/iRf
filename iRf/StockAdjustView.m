@@ -162,12 +162,12 @@ typedef NS_ENUM(NSInteger, StockAdjustViewAlertStyle) {
     NSString *orgtext = [self.orglocno.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     orgtext = [orgtext uppercaseString];
     if ( [orgtext length]>0) {
-        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
         // Set determinate mode
         hud.mode = MBProgressHUDModeIndeterminate;
         hud.labelText = @"Loading";
         hud.removeFromSuperViewOnHide = YES;
-        [hud show:YES];
+        
         
         iRfRgService* service = [iRfRgService service];
         NSDictionary *setting = [CommonUtil getSettings];
@@ -285,7 +285,7 @@ typedef NS_ENUM(NSInteger, StockAdjustViewAlertStyle) {
             
         }
     }
-    [MBProgressHUD hideHUDForView:self.view animated:YES];
+    [MBProgressHUD hideHUDForView:self.navigationController.view animated:YES];
     
 }
 
@@ -365,12 +365,12 @@ typedef NS_ENUM(NSInteger, StockAdjustViewAlertStyle) {
             
         }
         else {
-            MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+            MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
             // Set determinate mode
             hud.mode = MBProgressHUDModeIndeterminate;
             hud.labelText = @"Loading";
             hud.removeFromSuperViewOnHide = YES;
-            [hud show:YES];
+            
             
             NSDictionary *stock = [obj copy];
             basecode = @"";
@@ -507,7 +507,7 @@ typedef NS_ENUM(NSInteger, StockAdjustViewAlertStyle) {
             self.nohouseflag = nil;
         }
     }
-    [MBProgressHUD hideHUDForView:self.view animated:YES];
+    [MBProgressHUD hideHUDForView:self.navigationController.view animated:YES];
 }
 #pragma mark - Table view data source
 
@@ -709,7 +709,7 @@ typedef NS_ENUM(NSInteger, StockAdjustViewAlertStyle) {
             
         }
     }
-    [MBProgressHUD hideHUDForView:self.view animated:YES];
+    [MBProgressHUD hideHUDForView:self.navigationController.view animated:YES];
 }
 
 @end

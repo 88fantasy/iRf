@@ -11,6 +11,7 @@
 #import "SBJson.h"
 #import "TrView.h"
 #import "POAPinyin.h"
+#import "MBProgressHUD.h"
 
 static NSString *kCellIdentifier = @"TrListViewIdentifier";
 static NSString *kTitleKey = @"title";
@@ -330,12 +331,12 @@ static NSString *kObjKey = @"obj";
     if (self.refreshButtonItem) {
         self.refreshButtonItem.enabled = NO;
     }
-    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.tableView animated:YES];
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
     // Set determinate mode
 	hud.mode = MBProgressHUDModeIndeterminate;
 	hud.labelText = @"Loading";
     hud.removeFromSuperViewOnHide = YES;
-    [hud show:YES];
+    
     
     
     iRfRgService* service = [iRfRgService service];
@@ -438,7 +439,7 @@ static NSString *kObjKey = @"obj";
             
         }
     }
-    [MBProgressHUD hideHUDForView:self.tableView animated:YES];
+    [MBProgressHUD hideHUDForView:self.navigationController.view animated:YES];
     if (self.refreshButtonItem) {
         self.refreshButtonItem.enabled = YES;
     }

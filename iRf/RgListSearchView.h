@@ -31,7 +31,7 @@
     UIBarButtonItem *finButton;
     UITextField *tmp;
     
-    id<RgListSearchViewDelegate> rgListSearchViewDelegate;
+    __weak id<RgListSearchViewDelegate> rgListSearchViewDelegate;
 }
 
 @property (nonatomic, strong) IBOutlet UIScrollView *scrollView;
@@ -46,7 +46,7 @@
 
 @property (nonatomic, strong) IBOutlet UIBarButtonItem *finButton;
 @property (nonatomic, strong) IBOutlet UITextField *tmp;
-@property (nonatomic,strong) id<RgListSearchViewDelegate>  rgListSearchViewDelegate;
+@property (nonatomic, weak) id<RgListSearchViewDelegate>  rgListSearchViewDelegate;
 
 
 - (IBAction) finSearch:(id)sender;

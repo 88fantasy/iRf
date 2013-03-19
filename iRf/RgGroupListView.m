@@ -442,12 +442,12 @@ static NSString *kCellIdentifier = @"MyIdentifier";
 
 - (void) getAllRgGroup{
     
-    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.tableView animated:YES];
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
     // Set determinate mode
 	hud.mode = MBProgressHUDModeIndeterminate;
 	hud.labelText = @"Loading";
     hud.removeFromSuperViewOnHide = YES;
-    [hud show:YES];
+    
     
    
     iRfRgService* service = [iRfRgService service];
@@ -523,7 +523,7 @@ static NSString *kCellIdentifier = @"MyIdentifier";
             
         }
     }
-    [MBProgressHUD hideHUDForView:self.tableView animated:YES];
+    [MBProgressHUD hideHUDForView:self.navigationController.view animated:YES];
 }
 
 #pragma mark -
