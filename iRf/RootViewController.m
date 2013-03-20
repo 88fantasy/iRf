@@ -142,8 +142,8 @@ enum {
     NSLog(@"%@",appinfo);
     
     NSString *version = [appinfo objectForKey:@"CFBundleShortVersionString"];//(NSString *)kCFBundleVersionKey];
-    
-    NSString *urlString =[NSString stringWithFormat:@"http://%@/phoneapp/ios/iRf.php?newestver=%@",kHost,version];
+    NSString *bid = [appinfo objectForKey:( NSString *) kCFBundleIdentifierKey];
+    NSString *urlString =[NSString stringWithFormat:@"http://%@/phoneapp/ios/iRf.php?bid=%@&newestver=%@",kHost,bid,version];
     
     NSMutableURLRequest *request = [[[NSMutableURLRequest alloc] init] autorelease];
     [request setURL:[NSURL URLWithString:urlString]];
@@ -260,14 +260,14 @@ enum {
         [qrCodeRgReader release];
     }
     
-    LoanTableView *loanTableView = [[LoanTableView alloc]initWithStyle:UITableViewStylePlain];
-    [self.menuList addObject:[NSDictionary dictionaryWithObjectsAndKeys:
-                              @"换货管理", kTitleKey,
-                              @"允许操作借出还入单", kExplainKey,
-                              loanTableView, kViewControllerKey,
-                              @"kccx.png",iconKey,
-                              nil]];
-    [loanTableView release];
+//    LoanTableView *loanTableView = [[LoanTableView alloc]initWithStyle:UITableViewStylePlain];
+//    [self.menuList addObject:[NSDictionary dictionaryWithObjectsAndKeys:
+//                              @"换货管理", kTitleKey,
+//                              @"允许操作借出还入单", kExplainKey,
+//                              loanTableView, kViewControllerKey,
+//                              @"kccx.png",iconKey,
+//                              nil]];
+//    [loanTableView release];
     
     [self.tableView reloadData];
 }
