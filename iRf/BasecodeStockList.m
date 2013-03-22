@@ -135,7 +135,7 @@
     NSString *sql = [NSString stringWithFormat: @"select *   from (select 1 gp,b.hisgdsid,b.goodsname,(select dd_value   from sys_datadictionary x  where x.dd_key = 'STORAGENAME'    and dd_id = a.storagename) storagename,decode(a.downgraded, 0, b.goodsunit, b.downgradeunit) goodsunit,round(decode(a.downgraded,       0,       a.goodsqty,       a.goodsqty /       decode(nvl(b.downgradeqty, 1),     0,     1,     nvl(b.downgradeqty, 1))),2) baseqty,a.goodsqty  from hscm_stock_sum a, hscm_goods b where a.hisgdsid = b.hisgdsid union all select decode(a1.iotypedtl, '11', 2, '21', 3),b1.hisgdsid,max(c1.goodsname),to_char(a1.credate,'yyyy-mm'),max(c1.goodsunit),round(sum((case    when nvl(b1.downgraded, 0) = 0 then     b1.goodsqty    else  b1.goodsqty / c1.downgradeqty end))),0  from hscm_inout_doc a1, hscm_inout_dtl b1, hscm_goods c1 where a1.inoutid = b1.inoutid   and b1.completed = 1   and a1.iotypedtl in (11, 21)   and b1.hisgdsid = c1.hisgdsid   and getusemm(a1.credate) >= getusemm(sysdate) - 4 group by b1.hisgdsid, a1.iotypedtl,to_char(a1.credate,'yyyy-mm'))  where 1 = 1 "];
     
     if (self.currentCode) {
-        sql = [sql stringByAppendingFormat:@" hisgdsid in (select edis_hisgdsid from edis_goods_translate where barcode = '%@')", self.currentCode];
+        sql = [sql stringByAppendingFormat:@" and hisgdsid in (select edis_hisgdsid from edis_goods_translate where barcode = '%@')", self.currentCode];
     }
     
     sql = [sql stringByAppendingString:@" order by hisgdsid , gp asc"];
