@@ -10,9 +10,10 @@
 #import "EGORefreshTableHeaderView.h"
 #import "RgListSearchView.h"
 #import "KDGoalBar.h"
+#import "RgView.h"
 
 @interface RgListView : UITableViewController
-<UITableViewDelegate,UITableViewDataSource,EGORefreshTableHeaderDelegate,RgListSearchViewDelegate,
+<UITableViewDelegate,UITableViewDataSource,EGORefreshTableHeaderDelegate,RgListSearchViewDelegate,RgViewDelegate,
 UIActionSheetDelegate>
 {
     NSMutableArray *menuList;

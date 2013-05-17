@@ -497,8 +497,9 @@ static NSString *kCellIdentifier = @"MyIdentifier";
         
         
         
-        SBJsonParser *parser = [[SBJsonParser alloc] init];
-        id json = [parser objectWithString:result];
+        NSError *error = nil;
+        id json = [NSJSONSerialization JSONObjectWithData:[result dataUsingEncoding:NSUTF8StringEncoding] options:0 error:&error];
+        NSLog(@"%@",json);
         
         
         if (json != nil) {

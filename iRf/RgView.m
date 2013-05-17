@@ -19,6 +19,7 @@
 
 @synthesize spdid,values;
 @synthesize goalBarView,goalBar;
+@synthesize delegate;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil values:(NSDictionary*)obj
 //         readOnlyFlag:(BOOL) _readOnlyFlag
@@ -231,8 +232,8 @@
         NSString* result = (NSString*)value;
         NSLog(@"doRg returned the value: %@", result);
         
-        SBJsonParser *parser = [[SBJsonParser alloc] init];
-        id retObj = [parser objectWithString:result];
+        NSError *error = nil;
+        id retObj = [NSJSONSerialization JSONObjectWithData:[result dataUsingEncoding:NSUTF8StringEncoding] options:0 error:&error];
         NSLog(@"%@",retObj);
         
         if (retObj != nil) {
@@ -240,7 +241,10 @@
             NSString *retflag = (NSString*) [ret objectForKey:kRetFlagKey];
             
             if ([retflag boolValue]==YES) {
-                [values setValue:@"1" forKey:@"rgflag"];
+                if (delegate && [delegate respondsToSelector:@selector(rgViewDidConfirm:)]) {
+                    [delegate performSelector:@selector(rgViewDidConfirm:) withObject:self  withObject:error];
+                }
+//                [values setValue:@"1" forKey:@"rgflag"];
                 //            NSDictionary *msg = (NSDictionary*) [ret objectForKey:kMsgKey];
                 //            NSString *sid = (NSString*) [msg objectForKey:@"spdid"];
                 
@@ -444,8 +448,8 @@
         NSString* result = (NSString*)value;
         NSLog(@"doRg returned the value: %@", result);
         
-        SBJsonParser *parser = [[SBJsonParser alloc] init];
-        id retObj = [parser objectWithString:result];
+        NSError *error = nil;
+        id retObj = [NSJSONSerialization JSONObjectWithData:[result dataUsingEncoding:NSUTF8StringEncoding] options:0 error:&error];
         NSLog(@"%@",retObj);
         
         doneDoRgCoount ++;

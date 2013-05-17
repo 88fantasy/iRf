@@ -259,8 +259,9 @@
         
         
         
-        SBJsonParser *parser = [[SBJsonParser alloc] init];
-        id json = [parser objectWithString:result];
+        NSError *error = nil;
+        id json = [NSJSONSerialization JSONObjectWithData:[result dataUsingEncoding:NSUTF8StringEncoding] options:0 error:&error];
+        NSLog(@"%@",json);
         
         
         if (json != nil) {
@@ -297,7 +298,7 @@
         if (count == 1) {
             NSDictionary *obj = (NSDictionary*)[rows objectAtIndex:0];
             RgView *rgView = [[RgView alloc] initWithNibName:@"RgView" bundle:nil values:obj ];
-            //                    rgView.scanViewDelegate = self;
+
             [self.navigationController pushViewController:rgView animated:YES];
             
         }

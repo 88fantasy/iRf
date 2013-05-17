@@ -9,7 +9,6 @@
 #import "iRfRgService.h"
 #import "SBJson.h"
 #import "RgListView.h"
-#import "RgView.h"
 #import "RootViewController.h"
 #import "DbUtil.h"
 #import "MBProgressHUD.h"
@@ -210,14 +209,6 @@ static NSString *kObjKey = @"obj";
  }
  */
 
-#pragma mark -
-#pragma mark ScanView delegate
-//-(void)confirmCallBack:(BOOL )_confirm  values:(NSDictionary *)_obj{
-//    NSUInteger index = [self.objs indexOfObject:_obj];
-//    NSDictionary *obj = [self.objs objectAtIndex:index];
-//    [obj setValue:@"1" forKey:@"rgflag"];
-//    [obj release];
-//}
 
 #pragma mark - Table view delegate
 
@@ -229,6 +220,7 @@ static NSString *kObjKey = @"obj";
     if (![self isEditing]) { //非多选状态
         NSDictionary *obj = [[self.menuList objectAtIndex: indexPath.row] objectForKey:kObjKey];
         RgView* targetViewController = [[RgView alloc] initWithNibName:@"RgView" bundle:nil values:obj];
+        targetViewController.delegate = self;
         //    targetViewController.scanViewDelegate = self;
         [[self navigationController] pushViewController:targetViewController animated:YES];
     }
@@ -411,8 +403,9 @@ static NSString *kObjKey = @"obj";
         
         
         
-        SBJsonParser *parser = [[SBJsonParser alloc] init];
-        id json = [parser objectWithString:result];
+        NSError *error = nil;
+        id json = [NSJSONSerialization JSONObjectWithData:[result dataUsingEncoding:NSUTF8StringEncoding] options:NSJSONReadingMutableContainers error:&error];
+        NSLog(@"%@",json);
         
         
         if (json != nil) {
@@ -659,7 +652,7 @@ static NSString *kObjKey = @"obj";
                                                otherButtonTitles:nil, nil];
         [as showFromBarButtonItem:sender animated:YES];
     }
-    if (self.editing) {
+    else if (self.editing) {
         [self setEditing:NO animated:YES];
     }
 }
@@ -668,6 +661,11 @@ static NSString *kObjKey = @"obj";
 {
     if (buttonIndex != actionSheet.cancelButtonIndex) {
         NSArray *rows = [self.tableView indexPathsForSelectedRows];
+        
+        if (self.editing) {
+            [self setEditing:NO animated:YES];
+        }
+        
         notDoRgCount = rows.count;
         doneDoRgCoount = 0;
         
@@ -685,7 +683,7 @@ static NSString *kObjKey = @"obj";
             if (objs!=nil) {
                 NSDictionary *obj =  [objs objectAtIndex:indexPath.row];
                 NSString *spdid = [obj objectForKey:@"spdid"];
-                NSString *rgqty = [obj objectForKey:@"rgqty"];
+                NSString *rgqty = [obj objectForKey:@"goodsqty"];
                 NSString *locno = [obj objectForKey:@"locno"];
                 
                 [service doRg:self
@@ -742,8 +740,8 @@ static NSString *kObjKey = @"obj";
         NSString* result = (NSString*)value;
         NSLog(@"doRg returned the value: %@", result);
         
-        SBJsonParser *parser = [[SBJsonParser alloc] init];
-        id retObj = [parser objectWithString:result];
+        NSError *error = nil;
+        id retObj = [NSJSONSerialization JSONObjectWithData:[result dataUsingEncoding:NSUTF8StringEncoding] options:0 error:&error];
         NSLog(@"%@",retObj);
         
         doneDoRgCoount ++;
@@ -761,9 +759,10 @@ static NSString *kObjKey = @"obj";
             NSString *retflag = (NSString*) [ret objectForKey:kRetFlagKey];
             
             if ([retflag boolValue]==YES) {
-                NSDictionary *msg = (NSDictionary*) [ret objectForKey:kMsgKey];
-                NSString *spdid = (NSString*) [msg objectForKey:@"spdid"];
                 if ([RootViewController isSync]) {
+                    NSDictionary *msg = (NSDictionary*) [ret objectForKey:kMsgKey];
+                    NSString *spdid = (NSString*) [msg objectForKey:@"spdid"];
+                
                     FMDatabase *db = [DbUtil retConnectionForResource:@"iRf" ofType:@"rdb"];
                     if(db != nil) {
                         [db executeUpdate:@"update scm_rg set rgdate = datetime('now') where spdid = ?",spdid];
@@ -837,6 +836,17 @@ static NSString *kObjKey = @"obj";
         [self performSelector:@selector(doneLoadingTableViewData) withObject:nil afterDelay:2];
         
     }
+}
+
+#pragma mark -
+#pragma mark RgViewDelegate
+
+-(void) rgViewDidConfirm:(RgView*)rgview
+{
+    NSUInteger index = [self.objs indexOfObject:rgview.values];
+    NSMutableDictionary *obj = [self.objs objectAtIndex:index];
+    [obj setObject:@"1" forKey:@"rgflag"];
+    [self.tableView reloadData];
 }
 
 @end

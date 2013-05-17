@@ -207,8 +207,9 @@ typedef NS_ENUM(NSInteger, StockAdjustViewAlertStyle) {
         NSString* result = (NSString*)value;
         NSLog(@"%@", result);
         
-        SBJsonParser *parser = [[SBJsonParser alloc] init];
-        id json = [parser objectWithString:result];
+        NSError *error = nil;
+        id json = [NSJSONSerialization JSONObjectWithData:[result dataUsingEncoding:NSUTF8StringEncoding] options:0 error:&error];
+        NSLog(@"%@",json);
         
         
         if (json != nil) {
@@ -470,8 +471,9 @@ typedef NS_ENUM(NSInteger, StockAdjustViewAlertStyle) {
         NSString* result = (NSString*)value;
         NSLog(@"%@", result);
         
-        SBJsonParser *parser = [[SBJsonParser alloc] init];
-        id retObj = [parser objectWithString:result];
+        NSError *error = nil;
+        id retObj = [NSJSONSerialization JSONObjectWithData:[result dataUsingEncoding:NSUTF8StringEncoding] options:0 error:&error];
+        NSLog(@"%@",retObj);
         
         if (retObj != nil) {
             NSDictionary *ret = (NSDictionary*)retObj;
@@ -670,8 +672,9 @@ typedef NS_ENUM(NSInteger, StockAdjustViewAlertStyle) {
         NSString* result = (NSString*)value;
         NSLog(@"%@", result);
         
-        SBJsonParser *parser = [[SBJsonParser alloc] init];
-        id retObj = [parser objectWithString:result];
+        NSError *error = nil;
+        id retObj = [NSJSONSerialization JSONObjectWithData:[result dataUsingEncoding:NSUTF8StringEncoding] options:0 error:&error];
+        NSLog(@"%@",retObj);
         
         if (retObj != nil) {
             NSDictionary *ret = (NSDictionary*)retObj;

@@ -245,9 +245,9 @@ NSString* const QRCodeRgReaderCellIdentifier = @"QRCodeRgReaderCell";
         // Do something with the NSString* result
         NSString* result = (NSString*)value;
         NSLog(@"sendJsonHandler returned the value: %@", result);
-        id retObj = [NSJSONSerialization JSONObjectWithData:[result dataUsingEncoding:NSUTF8StringEncoding] options:nil error:nil ];
-//        SBJsonParser *parser = [[SBJsonParser alloc] init];
-//        id retObj = [parser objectWithString:result];
+        
+        NSError *error = nil;
+        id retObj = [NSJSONSerialization JSONObjectWithData:[result dataUsingEncoding:NSUTF8StringEncoding] options:0 error:&error];
         NSLog(@"%@",retObj);
         
         

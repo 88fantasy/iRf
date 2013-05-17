@@ -171,9 +171,10 @@
     NSString* result = (NSString*)value;
 	NSLog(@"getStockHandle returned the value: %@", result);
     
-    SBJsonParser *parser = [[SBJsonParser alloc] init];
-    id retObj = [parser objectWithString:result];
-    NSLog(@"%@",retObj);    
+    NSError *error = nil;
+    id retObj = [NSJSONSerialization JSONObjectWithData:[result dataUsingEncoding:NSUTF8StringEncoding] options:0 error:&error];
+    NSLog(@"%@",retObj);
+    
     if (retObj != nil) {
         NSDictionary *ret = (NSDictionary*)retObj;
         NSString *retflag = (NSString*) [ret objectForKey:kRetFlagKey];
