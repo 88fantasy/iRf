@@ -108,6 +108,7 @@
 {
 	// the user pressed the "Done" button, so dismiss the keyboard
 	[textField resignFirstResponder];
+    [self searchButtonTapped];
 	return YES;
 }
 
