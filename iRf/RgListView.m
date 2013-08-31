@@ -298,6 +298,10 @@ static NSString *kObjKey = @"obj";
             if (![goodspy isEqualToString:@""] && goodspy != nil) {
                 sql = [sql stringByAppendingFormat:@" and goodspy like '%@%%'",goodspy];
             }
+            NSString *uvender = [self.searchObj objectForKey:@"uvender"];
+            if (![uvender isEqualToString:@""] && uvender != nil) {
+                sql = [sql stringByAppendingFormat:@" and uvender like '%@%%'",uvender];
+            }
             NSString *rgflag = [self.searchObj objectForKey:@"rgflag"];
             if (![rgflag isEqualToString:@""] && rgflag != nil) {
                 if ([rgflag isEqualToString:@"1"]) {
@@ -451,6 +455,7 @@ static NSString *kObjKey = @"obj";
             NSString *goodsunit = [obj objectForKey:@"goodsunit"];
             NSString *prodarea = [obj objectForKey:@"prodarea"];
             NSString *companyname = [obj objectForKey:@"socompanyname"];
+            NSString *uvender = [obj objectForKey:@"uvender"];
             
             NSString *detailText = @"";
             if ([labeltype isEqualToString:@"1"]) {
@@ -478,6 +483,10 @@ static NSString *kObjKey = @"obj";
             if (companyname != nil) {
                 detailText = [detailText stringByAppendingString:@"     "];
                 detailText = [detailText stringByAppendingString:companyname];
+            }
+            if (uvender != nil) {
+                detailText = [detailText stringByAppendingString:@"     "];
+                detailText = [detailText stringByAppendingString:uvender];
             }
             
             
@@ -595,6 +604,14 @@ static NSString *kObjKey = @"obj";
             prodarea = [prodarea substringToIndex:[prodarea length]-1];
         }
         rsv.prodarea.text = prodarea;
+    }
+    
+    NSString *uvender = [self.searchObj objectForKey:@"uvender"];
+    if (uvender != nil && ![@"" isEqualToString:uvender]) {
+        if ([[uvender substringFromIndex:[uvender length]-1] isEqualToString:@"%"]) {
+            uvender = [uvender substringToIndex:[uvender length]-1];
+        }
+        rsv.vender.text = uvender;
     }
     
     rsv.lotno.text = [self.searchObj objectForKey:@"lotno"];
