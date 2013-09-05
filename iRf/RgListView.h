@@ -11,10 +11,11 @@
 #import "RgListSearchView.h"
 #import "KDGoalBar.h"
 #import "RgView.h"
+#import "LeveyPopListView.h"
 
 @interface RgListView : UITableViewController
 <UITableViewDelegate,UITableViewDataSource,EGORefreshTableHeaderDelegate,RgListSearchViewDelegate,RgViewDelegate,
-UIActionSheetDelegate>
+UIActionSheetDelegate,LeveyPopListViewDelegate>
 {
     NSMutableArray *menuList;
     NSArray *objs;
@@ -36,6 +37,7 @@ UIActionSheetDelegate>
     int titleFontSize;
     int detailFontSize;
     
+    UIButton *titleBtn;
 }
 
 @property (nonatomic, strong) NSMutableArray *menuList;
@@ -47,6 +49,7 @@ UIActionSheetDelegate>
 @property (nonatomic, strong) UIAlertView *goalBarView;
 @property (nonatomic, strong) KDGoalBar *goalBar;
 
+@property (nonatomic, strong) UIButton *titleBtn;
 
 - (id)initWithStyle:(UITableViewStyle)style objs:(NSArray*)_arrays;
 - (IBAction) setSearchJson:(id)sender;

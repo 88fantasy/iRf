@@ -160,15 +160,16 @@ static NSString *kCellIdentifier = @"MyIdentifier";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:[[self.objs objectAtIndex:indexPath.row] objectForKey:kCellIdentifier]];
+    NSArray *array = [[self.menuList objectAtIndex:indexPath.section] objectForKey:@"array"];
+    
+    NSDictionary *obj = [array objectAtIndex:indexPath.row];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCellIdentifier];
 	if (cell == nil)
 	{
-		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:[[self.objs objectAtIndex:indexPath.row] objectForKey:kCellIdentifier]] ;
-		cell.accessoryType = UITableViewCellAccessoryNone;
+		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:kCellIdentifier] ;
+		cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 	}
 	
-    NSArray *array = [[self.menuList objectAtIndex:indexPath.section] objectForKey:@"array"];
-    NSDictionary *obj = [array objectAtIndex:indexPath.row];
     
 //    NSString *goodsname = [obj objectForKey:@"goodsname"];
     NSString *goodstype = [obj objectForKey:@"goodstype"];
@@ -404,33 +405,21 @@ static NSString *kCellIdentifier = @"MyIdentifier";
     
     NSString *goodspy = [self.searchObj objectForKey:@"goodspy"];
     if (goodspy != nil && ![@"" isEqualToString:goodspy]) {
-        if ([[goodspy substringFromIndex:[goodspy length]-1] isEqualToString:@"%"]) {
-            goodspy = [goodspy substringToIndex:[goodspy length]-1];
-        }
-        rsv.goodspy.text = goodspy;
+        rsv.goodspy.text = [goodspy stringByReplacingOccurrencesOfString:@"%" withString:@""];
     }
     NSString *goodsname = [self.searchObj objectForKey:@"goodsname"];
     if (goodsname != nil && ![@"" isEqualToString:goodsname]) {
-        if ([[goodsname substringFromIndex:[goodsname length]-1] isEqualToString:@"%"]) {
-            goodsname = [goodsname substringToIndex:[goodsname length]-1];
-        }
-        rsv.goodsname.text = goodsname;
+        rsv.goodsname.text = [goodsname stringByReplacingOccurrencesOfString:@"%" withString:@""];
     }
     
     NSString *prodarea = [self.searchObj objectForKey:@"prodarea"];
     if (prodarea != nil && ![@"" isEqualToString:prodarea]) {
-        if ([[prodarea substringFromIndex:[prodarea length]-1] isEqualToString:@"%"]) {
-            prodarea = [prodarea substringToIndex:[prodarea length]-1];
-        }
-        rsv.prodarea.text = prodarea;
+        rsv.prodarea.text = [prodarea stringByReplacingOccurrencesOfString:@"%" withString:@""];
     }
     
     NSString *uvender = [self.searchObj objectForKey:@"uvender"];
     if (uvender != nil && ![@"" isEqualToString:uvender]) {
-        if ([[uvender substringFromIndex:[uvender length]-1] isEqualToString:@"%"]) {
-            uvender = [uvender substringToIndex:[uvender length]-1];
-        }
-        rsv.vender.text = uvender;
+        rsv.vender.text = [uvender stringByReplacingOccurrencesOfString:@"%" withString:@""];
     }
     
     rsv.lotno.text = [self.searchObj objectForKey:@"lotno"];
@@ -438,6 +427,23 @@ static NSString *kCellIdentifier = @"MyIdentifier";
     rsv.startdate.text = [self.searchObj objectForKey:@"startdate"];
     rsv.enddate.text = [self.searchObj objectForKey:@"enddate"];
     
+    NSString *rgflag = [self.searchObj objectForKey:@"rgflag"];
+    if (rgflag == nil) {
+        [rsv.rgflag setSelectedSegmentIndex:0];
+    }
+    else if ([rgflag isEqualToString:@"1"]){
+        [rsv.rgflag setSelectedSegmentIndex:2];
+    }
+    else {
+        [rsv.rgflag setSelectedSegmentIndex:1];
+    }
+    NSString *fuzzy = [self.searchObj objectForKey:@"isFuzzy"];
+    if ([@"1" isEqualToString:fuzzy]) {
+        [rsv.fuzzy setOn:YES];
+    }
+    else {
+        [rsv.fuzzy setOn:NO];
+    }
 }
 
 -(void)searchCallBack:(NSDictionary *)_fields{

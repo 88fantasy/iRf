@@ -609,7 +609,8 @@ static NSString *kObjKey = @"obj";
 {
     LeveyPopListView *lplv = [[LeveyPopListView alloc] initWithTitle:@"请选择筛选条件..." options:self.titleArray];
     lplv.delegate = self;
-    [lplv showInView:self.view animated:YES];
+    [lplv showInView:self.navigationController.view animated:YES];
+    
     [self.titleBtn setEnabled:NO];
 }
 
