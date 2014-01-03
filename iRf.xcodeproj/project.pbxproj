@@ -1106,7 +1106,12 @@
 		8F93E2CC13D41B6E006BF26D /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0450;
+				LastUpgradeCheck = 0500;
+				TargetAttributes = {
+					8F93E2D413D41B6E006BF26D = {
+						DevelopmentTeam = 87NZAMZZX2;
+					};
+				};
 			};
 			buildConfigurationList = 8F93E2CF13D41B6E006BF26D /* Build configuration list for PBXProject "iRf" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -1330,7 +1335,6 @@
 		8F93E31013D41B6F006BF26D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Guangzhou Pharmaceuticals Corporation";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -1342,9 +1346,9 @@
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				INSTALL_PATH = /Users/xianweijian/Applications/;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
-				ONLY_ACTIVE_ARCH = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-lxml2";
-				PROVISIONING_PROFILE = "F75A6587-BFA0-4D5D-A05C-5BA3D6FF17DC";
+				PROVISIONING_PROFILE = "B536DF08-9C17-4DCE-BF88-EC261C83113E";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -1355,7 +1359,6 @@
 		8F93E31113D41B6F006BF26D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Guangzhou Pharmaceuticals Corporation";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_VERSION = "";
@@ -1367,7 +1370,7 @@
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				OTHER_LDFLAGS = "-lxml2";
-				PROVISIONING_PROFILE = "F75A6587-BFA0-4D5D-A05C-5BA3D6FF17DC";
+				PROVISIONING_PROFILE = "B536DF08-9C17-4DCE-BF88-EC261C83113E";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -1381,7 +1384,8 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_ENTITLEMENTS = iRf/iRf.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Guangzhou Pharmaceuticals Corporation";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -1397,7 +1401,7 @@
 				);
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "17B729C1-46AD-4024-B787-A496A480A27D";
+				PROVISIONING_PROFILE = "";
 				RUN_CLANG_STATIC_ANALYZER = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -1411,7 +1415,8 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_ENTITLEMENTS = iRf/iRf.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Guangzhou Pharmaceuticals Corporation";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "iRf/iRf-Prefix.pch";
@@ -1426,7 +1431,7 @@
 				);
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "17B729C1-46AD-4024-B787-A496A480A27D";
+				PROVISIONING_PROFILE = "";
 				RUN_CLANG_STATIC_ANALYZER = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";

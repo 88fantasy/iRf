@@ -3,6 +3,9 @@
    version = "1.0">
    <ContextStates>
       <ContextState
+         contextName = "-[TrView confirmTr:]:TrView.m">
+      </ContextState>
+      <ContextState
          contextName = "-[StockAdjustView keyboardWillShow:]:StockAdjustView.m">
          <PersistentStrings>
             <PersistentString
