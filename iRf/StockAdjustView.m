@@ -534,7 +534,7 @@ typedef NS_ENUM(NSInteger, StockAdjustViewAlertStyle) {
 	cell.textLabel.text = [row objectForKey:kTitleKey];
     [cell.textLabel setFont: [UIFont fontWithName:@"Heiti SC" size:18]];
     cell.detailTextLabel.text = [row objectForKey:kExplainKey];
-    cell.detailTextLabel.textAlignment = UITextAlignmentRight;
+    cell.detailTextLabel.textAlignment = NSTextAlignmentRight;
     cell.accessoryType = UITableViewCellAccessoryNone;
     
     return cell;

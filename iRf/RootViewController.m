@@ -707,7 +707,7 @@ enum {
             if([[[subViewArray objectAtIndex:x] class] isSubclassOfClass:[UILabel class]])
             {
                 UILabel *label = [subViewArray objectAtIndex:x];
-                label.textAlignment = UITextAlignmentLeft;
+                label.textAlignment = NSTextAlignmentLeft;
             }
         }
 		[alert show];

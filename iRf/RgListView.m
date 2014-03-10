@@ -179,7 +179,7 @@ static NSString *kObjKey = @"obj";
     [cell.textLabel setFont: [UIFont fontWithName:@"Heiti SC" size:titleFontSize]];
     cell.detailTextLabel.text = [row objectForKey:kExplainKey];
     [cell.detailTextLabel setFont: [UIFont fontWithName:@"Heiti SC" size:detailFontSize]];
-    cell.detailTextLabel.textAlignment = UITextAlignmentLeft;
+    cell.detailTextLabel.textAlignment = NSTextAlignmentLeft;
     
     NSDictionary *obj = [row objectForKey:kObjKey];
     
@@ -248,7 +248,9 @@ static NSString *kObjKey = @"obj";
     
     
     if (![self isEditing]) { //非多选状态
-        NSDictionary *obj = [[self.menuList objectAtIndex: indexPath.row] objectForKey:kObjKey];
+        NSDictionary *section = [self.menuList objectAtIndex: indexPath.section];
+        NSArray *array = [section objectForKey:@"array"];
+        NSDictionary *obj = [[array objectAtIndex:indexPath.row ] objectForKey:kObjKey];
         RgView* targetViewController = [[RgView alloc] initWithNibName:@"RgView" bundle:nil values:obj];
         targetViewController.delegate = self;
         //    targetViewController.scanViewDelegate = self;

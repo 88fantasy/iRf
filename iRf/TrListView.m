@@ -223,7 +223,7 @@ static NSString *kObjKey = @"obj";
 	cell.textLabel.text = [row objectForKey:kTitleKey];
     [cell.textLabel setFont: [UIFont fontWithName:@"Heiti SC" size:20]];
     cell.detailTextLabel.text = [row objectForKey:kExplainKey];
-    cell.detailTextLabel.textAlignment = UITextAlignmentRight;
+    cell.detailTextLabel.textAlignment = NSTextAlignmentRight;
     
     NSDictionary *obj = [row objectForKey:kObjKey];
     

@@ -205,9 +205,9 @@ static NSString *kCellIdentifier = @"MyIdentifier";
     [cell.textLabel setFont: [UIFont fontWithName:@"Heiti SC" size:titleFontSize]];
     cell.detailTextLabel.text = detail;
     [cell.textLabel setFont: [UIFont fontWithName:@"Heiti SC" size:detailFontSize]];
-    cell.detailTextLabel.textAlignment = UITextAlignmentLeft;
+    cell.detailTextLabel.textAlignment = NSTextAlignmentLeft;
     cell.detailTextLabel.numberOfLines = 0;
-    cell.detailTextLabel.lineBreakMode = UILineBreakModeWordWrap;
+    cell.detailTextLabel.lineBreakMode = NSLineBreakByWordWrapping;
     cell.detailTextLabel.adjustsFontSizeToFitWidth = YES;
     
     

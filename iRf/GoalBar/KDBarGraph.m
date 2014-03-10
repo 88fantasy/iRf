@@ -169,7 +169,7 @@
         label.textColor = [UIColor colorWithRed:.18 green:.18 blue:.18 alpha:1.0];
         label.backgroundColor = [UIColor clearColor];
         label.font = labelFont;
-        label.textAlignment = UITextAlignmentCenter;
+        label.textAlignment = NSTextAlignmentCenter;
         label.text = [NSString stringWithFormat:@"%i", [[values objectAtIndex:i] intValue]];
         [label sizeToFit];
         
