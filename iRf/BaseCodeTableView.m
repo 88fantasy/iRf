@@ -66,48 +66,48 @@
 
 -(IBAction)scanAction:(id)sender
 {
-    // ADD: present a barcode reader that scans from the camera feed
-    ZBarReaderViewController *reader = [ZBarReaderViewController new];
-    reader.readerDelegate = self;
-    
-    
-	//reader.showsZBarControls = NO;
-	
-	
-	
-    //    ZBarImageScanner *scanner = reader.scanner;
-    // TODO: (optional) additional reader configuration here
-	
-    // EXAMPLE: disable rarely used I2/5 to improve performance
-    //    [scanner setSymbology: ZBAR_I25
-    //				   config: ZBAR_CFG_ENABLE
-    //					   to: 0];
-	
-    // present and release the controller
-    [self presentModalViewController: reader
-							animated: YES];
+//    // ADD: present a barcode reader that scans from the camera feed
+//    ZBarReaderViewController *reader = [ZBarReaderViewController new];
+//    reader.readerDelegate = self;
+//
+//
+//    //reader.showsZBarControls = NO;
+//
+//
+//
+//    //    ZBarImageScanner *scanner = reader.scanner;
+//    // TODO: (optional) additional reader configuration here
+//
+//    // EXAMPLE: disable rarely used I2/5 to improve performance
+//    //    [scanner setSymbology: ZBAR_I25
+//    //                   config: ZBAR_CFG_ENABLE
+//    //                       to: 0];
+//
+//    // present and release the controller
+//    [self presentModalViewController: reader
+//                            animated: YES];
     
 }
 
-- (void) imagePickerController: (UIImagePickerController*) reader
- didFinishPickingMediaWithInfo: (NSDictionary*) info
-{
-    // ADD: get the decode results
-    id<NSFastEnumeration> results =
-	[info objectForKey: ZBarReaderControllerResults];
-    ZBarSymbol *symbol = nil;
-    for(symbol in results)
-        // EXAMPLE: just grab the first barcode
-        break;
-	
-    // EXAMPLE: do something useful with the barcode data
-	[self addTextToList:symbol.data];
-	
-    // ADD: dismiss the controller (NB dismiss from the *reader*!)
-    [reader dismissModalViewControllerAnimated: YES];
-    
-    
-}
+//- (void) imagePickerController: (UIImagePickerController*) reader
+// didFinishPickingMediaWithInfo: (NSDictionary*) info
+//{
+//    // ADD: get the decode results
+//    id<NSFastEnumeration> results =
+//    [info objectForKey: ZBarReaderControllerResults];
+//    ZBarSymbol *symbol = nil;
+//    for(symbol in results)
+//        // EXAMPLE: just grab the first barcode
+//        break;
+//    
+//    // EXAMPLE: do something useful with the barcode data
+//    [self addTextToList:symbol.data];
+//    
+//    // ADD: dismiss the controller (NB dismiss from the *reader*!)
+//    [reader dismissModalViewControllerAnimated: YES];
+//    
+//    
+//}
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {

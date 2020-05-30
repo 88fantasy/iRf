@@ -14,7 +14,7 @@
 @end
 
 @interface BaseCodeTableView : UITableViewController
-<UITextFieldDelegate,ZBarReaderDelegate>
+<UITextFieldDelegate,AVCaptureMetadataOutputObjectsDelegate>
 {
     UITextField *codeinput;
     NSMutableArray *codeList;

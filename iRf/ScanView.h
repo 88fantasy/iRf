@@ -11,19 +11,19 @@
 
 @interface ScanView : UIViewController     
 // ADD: delegate protocol
-< ZBarReaderDelegate,UITextFieldDelegate,NSXMLParserDelegate,UIGestureRecognizerDelegate >
+< AVCaptureMetadataOutputObjectsDelegate,UITextFieldDelegate,NSXMLParserDelegate,UIGestureRecognizerDelegate >
 {
     UIImageView *resultImage;
     UITextField *resultText;
 	UISwitch *vswitch;
     
-    ZBarReaderViewController *_reader;
+    AVCaptureSession *session;
 }
 @property (nonatomic, strong) IBOutlet UIImageView *resultImage;
 @property (nonatomic, strong) IBOutlet UITextField *resultText;
 @property (nonatomic, strong) IBOutlet UISwitch *vswitch;
 
-@property (nonatomic, strong) ZBarReaderViewController *_reader;
+@property (nonatomic, strong) AVCaptureSession *session;
 
 - (IBAction) scanButtonTapped;
 - (IBAction) searchButtonTapped;

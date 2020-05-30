@@ -10,8 +10,8 @@
 #import <Foundation/Foundation.h>
 
 
-#define kBase @"http://www.gzmpc.com/gzmpcscm3"
-#define kHomeUrl @"http://125.88.8.28/gzmpcscm3/services/RgService"
+#define kBase @"https://redirect.gzmpc.com/gzmpcscm3"
+#define kHomeUrl @"https://redirect.gzmpc.com/gzmpcscm3/services/RgService"
 #define kHost @"www.gzmpc.com"
 #define kRetFlagKey @"ret"
 #define kMsgKey @"msg"

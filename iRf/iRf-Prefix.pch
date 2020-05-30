@@ -4,15 +4,15 @@
 
 #import <Availability.h>
 
-#ifndef __IPHONE_5_0
-#warning "This project uses features only available in iPhone SDK 5.0 and later."
+#ifndef __IPHONE_7_0
+#warning "This project uses features only available in iPhone SDK 7.0 and later."
 #endif
 
 #ifdef __OBJC__
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
-#import "ZBarSDK.h"
+#import <AVFoundation/AVFoundation.h>
 #import "Const.h"
 #import "sqlite3.h"
 #import "FMDatabase.h"

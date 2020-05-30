@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface TrView : UIViewController
-<UITextFieldDelegate,ZBarReaderDelegate>
+<UITextFieldDelegate,AVCaptureMetadataOutputObjectsDelegate>
 {
     UIScrollView *scrollView;
     UITextField *ugoodsid;
@@ -46,6 +46,8 @@
 @property (nonatomic, strong) IBOutlet UITextField *basecode;
 
 @property (nonatomic, strong) IBOutlet NSDictionary *values;
+
+@property (nonatomic, strong) AVCaptureSession *session;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil values:(NSDictionary*)obj ;
 

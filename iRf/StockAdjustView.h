@@ -11,7 +11,7 @@
 
 @interface StockAdjustView : UIViewController
 // ADD: delegate protocol
-< ZBarReaderDelegate,UITextFieldDelegate,NSXMLParserDelegate,UITableViewDelegate,UITableViewDataSource,BaseCodeTableViewDelegate,UIPickerViewDataSource,UIPickerViewDelegate >
+< AVCaptureMetadataOutputObjectsDelegate,UITextFieldDelegate,NSXMLParserDelegate,UITableViewDelegate,UITableViewDataSource,BaseCodeTableViewDelegate,UIPickerViewDataSource,UIPickerViewDelegate >
 {
     UITextField *orglocno;
     UITextField *tolocno;

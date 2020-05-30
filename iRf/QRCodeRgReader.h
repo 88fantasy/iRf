@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface QRCodeRgReader : UITableViewController
-<ZBarReaderDelegate>
+<AVCaptureMetadataOutputObjectsDelegate>
 {
     NSArray *dataList;
     

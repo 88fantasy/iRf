@@ -12,7 +12,7 @@
 @protocol RgViewDelegate;
 
 @interface RgView : UIViewController
-<ZBarReaderDelegate,UITextFieldDelegate,UIActionSheetDelegate>
+<AVCaptureMetadataOutputObjectsDelegate,UITextFieldDelegate,UIActionSheetDelegate>
 {
     UIScrollView *scrollView;
     UITextField *invno;
@@ -65,6 +65,8 @@
 
 @property (nonatomic, strong) UIAlertView *goalBarView;
 @property (nonatomic, strong) KDGoalBar *goalBar;
+
+@property (nonatomic, strong) AVCaptureSession *session;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil values:(NSDictionary*)obj ;
 

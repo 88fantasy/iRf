@@ -20,6 +20,7 @@
 @synthesize spdid,values;
 @synthesize goalBarView,goalBar;
 @synthesize delegate;
+@synthesize session;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil values:(NSDictionary*)obj
 //         readOnlyFlag:(BOOL) _readOnlyFlag
@@ -298,49 +299,75 @@
 
 - (IBAction) scanButtonTapped
 {
-    // ADD: present a barcode reader that scans from the camera feed
-    ZBarReaderViewController *reader = [ZBarReaderViewController new];
-    reader.readerDelegate = self;
-	
-	//reader.showsZBarControls = NO;
-	
-	
-	
-    //    ZBarImageScanner *scanner = reader.scanner;	
-    // EXAMPLE: disable rarely used I2/5 to improve performance
-    //    [scanner setSymbology: ZBAR_I25
-    //				   config: ZBAR_CFG_ENABLE
-    //					   to: 0];
-	
-    // present and release the controller
-    [self presentModalViewController: reader
-							animated: YES];
+    //请求访问相机
+    [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
+        if (granted) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self loadScanView];
+            });
+        } else {
+            NSLog(@"无权限访问相机");
+        }
+    }];
 }
 
-- (void) imagePickerController: (UIImagePickerController*) reader
- didFinishPickingMediaWithInfo: (NSDictionary*) info
-{
-    // ADD: get the decode results
-    id<NSFastEnumeration> results =
-	[info objectForKey: ZBarReaderControllerResults];
-    ZBarSymbol *symbol = nil;
-    for(symbol in results)
-        // EXAMPLE: just grab the first barcode
-        break;
-	
-    // EXAMPLE: do something useful with the barcode data
-    locno.text = symbol.data;
+- (void)loadScanView {
+    //获取摄像设备
+    AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     
-	
-    // EXAMPLE: do something useful with the barcode image
-    //    resultImage.image =
-    //	[info objectForKey: UIImagePickerControllerOriginalImage];
-	
-    // ADD: dismiss the controller (NB dismiss from the *reader*!)
-    [reader dismissModalViewControllerAnimated: YES];
-    
+    if ( device != nil ) {
+        
+        //创建输入流
+        AVCaptureDeviceInput *input = [AVCaptureDeviceInput deviceInputWithDevice:device error:nil];
+        //创建输出流
+        AVCaptureMetadataOutput *output = [[AVCaptureMetadataOutput alloc]init];
+        //设置代理 在主线程里刷新
+        [output setMetadataObjectsDelegate:self queue:dispatch_get_main_queue()];
+        
+        //初始化链接对象
+        self.session = [[AVCaptureSession alloc]init];
+        //高质量采集率
+        [self.session setSessionPreset:AVCaptureSessionPresetHigh];
+        
+        [self.session addInput:input];
+        [self.session addOutput:output];
+        
+        //设置扫码支持的编码格式(如下设置条形码和二维码兼容)
+        output.metadataObjectTypes=@[AVMetadataObjectTypeQRCode,//二维码
+                                     //以下为条形码，如果项目只需要扫描二维码，下面都不要写
+                                     AVMetadataObjectTypeEAN13Code,
+                                     AVMetadataObjectTypeEAN8Code,
+                                     AVMetadataObjectTypeUPCECode,
+                                     AVMetadataObjectTypeCode39Code,
+                                     AVMetadataObjectTypeCode39Mod43Code,
+                                     AVMetadataObjectTypeCode93Code,
+                                     AVMetadataObjectTypeCode128Code,
+                                     AVMetadataObjectTypePDF417Code];
+        
+        AVCaptureVideoPreviewLayer *layer = [AVCaptureVideoPreviewLayer layerWithSession:self.session];
+        layer.videoGravity = AVLayerVideoGravityResizeAspectFill;
+        layer.frame = self.view.layer.bounds;
+        [self.view.layer insertSublayer:layer atIndex:0];
+        //开始捕获
+        [self.session startRunning];
+    }
+    else {
+        [CommonUtil alert:@"提示" msg:@"摄像头设备不可用"];
+    }
 }
 
+#pragma mark - AVCaptureMetadataOutputObjectsDelegate
+-(void)captureOutput:(AVCaptureOutput *)captureOutput didOutputMetadataObjects:(NSArray *)metadataObjects fromConnection:(AVCaptureConnection *)connection{
+    if (metadataObjects.count>0) {
+        [self.session stopRunning];
+        AVMetadataMachineReadableCodeObject *metadataObject = metadataObjects[0];
+        
+        NSLog(@"%@",metadataObject.stringValue);
+        
+        locno.text = metadataObject.stringValue;
+        
+    }
+}
 
 -(void) showActionSeet
 {

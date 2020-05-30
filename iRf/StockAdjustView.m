@@ -117,43 +117,43 @@ typedef NS_ENUM(NSInteger, StockAdjustViewAlertStyle) {
 
 - (void) showScanScreen
 {
-    // ADD: present a barcode reader that scans from the camera feed
-    ZBarReaderViewController *reader = [ZBarReaderViewController new];
-    reader.readerDelegate = self;
-    
-    [self presentModalViewController: reader
-							animated: YES];
+//    // ADD: present a barcode reader that scans from the camera feed
+//    ZBarReaderViewController *reader = [ZBarReaderViewController new];
+//    reader.readerDelegate = self;
+//    
+//    [self presentModalViewController: reader
+//                            animated: YES];
 }
 
-- (void) imagePickerController: (UIImagePickerController*) reader
- didFinishPickingMediaWithInfo: (NSDictionary*) info
-{
-    // ADD: get the decode results
-    id<NSFastEnumeration> results =
-	[info objectForKey: ZBarReaderControllerResults];
-    ZBarSymbol *symbol = nil;
-    for(symbol in results)
-        // EXAMPLE: just grab the first barcode
-        break;
-	
-    // EXAMPLE: do something useful with the barcode data
-	
-    switch (txtindex) {
-        case 1:
-            orglocno.text = symbol.data;
-            [self getStockList];
-            break;
-            
-        default:
-            tolocno.text = symbol.data;
-            break;
-    }    
-	
-    // ADD: dismiss the controller (NB dismiss from the *reader*!)
-    [reader dismissModalViewControllerAnimated: YES];
-    
-    
-}
+//- (void) imagePickerController: (UIImagePickerController*) reader
+// didFinishPickingMediaWithInfo: (NSDictionary*) info
+//{
+//    // ADD: get the decode results
+//    id<NSFastEnumeration> results =
+//    [info objectForKey: ZBarReaderControllerResults];
+//    ZBarSymbol *symbol = nil;
+//    for(symbol in results)
+//        // EXAMPLE: just grab the first barcode
+//        break;
+//
+//    // EXAMPLE: do something useful with the barcode data
+//
+//    switch (txtindex) {
+//        case 1:
+//            orglocno.text = symbol.data;
+//            [self getStockList];
+//            break;
+//
+//        default:
+//            tolocno.text = symbol.data;
+//            break;
+//    }
+//
+//    // ADD: dismiss the controller (NB dismiss from the *reader*!)
+//    [reader dismissModalViewControllerAnimated: YES];
+//
+//
+//}
 
 
 

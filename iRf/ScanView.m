@@ -13,14 +13,13 @@
 #import "RgView.h"
 #import "RgListView.h"
 #import "RootViewController.h"
-#import "ScanOverlayView.h"
 #import "MBProgressHUD.h"
 
 
 @implementation ScanView
 
 @synthesize resultImage, resultText,vswitch;
-@synthesize _reader;
+@synthesize session;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -41,11 +40,6 @@
 //        [self.view addGestureRecognizer:panGesture];
 //        
 //        [panGesture release];
-        
-        // ADD: present a barcode reader that scans from the camera feed
-        _reader = [ZBarReaderViewController new];
-        _reader.readerDelegate = self;
-        [_reader addScanLineOverlay];
         
     }
     return self;
@@ -121,44 +115,17 @@
 
 - (IBAction) scanButtonTapped
 {
-    // present and release the controller
-//    [self setOverView];
-    [self presentViewController: _reader
-							animated: YES
-        completion:nil];
+    //请求访问相机
+    [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
+        if (granted) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self loadScanView];
+            });
+        } else {
+            NSLog(@"无权限访问相机");
+        }
+    }];
 }
-
-- (void) imagePickerController: (UIImagePickerController*) reader
- didFinishPickingMediaWithInfo: (NSDictionary*) info
-{
-    // ADD: get the decode results
-    id<NSFastEnumeration> results =
-	[info objectForKey: ZBarReaderControllerResults];
-    ZBarSymbol *symbol = nil;
-    for(symbol in results)
-        // EXAMPLE: just grab the first barcode
-        break;
-	
-    // EXAMPLE: do something useful with the barcode data
-	
-        
-    resultText.text = symbol.data;
-    
-	
-	
-    
-    // EXAMPLE: do something useful with the barcode image
-    resultImage.image =
-	[info objectForKey: UIImagePickerControllerOriginalImage];
-	
-    // ADD: dismiss the controller (NB dismiss from the *reader*!)
-    [reader dismissModalViewControllerAnimated: YES];
-    
-    
-    [self searchButtonTapped];
-    
-}
-
 
 - (IBAction) searchButtonTapped {
 	
@@ -321,59 +288,63 @@
     }
 }
 
-#pragma mark -
-#pragma mark === Touch handling  ===
+- (void)loadScanView {
+    //获取摄像设备
+    AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+    
+    if ( device != nil ) {
+    
+        //创建输入流
+        AVCaptureDeviceInput *input = [AVCaptureDeviceInput deviceInputWithDevice:device error:nil];
+        //创建输出流
+        AVCaptureMetadataOutput *output = [[AVCaptureMetadataOutput alloc]init];
+        //设置代理 在主线程里刷新
+        [output setMetadataObjectsDelegate:self queue:dispatch_get_main_queue()];
+        
+        //初始化链接对象
+        self.session = [[AVCaptureSession alloc]init];
+        //高质量采集率
+        [self.session setSessionPreset:AVCaptureSessionPresetHigh];
+        
+        [self.session addInput:input];
+        [self.session addOutput:output];
+        
+        //设置扫码支持的编码格式(如下设置条形码和二维码兼容)
+        output.metadataObjectTypes=@[AVMetadataObjectTypeQRCode,//二维码
+                                     //以下为条形码，如果项目只需要扫描二维码，下面都不要写
+                                     AVMetadataObjectTypeEAN13Code,
+                                     AVMetadataObjectTypeEAN8Code,
+                                     AVMetadataObjectTypeUPCECode,
+                                     AVMetadataObjectTypeCode39Code,
+                                     AVMetadataObjectTypeCode39Mod43Code,
+                                     AVMetadataObjectTypeCode93Code,
+                                     AVMetadataObjectTypeCode128Code,
+                                     AVMetadataObjectTypePDF417Code];
+        
+        AVCaptureVideoPreviewLayer *layer = [AVCaptureVideoPreviewLayer layerWithSession:self.session];
+        layer.videoGravity = AVLayerVideoGravityResizeAspectFill;
+        layer.frame = self.view.layer.bounds;
+        [self.view.layer insertSublayer:layer atIndex:0];
+        //开始捕获
+        [self.session startRunning];
+    }
+    else {
+        [CommonUtil alert:@"提示" msg:@"摄像头设备不可用"];
+    }
+}
 
-//- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
-//{
-//    
-//    // Disallow recognition of tap gestures in the segmented control.
-//    UIView *view = [gestureRecognizer view];
-//    if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
-//        UIPanGestureRecognizer *recognizer = (UIPanGestureRecognizer *)gestureRecognizer;
-//        CGPoint translation = [recognizer translationInView:[view superview]];
-//        NSLog(@"x:%f y:%f",translation.x,translation.y);
-//    }
-//    
-//    return YES;
-//}
-
-//- (void)panView:(UIPanGestureRecognizer *)gestureRecognizer{
-//    
-//    UIView *view = [gestureRecognizer view];
-//    [self adjustAnchorPointForGestureRecognizer:gestureRecognizer];
-//    
-//    NSInteger state = [gestureRecognizer state];
-//    if (state == UIGestureRecognizerStateBegan || state == UIGestureRecognizerStateChanged) {
-//        CGPoint translation = [gestureRecognizer translationInView:[view superview]];
-//        
-//        [view setCenter:CGPointMake([view center].x + translation.x, [view center].y)];
-//        [gestureRecognizer setTranslation:CGPointZero inView:[view superview]];
-//    }
-//    
-//    if (state == UIGestureRecognizerStateCancelled || state == UIGestureRecognizerStateEnded) {
-//        CGRect rect = GetScreenSize;
-//        NSLog(@"x:%f y:%f",view.frame.origin.x,view.frame.origin.y);
-//        if (view.frame.origin.x > rect.size.width * 0.4  ) { //超过40%屏幕
-//            [self.navigationController popToRootViewControllerAnimated:YES];
-//        }
-//        else{
-//            NSLog(@"x:%f y:%f",view.center.x,view.center.y);
-//            [view setCenter:CGPointMake(view.superview.center.x, view.superview.center.y)];
-//            NSLog(@"x:%f y:%f",view.center.x,view.center.y);
-//        }
-//    }
-//}
-//
-//- (void)adjustAnchorPointForGestureRecognizer:(UIGestureRecognizer *)gestureRecognizer {
-//    if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
-//        UIView *view = gestureRecognizer.view;
-//        CGPoint locationInView = [gestureRecognizer locationInView:view];
-//        CGPoint locationInSuperview = [gestureRecognizer locationInView:view.superview];
-//        
-//        view.layer.anchorPoint = CGPointMake(locationInView.x / view.bounds.size.width, locationInView.y / view.bounds.size.height);
-//        view.center = locationInSuperview;
-//    }
-//}
+#pragma mark - AVCaptureMetadataOutputObjectsDelegate
+-(void)captureOutput:(AVCaptureOutput *)captureOutput didOutputMetadataObjects:(NSArray *)metadataObjects fromConnection:(AVCaptureConnection *)connection{
+    if (metadataObjects.count>0) {
+        [self.session stopRunning];
+        AVMetadataMachineReadableCodeObject *metadataObject = metadataObjects[0];
+        
+        NSLog(@"%@",metadataObject.stringValue);
+        
+        resultText.text = metadataObject.stringValue;
+        
+        [self searchButtonTapped];
+    }
+}
 
 @end

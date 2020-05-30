@@ -7,7 +7,6 @@
 //
 
 #import "QRCodeRgReader.h"
-#import "ScanOverlayView.h"
 #import "iRfRgService.h"
 
 NSString* const QRCodeRgReaderCellIdentifier = @"QRCodeRgReaderCell";
@@ -132,55 +131,55 @@ NSString* const QRCodeRgReaderCellIdentifier = @"QRCodeRgReaderCell";
 #pragma mark  scanAction handle
 -(IBAction)scanAction:(id)sender
 {
-    // ADD: present a barcode reader that scans from the camera feed
-    ZBarReaderViewController *reader = [ZBarReaderViewController new];
-    reader.readerDelegate = self;
-    //高分辨率模式可以扫描600个字符的qrcode
-    reader.videoQuality = UIImagePickerControllerQualityTypeHigh;
-    [reader addScanLineOverlay];
-	//reader.showsZBarControls = NO;
-	
-	
-	
-    ZBarImageScanner *scanner = reader.scanner;
-    // TODO: (optional) additional reader configuration here
-	
-    // EXAMPLE: disable rarely used I2/5 to improve performance
-    [scanner setSymbology: ZBAR_NONE
-				   config: ZBAR_CFG_ENABLE
-					   to: 0];
-    [scanner setSymbology: ZBAR_QRCODE
-				   config: ZBAR_CFG_ENABLE
-					   to: 1];
-	
-    // present and release the controller
-    [self presentModalViewController: reader
-							animated: YES];
+//    // ADD: present a barcode reader that scans from the camera feed
+//    ZBarReaderViewController *reader = [ZBarReaderViewController new];
+//    reader.readerDelegate = self;
+//    //高分辨率模式可以扫描600个字符的qrcode
+//    reader.videoQuality = UIImagePickerControllerQualityTypeHigh;
+//    [reader addScanLineOverlay];
+//    //reader.showsZBarControls = NO;
+//
+//
+//
+//    ZBarImageScanner *scanner = reader.scanner;
+//    // TODO: (optional) additional reader configuration here
+//
+//    // EXAMPLE: disable rarely used I2/5 to improve performance
+//    [scanner setSymbology: ZBAR_NONE
+//                   config: ZBAR_CFG_ENABLE
+//                       to: 0];
+//    [scanner setSymbology: ZBAR_QRCODE
+//                   config: ZBAR_CFG_ENABLE
+//                       to: 1];
+//
+//    // present and release the controller
+//    [self presentModalViewController: reader
+//                            animated: YES];
 }
 
-- (void) imagePickerController: (UIImagePickerController*) reader
- didFinishPickingMediaWithInfo: (NSDictionary*) info
-{
-    // ADD: get the decode results
-    id<NSFastEnumeration> results =
-	[info objectForKey: ZBarReaderControllerResults];
-    ZBarSymbol *symbol = nil;
-    for(symbol in results) {
-        // EXAMPLE: just grab the first barcode
-        break;
-    }
-	
-    // EXAMPLE: do something useful with the barcode data
-	
-    NSString *json = symbol.data;
-//    [CommonUtil alert:[NSString stringWithFormat:@"%d",json.length] msg:json];
-    
-    [self reloadByJson:json];
-
-    // ADD: dismiss the controller (NB dismiss from the *reader*!)
-    [reader dismissModalViewControllerAnimated: YES];
-    
-}
+//- (void) imagePickerController: (UIImagePickerController*) reader
+// didFinishPickingMediaWithInfo: (NSDictionary*) info
+//{
+//    // ADD: get the decode results
+//    id<NSFastEnumeration> results =
+//    [info objectForKey: ZBarReaderControllerResults];
+//    ZBarSymbol *symbol = nil;
+//    for(symbol in results) {
+//        // EXAMPLE: just grab the first barcode
+//        break;
+//    }
+//    
+//    // EXAMPLE: do something useful with the barcode data
+//    
+//    NSString *json = symbol.data;
+////    [CommonUtil alert:[NSString stringWithFormat:@"%d",json.length] msg:json];
+//    
+//    [self reloadByJson:json];
+//
+//    // ADD: dismiss the controller (NB dismiss from the *reader*!)
+//    [reader dismissModalViewControllerAnimated: YES];
+//    
+//}
 
 #pragma mark -
 #pragma mark json to cell

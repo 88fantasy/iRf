@@ -11,7 +11,7 @@
 #import "DataSetRequest.h"
 
 @interface BasecodeStockList : UITableViewController
-<EGORefreshTableHeaderDelegate,ZBarReaderDelegate>
+<EGORefreshTableHeaderDelegate,AVCaptureMetadataOutputObjectsDelegate>
 
 {
     EGORefreshTableHeaderView *_refreshHeaderView;
